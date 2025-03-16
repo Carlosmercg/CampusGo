@@ -28,6 +28,21 @@ Bienvenido a la **Wiki** de *CampusGo*, la aplicación diseñada para conectar e
 
 ---
 
+## 🌐 Características Principales
+ 
+ ✨ Creación de Perfiles: Los usuarios pueden crear un perfil con su información universitaria y calificar a otros.
+ 
+ 🏰 Verificación de Usuario: Confirmación de identidad mediante reconocimiento facial, huella o escaneo de carné universitario.
+ 
+ 👉 Publicación de Productos: Posibilidad de subir fotos y descripciones de materiales a vender.
+ 
+ 🌐 Chat en Tiempo Real: Mensajería y chat de voz entre compradores y vendedores.
+ 
+ 🛠️ Seguimiento en Tiempo Real: Uso de GPS para rastrear ubicaciones de compradores y vendedores.
+ 
+ ✨ Modo Horizontal y Vertical: Adaptabilidad de la interfaz según la orientación del dispositivo.
+ 
+
 ## 🔹 Casos de Uso
 
 La aplicación maneja dos tipos de usuario: **compradores** y **vendedores**. Un mismo usuario puede desempeñar ambos roles simultáneamente.
@@ -94,4 +109,14 @@ La base de datos está estructurada en las siguientes entidades:
 - **Pedidos** (ID, Comprador, Vendedor, Productos, Estado, Pago)
 - **Métodos de Pago** (ID, Usuario, Tipo, Información de Tarjeta o Cuenta)
 
+
+## 👥 Equipo de Desarrollo
+ 
+ Carlos Mercado
+ 
+ Sara Albarracín
+ 
+ Victoria Roa
+ 
+ Alejandro Caicedo
 
