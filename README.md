@@ -94,13 +94,4 @@ La base de datos está estructurada en las siguientes entidades:
 - **Pedidos** (ID, Comprador, Vendedor, Productos, Estado, Pago)
 - **Métodos de Pago** (ID, Usuario, Tipo, Información de Tarjeta o Cuenta)
 
----
 
-## 🔹 Guía de Desarrollo
-
-### 🔧 Instalación
-Para configurar el entorno de desarrollo en **Android Studio**:
-
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/tu-repo/campusgo.git
