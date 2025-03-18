@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso para acceder a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,45 +15,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
-        <activity
-            android:name=".SeguimientoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CarritoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MensajeriaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DetalleProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ListaProductosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CategoriasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+
+        <!-- Actividades de la aplicación -->
+        <activity android:name=".SeguimientoActivity" android:exported="false" />
+        <activity android:name=".CarritoActivity" android:exported="false" />
+        <activity android:name=".ChatActivity" android:exported="false" />
+        <activity android:name=".MensajeriaActivity" android:exported="false" />
+        <activity android:name=".DetalleProductoActivity" android:exported="false" />
+        <activity android:name=".ProductosVendidosActivity" android:exported="false" />
+        <activity android:name=".CrearProductoActivity" android:exported="false" />
+        <activity android:name=".CategoriasActivity" android:exported="false" />
+        <activity android:name=".HomeActivity" android:exported="false" />
+
+        <!-- LoginActivity accesible externamente si se usa autenticación -->
+        <activity android:name=".LoginActivity" android:exported="true" />
+
+        <!-- MainActivity configurada como pantalla de inicio -->
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

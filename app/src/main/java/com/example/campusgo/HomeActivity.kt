@@ -1,5 +1,5 @@
 package com.example.campusgo
-
+//HomeActivity → Menú principal con opciones para Comprar o Vender.
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityHomeBinding

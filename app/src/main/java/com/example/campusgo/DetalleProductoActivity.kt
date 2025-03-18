@@ -1,4 +1,5 @@
 package com.example.campusgo
+//Detalle de Producto → Información detallada con opciones de compra.
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

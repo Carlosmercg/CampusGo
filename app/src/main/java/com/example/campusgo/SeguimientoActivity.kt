@@ -1,5 +1,5 @@
 package com.example.campusgo
-
+//Seguimiento de Pedido → Ubicación en tiempo real del producto comprado.
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivitySeguimientoBinding

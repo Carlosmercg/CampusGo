@@ -1,5 +1,5 @@
 package com.example.campusgo
-
+//Mensajería → Lista de chats organizados en pestañas (Clientes y Vendedores).
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityMensajeriaBinding
