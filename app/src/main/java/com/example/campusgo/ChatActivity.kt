@@ -1,5 +1,5 @@
 package com.example.campusgo
-//Chat → Conversación con un usuario específico.
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,8 +17,29 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupToolbar()
+        setupRecyclerView()
+        loadDummyMessages()
+    }
+
+    private fun setupToolbar() {
+        val nombreUsuario = intent.getStringExtra("nombreUsuario") ?: "Usuario"
+        supportActionBar?.title = nombreUsuario
+    }
+
+    private fun setupRecyclerView() {
         mensajeAdapter = MensajeAdapter(mensajes)
-        binding.recyclerChat.layoutManager = LinearLayoutManager(this)
-        binding.recyclerChat.adapter = mensajeAdapter
+        binding.recyclerMensajes.apply {
+            layoutManager = LinearLayoutManager(this@ChatActivity)
+            adapter = mensajeAdapter
+        }
+    }
+
+    private fun loadDummyMessages() {
+        mensajes.apply {
+            add(Mensaje("Hola, ¿sigues vendiendo el producto?", true))
+            add(Mensaje("Sí, aún está disponible", false))
+        }
+        mensajeAdapter.notifyDataSetChanged()
     }
 }

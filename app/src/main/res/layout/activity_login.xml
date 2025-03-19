@@ -1,25 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".LoginActivity">
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="0dp"
+    <!-- Título -->
+    <TextView
+        android:id="@+id/txtTitulo"
+        style="@style/TitleTextW"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Correo Electrónico"
-        android:inputType="textEmailAddress"
+        android:text="¡Bienvenido a CampusGo!"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="150dp"
-        android:padding="10dp"/>
+        android:layout_marginTop="80dp"/>
 
+    <!-- Texto descriptivo -->
+    <TextView
+        android:id="@+id/txtDescripcion"
+        style="@style/SubtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inicia sesión para continuar"
+        app:layout_constraintTop_toBottomOf="@id/txtTitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Username -->
+    <EditText
+        android:id="@+id/emailEditText"
+        style="@style/EditTextStyleW"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre de usuario"
+        app:layout_constraintTop_toBottomOf="@id/txtDescripcion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Contraseña -->
     <EditText
         android:id="@+id/passwordEditText"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
@@ -27,28 +56,32 @@
         app:layout_constraintTop_toBottomOf="@id/emailEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"/>
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="12dp"/>
 
+    <!-- Botón Iniciar Sesión -->
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/btnLogin"
+        style="@style/PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Iniciar Sesión"
         app:layout_constraintTop_toBottomOf="@id/passwordEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"/>
 
-    <TextView
-        android:id="@+id/registerTextView"
-        android:layout_width="wrap_content"
+    <!-- Botón para Registrarse -->
+    <Button
+        android:id="@+id/btnSignUp"
+        style="@style/PrimaryButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="@android:color/holo_blue_dark"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        android:text="Crear Cuenta"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"/>
-
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
