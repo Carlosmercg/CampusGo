@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".CalificarActivity">
+
+    <ImageButton
+        android:id="@+id/btncal3"
+        android:layout_width="49dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.094"
+        app:srcCompat="@drawable/star"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/btncal4"
+        android:layout_width="49dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btncal3"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.094"
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/btncal1"
+        android:layout_width="49dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btncal2"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.094"
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/btncal2"
+        android:layout_width="49dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btncal3"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.094"
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
+
+    <ImageButton
+        android:id="@+id/btncal5"
+        android:layout_width="49dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btncal4"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.094"
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Califica tu experiencia!"
+        android:textColor="@android:color/holo_purple"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="371dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:text="Ten en cuenta el tiempo de llegada, la calidad del producto y su precio"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_purple"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.034" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="122dp"
+        android:layout_height="114dp"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintVertical_bias="0.051">
+
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/placeholder_usuario" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Maria Victoria Muñoz Santos"
+        android:textColor="@android:color/holo_purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView1"
+        app:layout_constraintVertical_bias="0.019" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Universidad de los Andes"
+        android:textColor="@android:color/holo_purple"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginTop="5dp"
+        android:text="Gracias por la colaboracion"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btncal3"
+        app:layout_constraintVertical_bias="0.097" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

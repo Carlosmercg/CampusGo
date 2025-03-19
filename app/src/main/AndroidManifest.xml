@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- Permiso para acceder a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +14,63 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
+        <activity
+            android:name=".SubirProductoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilMetodosDePagoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ListaComprasPasadasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditarPerfilActivity"
+            android:exported="false" /> <!-- Actividades de la aplicación -->
+        <activity
+            android:name=".MensajeriaActivity"
+            android:exported="false" /> <!-- Actividades de la aplicación -->
+        <activity
+            android:name=".SeguimientoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CarritoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ComprarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MapaCompradorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MapaVendedorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CalificarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NFCActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleProductoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearProductoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
         <activity
             android:name=".MainActivity"
             android:exported="true">

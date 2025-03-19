@@ -1,3 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CampusGo</string>
+    <string name="titulo_login">¡Bienvenido a!</string>
+    <string name="descripcion_login">Ingresa con tu cuenta o crea una nueva.</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="log_in">LOG IN</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="Background">background_image</string>
+    <string-array name="ciudades">
+        <item>Bogotá</item>
+    </string-array>
+    <string-array name="universidades">
+        <item>Pontificia Universidad Javeriana</item>
+        <item>Universidad Distrital</item>
+        <item>Universidad Gran Colombia</item>
+    </string-array>
+    <string-array name="categorias">
+        <item>Mecánica</item>
+        <item>Arquitectura</item>
+        <item>Artes Visuales</item>
+        <item>Música</item>
+        <item>Medicina</item>
+        <item>Educación</item>
+    </string-array>
 </resources>

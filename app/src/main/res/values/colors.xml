@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- 🔹 Colores Primarios -->
+    <color name="primary">#1E3A8A</color>  <!-- Azul Profundo -->
+    <color name="primaryDark">#172554</color>  <!-- Azul Oscuro -->
+    <color name="primaryLight">#3B82F6</color>  <!-- Azul Claro Vibrante -->
+
+    <!-- 🔹 Colores Secundarios -->
+    <color name="secondary">#2563EB</color>  <!-- Azul Medio -->
+    <color name="secondaryLight">#60A5FA</color>  <!-- Azul Suave -->
+    <color name="secondaryDark">#1E40AF</color>  <!-- Azul Intenso -->
+
+    <!-- 📝 Colores de Texto -->
+    <color name="textTitle">#1E3A8A</color>  <!-- Azul Profundo para Títulos -->
+    <color name="textSubtitle">#3B82F6</color>  <!-- Azul Brillante para Subtítulos -->
+    <color name="textParagraph">#374151</color>  <!-- Gris Oscuro para Párrafos -->
+    <color name="textHint">#6B7280</color>  <!-- Gris Medio para Hints y Placeholders -->
+    <color name="textDisabled">#9CA3AF</color>  <!-- Gris Claro para Texto Deshabilitado -->
+
+    <!-- ✂️ Colores de Divisores y Separadores -->
+    <color name="dividerLight">#E5E7EB</color>  <!-- Gris Claro para Líneas Separadoras -->
+    <color name="dividerDark">#4B5563</color>  <!-- Gris Oscuro para Secciones Importantes -->
+
+    <!-- 🖼️ Fondos y Tarjetas -->
+    <color name="background">#B4D1F8</color>  <!-- Azul Muy Claro para Fondo General -->
+    <color name="cardBackground">#DBEAFE</color>  <!-- Azul Suave para Tarjetas -->
+    <color name="modalBackground">#F3F4F6</color>  <!-- Gris Claro para Modales y Pop-ups -->
+
+    <!-- 🎨 Colores para Formas y Componentes -->
+    <color name="shapePrimary">#1E40AF</color>  <!-- Azul Intenso para Bordes y Formas -->
+    <color name="shapeSecondary">#2563EB</color>  <!-- Azul Medio para Elementos Destacados -->
+    <color name="shapeDisabled">#93C5FD</color>  <!-- Azul Apagado para Estados Inactivos -->
+
+    <!-- ✅ Estados (Éxito, Error, Advertencias) -->
+    <color name="errorColor">#D32F2F</color>  <!-- Rojo para Errores -->
+    <color name="successColor">#15803D</color>  <!-- Verde para Éxito -->
+    <color name="warningColor">#F59E0B</color>  <!-- Amarillo para Advertencias -->
+    <color name="white">#FFFFFF</color>  <!-- Blanco puro -->
+    <color name="black">#000000</color>  <!-- negro puro -->
+
+    <!-- 🎛️ Botones -->
+    <color name="buttonPrimary">#2041A9</color>  <!-- Azul Predeterminado -->
+    <color name="buttonSecondary">#2563EB</color>  <!-- Azul Intenso -->
+    <color name="buttonDisabled">#93C5FD</color>  <!-- Azul Apagado -->
+
+    <!-- 🛠️ Sombras y Bordes -->
+    <color name="borderColor">#93C5FD</color>  <!-- Azul Grisáceo para Bordes -->
+    <color name="shadowColor">#1E3A8A</color>  <!-- Azul Oscuro para Sombras -->
+
+    <!-- 🧭 Colores de Navegación -->
+    <color name="navTextColor">#FFFFFF</color>  <!-- Blanco puro -->
+    <color name="navIconColor">#B4DEFA</color>  <!-- Azul Claro para Íconos -->
+
 </resources>
