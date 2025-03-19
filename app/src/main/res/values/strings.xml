@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CampusGo</string>
-    <string name="titulo_login">¡Regístrate hoy y disfruta de la red de mercado universitaria más grande del país!</string>
+    <string name="titulo_login">¡Bienvenido a!</string>
     <string name="descripcion_login">Ingresa con tu cuenta o crea una nueva.</string>
     <string name="sign_in">SIGN IN</string>
     <string name="log_in">LOG IN</string>
