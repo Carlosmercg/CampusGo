@@ -1,5 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Colores Primarios -->
+    <color name="primary">#1E3A8A</color>  <!-- Azul Profundo -->
+    <color name="primaryDark">#172554</color>  <!-- Azul Oscuro -->
+    <color name="primaryLight">#3B82F6</color>  <!-- Azul Claro Vibrante -->
+
+    <!-- Colores Secundarios -->
+    <color name="secondary">#2563EB</color>  <!-- Azul Medio -->
+    <color name="secondaryLight">#60A5FA</color>  <!-- Azul Suave -->
+    <color name="secondaryDark">#1E40AF</color>  <!-- Azul Intenso -->
+
+    <!-- Neutros -->
+    <color name="white">#FFFFFF</color>  <!-- Blanco puro -->
+    <color name="black">#000000</color>  <!-- Negro puro -->
+    <color name="gray">#94A3B8</color>  <!-- Gris azulado neutro -->
+    <color name="darkGray">#64748B</color>  <!-- Gris oscuro con tono azul -->
+    <color name="lightGray">#E2E8F0</color>  <!-- Azul grisáceo claro -->
+
+    <!-- Fondos -->
+    <color name="background">#EFF6FF</color>  <!-- Azul Muy Claro para Fondo -->
+    <color name="cardBackground">#DBEAFE</color>  <!-- Azul Suave para Tarjetas -->
+
+    <!-- Texto -->
+    <color name="textPrimary">#1E3A8A</color>  <!-- Azul Profundo para Texto Principal -->
+    <color name="textSecondary">#3B82F6</color>  <!-- Azul Brillante para Texto Secundario -->
+
+    <!-- Botones -->
+    <color name="buttonPrimary">#2563EB</color>  <!-- Azul Predeterminado -->
+    <color name="buttonSecondary">#1E40AF</color>  <!-- Azul Intenso -->
+    <color name="buttonDisabled">#93C5FD</color>  <!-- Azul Apagado -->
+
+    <!-- Sombras y Bordes -->
+    <color name="borderColor">#93C5FD</color>  <!-- Azul Grisáceo para Bordes -->
+    <color name="shadowColor">#1E3A8A</color>  <!-- Azul Oscuro para Sombras -->
+
+    <!-- Estados -->
+    <color name="errorColor">#D32F2F</color>  <!-- Rojo para Errores -->
+    <color name="successColor">#15803D</color>  <!-- Verde para Éxito -->
+    <color name="warningColor">#F59E0B</color>  <!-- Amarillo para Advertencias -->
+
+    <!-- Colores de Navegación -->
+    <color name="nav_text_color">#FFFFFF</color>  <!-- Blanco puro -->
+    <color name="nav_icon_color">#E0F2FE</color>  <!-- Azul Claro para Íconos -->
 </resources>

@@ -15,8 +15,10 @@ import com.example.campusgo.models.Producto
 import java.net.URL
 import java.util.concurrent.Executors
 
-class CarritoAdapter(private val productos: List<Producto>, private val onRemoveClick: (Producto) -> Unit) :
-    RecyclerView.Adapter<CarritoAdapter.CarritoViewHolder>() {
+class CarritoAdapter(
+    private val productos: List<Producto>,
+    private val onRemoveClick: (Producto) -> Unit
+) : RecyclerView.Adapter<CarritoAdapter.CarritoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarritoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_carrito, parent, false)
@@ -24,9 +26,7 @@ class CarritoAdapter(private val productos: List<Producto>, private val onRemove
     }
 
     override fun onBindViewHolder(holder: CarritoViewHolder, position: Int) {
-        val producto = productos[position]
-        holder.bind(producto)
-        holder.btnEliminar.setOnClickListener { onRemoveClick(producto) }
+        holder.bind(productos[position], onRemoveClick)
     }
 
     override fun getItemCount(): Int = productos.size
@@ -35,12 +35,25 @@ class CarritoAdapter(private val productos: List<Producto>, private val onRemove
         private val imgProducto: ImageView = itemView.findViewById(R.id.img_producto_carrito)
         private val txtNombre: TextView = itemView.findViewById(R.id.txt_nombre_producto_carrito)
         private val txtPrecio: TextView = itemView.findViewById(R.id.txt_precio_producto_carrito)
-        val btnEliminar: Button = itemView.findViewById(R.id.btn_eliminar_producto)
+        private val btnEliminar: Button = itemView.findViewById(R.id.btn_eliminar_producto)
 
-        fun bind(producto: Producto) {
+        fun bind(producto: Producto, onRemoveClick: (Producto) -> Unit) {
             txtNombre.text = producto.nombre
             txtPrecio.text = "$${producto.precio}"
+            btnEliminar.setOnClickListener { onRemoveClick(producto) }
             loadImageFromUrl(producto.imagenUrl, imgProducto)
+        }
+
+        private fun loadImageFromUrl(url: String, imageView: ImageView) {
+            Executors.newSingleThreadExecutor().execute {
+                try {
+                    val inputStream = URL(url).openStream()
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    imageView.post { imageView.setImageBitmap(bitmap) }
+                } catch (e: Exception) {
+                    Log.e("CarritoAdapter", "Error al cargar imagen: ${e.message}")
+                }
+            }
         }
     }
 }

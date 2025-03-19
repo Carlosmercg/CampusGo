@@ -17,17 +17,19 @@ class MensajeAdapter(private val mensajes: List<Mensaje>) :
     }
 
     override fun onBindViewHolder(holder: MensajeViewHolder, position: Int) {
-        val mensaje = mensajes[position]
-        holder.bind(mensaje)
+        holder.bind(mensajes[position])
     }
 
     override fun getItemCount(): Int = mensajes.size
 
     class MensajeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val txtMensaje: TextView = itemView.findViewById(R.id.txt_mensaje)
+        private val txtMensaje: TextView = itemView.findViewById(R.id.txtMensaje)
 
         fun bind(mensaje: Mensaje) {
             txtMensaje.text = mensaje.contenido
+            txtMensaje.setBackgroundResource(
+                if (mensaje.esEnviado) R.drawable.bg_message_sent else R.drawable.bg_message_received
+            )
         }
     }
 }

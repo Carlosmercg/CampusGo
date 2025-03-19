@@ -3,26 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/imgUsuarioChat"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_placeholder"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="8dp"/>
+    android:layout_height="wrap_content"
+    android:padding="12dp">
 
     <TextView
-        android:id="@+id/txtNombreUsuarioChat"
-        android:layout_width="0dp"
+        android:id="@+id/txtNombreUsuario"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nombre del Usuario"
-        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/imgUsuarioChat"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="8dp"/>
+        android:textSize="18sp"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/txtUltimoMensaje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Último mensaje..."
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

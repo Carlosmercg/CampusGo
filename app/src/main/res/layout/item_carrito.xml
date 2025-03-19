@@ -3,35 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
+    <!-- Imagen del Producto -->
     <ImageView
-        android:id="@+id/imgProductoCarrito"
+        android:id="@+id/img_producto_carrito"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_placeholder"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="8dp"/>
 
+    <!-- Nombre del Producto -->
     <TextView
-        android:id="@+id/txtNombreProductoCarrito"
+        android:id="@+id/txt_nombre_producto_carrito"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Nombre del Producto"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/imgProductoCarrito"
+        app:layout_constraintStart_toEndOf="@id/img_producto_carrito"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="8dp"/>
 
+    <!-- Precio del Producto -->
+    <TextView
+        android:id="@+id/txt_precio_producto_carrito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/txt_nombre_producto_carrito"
+        app:layout_constraintTop_toBottomOf="@id/txt_nombre_producto_carrito"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Botón Eliminar -->
     <Button
-        android:id="@+id/btnEliminarCarrito"
+        android:id="@+id/btn_eliminar_producto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Eliminar"
-        app:layout_constraintStart_toEndOf="@id/txtNombreProductoCarrito"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="8dp"/>
+        android:textColor="@color/white"
+        android:backgroundTint="@color/errorColor"
+        app:layout_constraintStart_toStartOf="@id/txt_precio_producto_carrito"
+        app:layout_constraintTop_toBottomOf="@id/txt_precio_producto_carrito"
+        android:layout_marginTop="8dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

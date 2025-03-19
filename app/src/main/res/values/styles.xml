@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LoginTitleStyle">
+        <item name="android:fontFamily">Abril Fatface</item>
+        <item name="android:textColor">@color/secondaryLight</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+
+    <style name="LoginDescriptionStyle">
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="LoginButtonStyle">
+        <item name="android:fontFamily">Roboto</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:backgroundTint">@color/buttonPrimary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>
