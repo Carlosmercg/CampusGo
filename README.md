@@ -68,34 +68,72 @@ La aplicación maneja dos tipos de usuario: **compradores** y **vendedores**. Un
 La aplicación está compuesta por las siguientes actividades y vistas:
 
 1. **MainActivity (SplashScreen)** → Pantalla de bienvenida con el logo de *CampusGo*.
-2. **Inicio de Sesión / Registro** → Pantalla para iniciar sesión o registrarse.
-3. **HomeActivity** → Menú principal con opciones para *Comprar* o *Vender*.
+2. **Login (Inicio de Sesión)/ Registro** → Pantalla para iniciar sesión o registrarse, se ingresa la información (*nombre de usuario y contraseña*) del usuario ya existente o nuevo.
+3. **HomeActivity** → Menú principal que muestra las diferentes categorías (*o carreras*) en donde se pueden comprar los materiales deseados; a la vez, se puede acceder al perfil y al carrito de compras.
 4. **Categorías** → Lista de categorías de productos.
-5. **Creación de Producto** → Formulario para publicar un producto.
+5. **Subir Producto** → En donde se inserta la información (*Imágen, título, descripción, precio sugerido, y a la categoría que pertenece*) del producto que se desea vender.
 6. **Lista de Productos** → Vista de productos dentro de una categoría.
-7. **Detalle de Producto** → Información detallada con opciones de compra.
+7. **Detalle de Producto** → Información detallada del producto (*Título y descripción del producto*).
 8. **Mensajería** → Lista de chats organizados en pestañas (*Clientes* y *Vendedores*).
 9. **Chat** → Conversación con un usuario específico.
 10. **Carrito de Compras** → Productos agregados con opción de pago.
-11. **Métodos de Pago** → Selección de pago y confirmación.
-12. **Seguimiento de Pedido** → Ubicación en tiempo real del producto comprado.
+12. **Seguimiento** → Ubicación en tiempo real del producto comprado y del usuario que lleva el producto hasta dicha ubicacion.
+13. **Perfil** → Donde se observa la información del usuario, se puede acceder a los pedidos pasados, métodos de pago y subir un producto.
+14. **Editar Perfil** → Cambiar información dentro del perfil del usuario como nombres y apellidos, ubicación (*ciudad, universidad, locación de entregas*), correo estudiantil, número de teléfono y su foto de perfil.
+15. **Perfil Métodos de Pago** → Muestra la información de los métodos de pago registrados por el usuario; se puede añadir uno nuevo.
+16. **Aniadir Tarjeta** → Se inserta la información requerida (*número de tarjeta, nombre y apellido del propietario, fecha de expedición y código de seguridad*) de la tarjeta de crédito o débito del usuario.
+17. **Productos Vendidos** → Muestra los productos vendidos por el usuario hasta la fecha actual.
+18. **Lista Compras Pasadas** → Muestra las compras realizadas por el usuario hasta la fecha actual.
+19. **Mapa Comprador** → Se observa, en tiempo real, la ubicación acordada en dónde se recibirá el producto, y la ubicación actual del vendedor.
+20. **Mapa Vendedor** → Se observa, en tiempo real, la ubicación acordada por el usuario para entregar el producto, y la ubicación actual del vendedor.
 
 ---
 
 ## 🔹 Flujo de Navegación
 
 ### 🔄 Proceso de Compra
-1. El usuario inicia sesión y accede a la opción *Comprar*.
-2. Selecciona una categoría y explora los productos disponibles.
+1. El usuario inicia sesión y accede a la categoría deseada.
+2. Dentro de la categoría, se observan varios productos.
 3. Elige un producto y lo agrega al carrito.
-4. Procede al pago y confirma la compra.
+4. Procede al pago, escogiendo el método y la ubicación deseada, y confirma la compra.
 5. Contacta al vendedor si es necesario y sigue el pedido.
+6. El usuario y el vendedor se encuentran la ubicación deseada.
+7. Se hace contacto NFC entre el móvil del usuario y el vendedor.
+8. Se recibe el pedido y se califica al vendedor.
 
 ### 📦 Proceso de Venta
-1. El usuario inicia sesión y accede a la opción *Vender*.
-2. Publica un nuevo producto con fotos y detalles.
-3. Recibe mensajes de compradores interesados.
-4. Gestiona el estado de los pedidos y confirma entregas.
+1. El usuario inicia sesión y accede a su perfil.
+2. Le da "click" a la opción de *Subir Producto*.
+3. Llena la información necesaria del producto.
+4. Publica uel producto.
+5. Recibe mensajes de compradores interesados.
+6. Gestiona el estado de los pedidos y confirma entregas.
+7. El vendedor se encuentra con el usuario en la ubicación deseada.
+8. Se hace contact NFC entre el móvil del vendedor y el usuario.
+9. Se entrega el pedido.
+
+## 👤 Proceso de Creación de Usuario (Sign-In)
+1. Se crea un nombre de usuario.
+2. Se crea una contraseña.
+3. Se confirma dicha contraseña.
+4. Se escanea el carnet del usuario para confirmar su identidad.
+5. Se inserta la información necesaria dentro de su nuevo perfil (*foto de perfil, nombres y apellidos, etc*).
+6. Se accede a la aplicación con éxito.
+
+## 🔓 Proceso de Edición de Perfil
+1. Se accede al perfil del usuario.
+2. Se hace "click" a *Editar Perfil*.
+3. Se realizan los cambios deseados.
+4. Se guardan los cambios.
+5. Se actualiza el perfil.
+
+## 🪪 Proceso de Adición de Método de Pago
+1. Se accede al perfil del usuario.
+2. Se hace "click" en *Formas de Pago*.
+3. Se hace "click" en el símbolo "+" en la parte superior derecha de la pantalla.
+4. Se selecciona *Tarjeta Crédito o Débito (CCV)*.
+5. Se inserta la información requerida de la tarjeta.
+6. Se guarda y actualiza el menú de métodos de pago con esta nueva tarjeta.
 
 ---
 
@@ -108,6 +146,8 @@ La base de datos está estructurada en las siguientes entidades:
 - **Chats** (ID, Usuario1, Usuario2, Mensajes)
 - **Pedidos** (ID, Comprador, Vendedor, Productos, Estado, Pago)
 - **Métodos de Pago** (ID, Usuario, Tipo, Información de Tarjeta o Cuenta)
+- **Categoría** (ID, nombre, ícono)
+- **Mensaje** (ID, remitente, contenido, timestamp)
 
 
 ## 👥 Equipo de Desarrollo
