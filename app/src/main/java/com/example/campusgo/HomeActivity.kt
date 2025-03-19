@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.campusgo.R
 import com.example.campusgo.adapters.CategoriaAdapter
 import com.example.campusgo.databinding.ActivityHomeBinding
 import com.example.campusgo.models.Categoria
@@ -33,6 +32,27 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra("categoriaId", categoria.id)
             intent.putExtra("categoriaNombre", categoria.nombre)
             startActivity(intent)
+        }
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_cart -> {
+                    val intent = Intent(this, CarritoActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_account -> {
+                    val intent = Intent(this, PerfilActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
         }
 
         binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)
