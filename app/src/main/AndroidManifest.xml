@@ -15,9 +15,11 @@
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
         <activity
-            android:name=".MensajeriaActivity"
+            android:name=".SignUpActivity"
             android:exported="false" />
-        <!-- Actividades de la aplicación -->
+        <activity
+            android:name=".MensajeriaActivity"
+            android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
             android:name=".SeguimientoActivity"
             android:exported="false" />
@@ -31,13 +33,7 @@
             android:name=".DetalleProductoActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductosVendidosActivity"
-            android:exported="false" />
-        <activity
             android:name=".CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CategoriasActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"

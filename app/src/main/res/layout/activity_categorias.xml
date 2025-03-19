@@ -8,103 +8,59 @@
     tools:context=".CategoriasActivity"
     android:background="@color/background">
 
-    <!-- Barra superior con menú lateral, título, mensajes y perfil -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarCategorias"
+    <!-- Toolbar con título de la categoría -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardToolbar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="70dp"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
         android:background="@color/primary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Categorías"
-        app:titleTextColor="@color/white"
-        app:navigationIcon="@drawable/ic_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Íconos adicionales dentro del Toolbar -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginEnd="16dp">
-
-            <ImageView
-                android:id="@+id/iconMensajes"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_message"
-                android:tint="@color/white"
-                android:layout_marginEnd="16dp"/>
-
-            <ImageView
-                android:id="@+id/iconPerfil"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_profile"
-                android:tint="@color/white"/>
-        </LinearLayout>
-    </androidx.appcompat.widget.Toolbar>
-
-    <!-- Barra de búsqueda -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:cardCornerRadius="8dp"
-        android:elevation="4dp"
-        android:layout_margin="12dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbarCategorias"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:background="@color/white">
+            android:padding="10dp">
 
+            <!-- Botón de retroceso -->
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_search"
-               />
+                android:id="@+id/btnBack"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_back_arrow"
+                android:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp"/>
 
-            <EditText
-                android:id="@+id/edtBuscar"
-                android:layout_width="0dp"
+            <!-- Título de la categoría -->
+            <TextView
+                android:id="@+id/txtCategoriaTitulo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="¿Qué quieres buscar?"
-                android:textSize="14sp"
-                android:background="@android:color/transparent"
-                android:paddingStart="8dp"/>
-        </LinearLayout>
+                android:text="Categoría"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- RecyclerView para mostrar las categorías en cuadrícula -->
+    <!-- RecyclerView para mostrar los productos de la categoría -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerCategorias"
+        android:id="@+id/recyclerProductos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="16dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@id/edtBuscar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"/>
-
-    <!-- Barra de navegación inferior -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_icon_color"
-        app:itemTextColor="@color/nav_text_color"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/cardToolbar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

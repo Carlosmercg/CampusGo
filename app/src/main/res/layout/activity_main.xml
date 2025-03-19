@@ -21,23 +21,26 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000"/>  <!-- Negro con 50% de opacidad -->
+        android:background="#90000000"/>  <!-- Negro con 50% de opacidad -->
 
     <!-- Texto CampusGo -->
     <TextView
         android:id="@+id/txtAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:fontFamily="sans-serif-black"
-        android:textColor="@color/primary"
-        android:textSize="100sp"
-        android:gravity="center"
+        android:text="CampusGo"
+        android:elegantTextHeight="true"
+        android:fontFeatureSettings="@string/app_name"
+        android:textFontWeight="@integer/material_motion_duration_medium_2"
+        android:fontFamily=""
+        android:textColor="@color/navTextColor"
+        android:textSize="64sp"
+        android:gravity="center_vertical"
         android:lineSpacingMultiplier="1.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.5"/>
+/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

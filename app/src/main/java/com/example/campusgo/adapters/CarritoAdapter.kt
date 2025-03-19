@@ -1,8 +1,5 @@
 package com.example.campusgo.adapters
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +7,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.campusgo.R
 import com.example.campusgo.models.Producto
-import java.net.URL
-import java.util.concurrent.Executors
 
 class CarritoAdapter(
     private val productos: List<Producto>,
@@ -41,19 +37,13 @@ class CarritoAdapter(
             txtNombre.text = producto.nombre
             txtPrecio.text = "$${producto.precio}"
             btnEliminar.setOnClickListener { onRemoveClick(producto) }
-            loadImageFromUrl(producto.imagenUrl, imgProducto)
-        }
 
-        private fun loadImageFromUrl(url: String, imageView: ImageView) {
-            Executors.newSingleThreadExecutor().execute {
-                try {
-                    val inputStream = URL(url).openStream()
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    imageView.post { imageView.setImageBitmap(bitmap) }
-                } catch (e: Exception) {
-                    Log.e("CarritoAdapter", "Error al cargar imagen: ${e.message}")
-                }
-            }
+            // Cargar imagen con Glide
+            Glide.with(itemView.context)
+                .load(producto.imagenUrl) // Se usa imagenUrl en vez de imagenResId
+                .placeholder(R.drawable.ic_placeholder) // Imagen por defecto mientras carga
+                .error(R.drawable.ic_error) // Imagen en caso de error
+                .into(imgProducto)
         }
     }
 }

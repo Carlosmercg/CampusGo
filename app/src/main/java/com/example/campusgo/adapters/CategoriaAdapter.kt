@@ -1,17 +1,10 @@
 package com.example.campusgo.adapters
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.campusgo.R
+import com.example.campusgo.databinding.ItemCategoriaBinding
 import com.example.campusgo.models.Categoria
-import java.util.concurrent.Executors
 
 class CategoriaAdapter(
     private val categorias: List<Categoria>,
@@ -19,25 +12,25 @@ class CategoriaAdapter(
 ) : RecyclerView.Adapter<CategoriaAdapter.CategoriaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriaViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_categoria, parent, false)
-        return CategoriaViewHolder(view)
+        val binding = ItemCategoriaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CategoriaViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CategoriaViewHolder, position: Int) {
-        val categoria = categorias[position]
-        holder.bind(categoria, onItemClick)
+        holder.bind(categorias[position])
     }
 
     override fun getItemCount(): Int = categorias.size
 
-    class CategoriaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imgCategoria: ImageView = itemView.findViewById(R.id.img_categoria)
-        private val txtNombre: TextView = itemView.findViewById(R.id.txt_nombre_categoria)
+    inner class CategoriaViewHolder(private val binding: ItemCategoriaBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(categoria: Categoria, onItemClick: (Categoria) -> Unit) {
-            txtNombre.text = categoria.nombre
-            imgCategoria.setImageResource(categoria.icono)
-            itemView.setOnClickListener { onItemClick(categoria) }
+        fun bind(categoria: Categoria) {
+            binding.txtNombreCategoria.text = categoria.nombre
+            binding.imgCategoria.setImageResource(categoria.imagenResId)
+
+            // Evento de clic
+            binding.root.setOnClickListener { onItemClick(categoria) }
         }
     }
 }

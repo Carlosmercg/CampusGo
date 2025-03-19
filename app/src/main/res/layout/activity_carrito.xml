@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CarritoActivity"
-    android:background="@color/background">
+    android:background="@color/background"
+    tools:context=".CarritoActivity">
 
-    <!-- Barra superior con título y botón de retroceso -->
+    <!-- Barra superior -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarCarrito"
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         app:title="Carrito de Compras"
         app:titleTextColor="@color/white"/>
 
-    <!-- RecyclerView para los productos en el carrito -->
+    <!-- RecyclerView para productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCarrito"
         android:layout_width="match_parent"
@@ -29,14 +29,11 @@
         app:layout_constraintTop_toBottomOf="@id/toolbarCarrito"
         app:layout_constraintBottom_toTopOf="@id/btnComprar"/>
 
-    <!-- Botón para comprar -->
+    <!-- Botón para confirmar compra -->
     <Button
         android:id="@+id/btnComprar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/PrimaryButton"
         android:text="Confirmar Compra"
-        android:backgroundTint="@color/buttonPrimary"
-        android:textColor="@color/white"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
