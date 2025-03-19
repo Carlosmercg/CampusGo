@@ -15,6 +15,12 @@
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
         <activity
+            android:name=".CalificarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NFCActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapaVendedorActivity"
             android:exported="false" />
         <activity
