@@ -16,4 +16,12 @@
         <item>Universidad Distrital</item>
         <item>Universidad Gran Colombia</item>
     </string-array>
+    <string-array name="categorias">
+        <item>Mecánica</item>
+        <item>Arquitectura</item>
+        <item>Artes Visuales</item>
+        <item>Música</item>
+        <item>Medicina</item>
+        <item>Educación</item>
+    </string-array>
 </resources>
