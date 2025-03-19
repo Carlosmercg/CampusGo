@@ -1,4 +1,4 @@
-package com.example.campusgo.ui
+package com.example.campusgo
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import com.example.campusgo.R
 import com.example.campusgo.adapters.CategoriaAdapter
 import com.example.campusgo.databinding.ActivityHomeBinding
 import com.example.campusgo.models.Categoria
+import com.example.campusgo.ui.CategoriasActivity
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -28,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
         )
 
         categoriaAdapter = CategoriaAdapter(categorias) { categoria ->
-            val intent = Intent(this, CategoriasActivity::class.java)
+            val intent = Intent(this,   CategoriasActivity::class.java)
             intent.putExtra("categoriaId", categoria.id)
             intent.putExtra("categoriaNombre", categoria.nombre)
             startActivity(intent)

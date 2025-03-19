@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.campusgo.DetalleProductoActivity
 import com.example.campusgo.R
 import com.example.campusgo.adapters.ProductoAdapter
 import com.example.campusgo.databinding.ActivityCategoriasBinding

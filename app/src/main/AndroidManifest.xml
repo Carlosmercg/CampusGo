@@ -37,7 +37,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->

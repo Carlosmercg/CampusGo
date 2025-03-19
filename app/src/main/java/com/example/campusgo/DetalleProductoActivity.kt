@@ -1,4 +1,4 @@
-package com.example.campusgo.ui
+package com.example.campusgo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

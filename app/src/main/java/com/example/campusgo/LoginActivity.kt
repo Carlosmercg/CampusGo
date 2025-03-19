@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityLoginBinding
-import com.example.campusgo.ui.HomeActivity
+import com.example.campusgo.HomeActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
