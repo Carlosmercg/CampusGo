@@ -15,6 +15,9 @@
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
         <activity
+            android:name=".ComprarActivity"
+            android:exported="false" />
+        <activity
             android:name=".CalificarActivity"
             android:exported="false" />
         <activity
