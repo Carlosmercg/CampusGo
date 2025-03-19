@@ -18,6 +18,9 @@
             android:name=".SubirProductoActivity"
             android:exported="false" />
         <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".PerfilMetodosDePagoActivity"
             android:exported="false" />
         <activity
@@ -45,13 +48,7 @@
             android:name=".DetalleProductoActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductosVendidosActivity"
-            android:exported="false" />
-        <activity
             android:name=".CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CategoriasActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"

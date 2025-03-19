@@ -22,6 +22,8 @@ class CarritoActivity : AppCompatActivity() {
             carritoAdapter.notifyDataSetChanged()
         }
 
+
+
         binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
         binding.recyclerCarrito.adapter = carritoAdapter
     }

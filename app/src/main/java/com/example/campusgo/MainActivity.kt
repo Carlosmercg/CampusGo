@@ -23,6 +23,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish() // Finaliza MainActivity para que no vuelva atrás
-        }, 10000) // 10 segundos
+        }, 2000) // 5 segundos
     }
 }
