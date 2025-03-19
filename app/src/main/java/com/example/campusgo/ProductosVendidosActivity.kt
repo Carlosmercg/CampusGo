@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityListaProductosBinding
 
-class ListaProductosActivity : AppCompatActivity() {
+class ProductosVendidosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListaProductosBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,3 +13,4 @@ class ListaProductosActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 }
+
