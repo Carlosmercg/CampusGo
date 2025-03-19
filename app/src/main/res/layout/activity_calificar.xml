@@ -8,8 +8,8 @@
     android:padding="20dp"
     tools:context=".CalificarActivity">
 
-    <ImageView
-        android:id="@+id/imageView9"
+    <ImageButton
+        android:id="@+id/btncal3"
         android:layout_width="49dp"
         android:layout_height="62dp"
         android:layout_marginTop="68dp"
@@ -19,51 +19,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView1"
         app:layout_constraintVertical_bias="0.094"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/star"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
 
-    <ImageView
-        android:id="@+id/imageView8"
+    <ImageButton
+        android:id="@+id/btncal4"
         android:layout_width="49dp"
         android:layout_height="62dp"
         android:layout_marginTop="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView9"
+        app:layout_constraintStart_toEndOf="@+id/btncal3"
         app:layout_constraintTop_toBottomOf="@+id/cardView1"
         app:layout_constraintVertical_bias="0.094"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
 
-    <ImageView
-        android:id="@+id/imageView7"
+    <ImageButton
+        android:id="@+id/btncal1"
         android:layout_width="49dp"
         android:layout_height="62dp"
         android:layout_marginTop="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView11"
+        app:layout_constraintEnd_toStartOf="@+id/btncal2"
         app:layout_constraintTop_toBottomOf="@+id/cardView1"
         app:layout_constraintVertical_bias="0.094"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
 
-    <ImageView
-        android:id="@+id/imageView11"
+    <ImageButton
+        android:id="@+id/btncal2"
         android:layout_width="49dp"
         android:layout_height="62dp"
         android:layout_marginTop="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView9"
+        app:layout_constraintEnd_toStartOf="@+id/btncal3"
         app:layout_constraintTop_toBottomOf="@+id/cardView1"
         app:layout_constraintVertical_bias="0.094"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
 
-    <ImageView
-        android:id="@+id/imageView14"
+    <ImageButton
+        android:id="@+id/btncal5"
         android:layout_width="49dp"
         android:layout_height="62dp"
         android:layout_marginTop="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView8"
+        app:layout_constraintStart_toEndOf="@+id/btncal4"
         app:layout_constraintTop_toBottomOf="@+id/cardView1"
         app:layout_constraintVertical_bias="0.094"
-        app:srcCompat="@drawable/star" />
+        app:srcCompat="@drawable/star"  android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:background="@null"/>
 
     <TextView
         android:id="@+id/textView6"
@@ -155,7 +166,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView9"
+        app:layout_constraintTop_toBottomOf="@+id/btncal3"
         app:layout_constraintVertical_bias="0.097" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

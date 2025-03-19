@@ -1,5 +1,6 @@
 package com.example.campusgo
 //Carrito→ Productos agregados con opción de pago.
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,12 +18,15 @@ class CarritoActivity : AppCompatActivity() {
         binding = ActivityCarritoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnComprar.setOnClickListener {
+            val intent = Intent(this,ComprarActivity::class.java)
+            startActivity(intent)
+        }
+
         carritoAdapter = CarritoAdapter(productosCarrito) { producto ->
             productosCarrito.remove(producto)
             carritoAdapter.notifyDataSetChanged()
         }
-
-
 
         binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
         binding.recyclerCarrito.adapter = carritoAdapter
