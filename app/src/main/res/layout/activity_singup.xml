@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app  ="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".SignUpActivity">
+    tools:context=".Ingresar.SignUpActivity">
 
-    <!-- Filtro de opacidad -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:elevation="4dp"/>
+    <!-- 1. Fondo -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/bg_campus"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 2. Overlay semitransparente -->
+
+    <!-- 3. Controles por encima del overlay -->
 
     <!-- Título -->
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#90000000"
+        app:layout_constraintBottom_toBottomOf="@id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@id/backgroundImage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@id/backgroundImage"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/txtTituloRegistro"
         style="@style/TitleTextW"
@@ -27,58 +48,116 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="80dp"/>
 
-    <!-- Username -->
+    <!-- Nombre -->
     <EditText
-        android:id="@+id/usernameEditText"
+        android:id="@+id/etName"
         style="@style/EditTextStyleW"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Nombre de usuario"
+        android:hint="Nombres"
         app:layout_constraintTop_toBottomOf="@id/txtTituloRegistro"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
-    <!-- Contraseña -->
+    <!-- Usuario -->
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/etUsername"
         style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/usernameEditText"
+        android:hint="Usuario"
+        app:layout_constraintTop_toBottomOf="@id/etName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
-    <!-- Confirmar Contraseña -->
+    <!-- Correo -->
     <EditText
-        android:id="@+id/confirmPasswordEditText"
+        android:id="@+id/etEmail"
         style="@style/EditTextStyleW"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Confirmar Contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@id/etUsername"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
-    <!-- Botón de Registro -->
-    <Button
-        android:id="@+id/btnRegistrar"
-        style="@style/PrimaryButton"
+    <!-- Clase / Carrera -->
+    <EditText
+        android:id="@+id/etClass"
+        style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Registrarse"
-        app:layout_constraintTop_toBottomOf="@id/confirmPasswordEditText"
+        android:hint="Carrera / Clase"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- Confirmar contraseña -->
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        style="@style/EditTextStyleW"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Confirmar contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/etClass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- Vista previa del carnet -->
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="247dp"
+        android:layout_height="133dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ph_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmPassword" />
+
+    <!-- Botones en cadena horizontal -->
+    <Button
+        android:id="@+id/btnUploadDoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cargar Documento"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/imgPreview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSignUp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btnSignUp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Crear Cuenta"
+        android:enabled="false"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/imgPreview"
+        app:layout_constraintStart_toEndOf="@id/btnUploadDoc"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

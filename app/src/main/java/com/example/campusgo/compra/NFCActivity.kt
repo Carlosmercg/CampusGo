@@ -1,11 +1,8 @@
-package com.example.campusgo
+package com.example.campusgo.compra
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.campusgo.databinding.ActivityNfcactivityBinding
 
 class NFCActivity : AppCompatActivity() {
@@ -18,7 +15,7 @@ class NFCActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnstar.setOnClickListener{
-            startActivity(Intent(baseContext,CalificarActivity::class.java))
+            startActivity(Intent(baseContext, CalificarActivityVendedor::class.java))
         }
     }
 }

@@ -1,14 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".LoginActivity">
+    android:background="@drawable/bg_campus"
+    tools:context=".Ingresar.LoginActivity">
 
-    <!-- Título -->
+
+    <!-- 1. Fondo -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/bg_campus"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 3. Cualquier texto o control va *después* del overlay -->
     <TextView
         android:id="@+id/txtTitulo"
         style="@style/TitleTextW"
@@ -20,7 +32,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="80dp"/>
 
-    <!-- Texto descriptivo -->
+    <!-- 2. Overlay semitransparente (debe ir *después* del ImageView y *antes* de los textos) -->
+    <!-- Filtro de opacidad -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#90000000"/>  <!-- Negro con 50% de opacidad -->
+
     <TextView
         android:id="@+id/txtDescripcion"
         style="@style/SubtitleText"
@@ -32,7 +50,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
 
-    <!-- Username -->
     <EditText
         android:id="@+id/emailEditText"
         style="@style/EditTextStyleW"
@@ -45,7 +62,6 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"/>
 
-    <!-- Contraseña -->
     <EditText
         android:id="@+id/passwordEditText"
         style="@style/EditTextStyle"
@@ -59,29 +75,42 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="12dp"/>
 
-    <!-- Botón Iniciar Sesión -->
+
     <Button
         android:id="@+id/btnLogin"
-        style="@style/PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Iniciar Sesión"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/passwordEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="24dp"/>
 
-    <!-- Botón para Registrarse -->
     <Button
         android:id="@+id/btnSignUp"
-        style="@style/PrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Crear Cuenta"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/btnLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/txtcrear"
+        style="@style/SubtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrate ahora!"
+        app:layout_constraintTop_toBottomOf="@id/btnSignUp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

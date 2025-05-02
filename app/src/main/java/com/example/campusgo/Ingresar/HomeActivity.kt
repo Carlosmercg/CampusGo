@@ -1,13 +1,15 @@
-package com.example.campusgo
+package com.example.campusgo.Ingresar
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.campusgo.adapters.CategoriaAdapter
+import com.example.campusgo.compra.CarritoActivity
 import com.example.campusgo.databinding.ActivityHomeBinding
 import com.example.campusgo.models.Categoria
-import com.example.campusgo.ui.CategoriasActivity
+import com.example.campusgo.R
+import com.example.campusgo.usuario.PerfilActivity
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding

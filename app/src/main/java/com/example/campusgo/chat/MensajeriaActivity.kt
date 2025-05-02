@@ -1,4 +1,4 @@
-package com.example.campusgo
+package com.example.campusgo.chat
 
 import android.content.Intent
 import android.os.Bundle

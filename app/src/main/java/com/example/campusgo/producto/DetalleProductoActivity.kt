@@ -1,4 +1,4 @@
-package com.example.campusgo
+package com.example.campusgo.producto
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

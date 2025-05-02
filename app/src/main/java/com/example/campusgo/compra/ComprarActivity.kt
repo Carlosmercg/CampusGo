@@ -1,13 +1,10 @@
-package com.example.campusgo
+package com.example.campusgo.compra
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.campusgo.databinding.ActivityComprarBinding
-import com.example.campusgo.databinding.ActivityMapaCompradorBinding
+import com.example.campusgo.models.MapaCompradorActivity
 
 class ComprarActivity : AppCompatActivity() {
 
@@ -20,7 +17,7 @@ class ComprarActivity : AppCompatActivity() {
 
         binding.btncompra.setOnClickListener {
 
-            startActivity(Intent(baseContext,MapaCompradorActivity::class.java))
+            startActivity(Intent(baseContext, MapaCompradorActivity::class.java))
 
         }
 
