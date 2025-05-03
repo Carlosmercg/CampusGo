@@ -1,4 +1,4 @@
-package com.example.campusgo
+package com.example.campusgo.Ingresar
 
 import android.content.Intent
 import android.os.Bundle

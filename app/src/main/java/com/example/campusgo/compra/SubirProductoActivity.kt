@@ -1,4 +1,4 @@
-package com.example.campusgo
+package com.example.campusgo.compra
 
 import android.app.Activity
 import android.content.Intent
@@ -7,33 +7,28 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.campusgo.databinding.ActivityEditarPerfilBinding
-import com.example.campusgo.databinding.ActivityPerfilBinding
+import com.example.campusgo.databinding.ActivitySubirProductoBinding
 
-class EditarPerfilActivity : AppCompatActivity() {
+class SubirProductoActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityEditarPerfilBinding
+    private lateinit var binding: ActivitySubirProductoBinding
     private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEditarPerfilBinding.inflate(layoutInflater)
+        binding = ActivitySubirProductoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.back.setOnClickListener {
             finish()
         }
-
         binding.guardar.setOnClickListener {
             finish()
         }
 
-        binding.profilePicture.setOnClickListener {
+        binding.fotoProducto.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             seleccionarImagenLauncher.launch(intent)
         }
@@ -57,6 +52,6 @@ class EditarPerfilActivity : AppCompatActivity() {
         } else {
             MediaStore.Images.Media.getBitmap(contentResolver, uri)
         }
-        binding.profilePicture.setImageBitmap(bitmap)
+        binding.fotoProducto.setImageBitmap(bitmap)
     }
 }

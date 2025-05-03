@@ -1,8 +1,7 @@
-package com.example.campusgo
+package com.example.campusgo.producto
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build

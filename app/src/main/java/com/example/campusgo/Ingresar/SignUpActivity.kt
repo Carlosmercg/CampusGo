@@ -1,8 +1,9 @@
 
-package com.example.campusgo
+package com.example.campusgo.Ingresar
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivitySingupBinding
 
 class SignUpActivity : AppCompatActivity() {
@@ -14,7 +15,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Agregar fondo de imagen
-        binding.root.setBackgroundResource(R.drawable.splash_background)
+        binding.root.setBackgroundResource(R.drawable.bg_campus)
 
         // Manejo del botón de registro
         binding.btnRegistrar.setOnClickListener {

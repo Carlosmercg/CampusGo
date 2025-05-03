@@ -1,8 +1,11 @@
-package com.example.campusgo
+package com.example.campusgo.usuario
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.campusgo.Ingresar.HomeActivity
+import com.example.campusgo.compra.ListaComprasPasadasActivity
+import com.example.campusgo.compra.SubirProductoActivity
 import com.example.campusgo.databinding.ActivityPerfilBinding
 
 class PerfilActivity : AppCompatActivity() {

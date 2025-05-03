@@ -1,14 +1,11 @@
-package com.example.campusgo
+package com.example.campusgo.models
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.campusgo.databinding.ActivityChatBinding
+import com.example.campusgo.chat.ChatActivity
+import com.example.campusgo.compra.NFCActivity
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
-import com.example.campusgo.databinding.ActivityNfcactivityBinding
 
 class MapaCompradorActivity : AppCompatActivity() {
 
@@ -19,11 +16,11 @@ class MapaCompradorActivity : AppCompatActivity() {
         setContentView(binding.root)
 
     binding.btnchat.setOnClickListener{
-        startActivity(Intent(baseContext,ChatActivity::class.java))
+        startActivity(Intent(baseContext, ChatActivity::class.java))
     }
 
     binding.btnnfc.setOnClickListener{
-        startActivity(Intent(baseContext,NFCActivity::class.java))
+        startActivity(Intent(baseContext, NFCActivity::class.java))
     }
 
     }

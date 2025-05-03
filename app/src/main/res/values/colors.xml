@@ -14,7 +14,7 @@
     <color name="textTitle">#1E3A8A</color>  <!-- Azul Profundo para Títulos -->
     <color name="textSubtitle">#3B82F6</color>  <!-- Azul Brillante para Subtítulos -->
     <color name="textParagraph">#374151</color>  <!-- Gris Oscuro para Párrafos -->
-    <color name="textHint">#6B7280</color>  <!-- Gris Medio para Hints y Placeholders -->
+    <color name="textHint">#C5C9D3</color>  <!-- Gris Medio para Hints y Placeholders -->
     <color name="textDisabled">#9CA3AF</color>  <!-- Gris Claro para Texto Deshabilitado -->
 
     <!-- ✂️ Colores de Divisores y Separadores -->

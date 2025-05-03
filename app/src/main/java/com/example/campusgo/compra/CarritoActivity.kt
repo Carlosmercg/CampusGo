@@ -1,4 +1,4 @@
-package com.example.campusgo
+package com.example.campusgo.compra
 //Carrito→ Productos agregados con opción de pago.
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +19,7 @@ class CarritoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnComprar.setOnClickListener {
-            val intent = Intent(this,ComprarActivity::class.java)
+            val intent = Intent(this, ComprarActivity::class.java)
             startActivity(intent)
         }
 

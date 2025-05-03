@@ -3,9 +3,13 @@
 
     <!-- Tema principal de la aplicación -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primarios -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <!-- Secundarios -->
         <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondaryDark</item>
+        <!-- Ventanas y sistema -->
         <item name="android:statusBarColor">@color/primaryDark</item>
         <item name="android:windowBackground">@color/background</item>
     </style>
@@ -56,13 +60,13 @@
         <item name="android:backgroundTint">@color/borderColor</item>
     </style>
 
+    <!-- Estilo para preguntas centradas -->
     <style name="Preg">
         <item name="android:textColor">@color/navTextColor</item>
         <item name="android:padding">15dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
-
 
     <!-- Estilos para Botones -->
     <style name="PrimaryButton">
@@ -76,9 +80,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:textColor">@color/navTextColor</item>
-        <item name="android:background">@color/buttonPrimary</item>
+        <item name="android:background">@color/buttonSecondary</item>
     </style>
-
 
     <!-- Estilos para Separadores -->
     <style name="DividerStyle">
