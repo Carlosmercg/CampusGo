@@ -8,22 +8,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.R
 import com.example.campusgo.models.Chat
 
-class ChatAdapter(private val chats: List<Chat>, private val onChatClick: (Chat) -> Unit) :
-    RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
+class ChatAdapter(
+    private val chats: List<Chat>,
+    private val onChatClick: (Chat) -> Unit
+) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_chat, parent, false)
         return ChatViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        val chat = chats[position]
-        holder.bind(chat, onChatClick)
+        holder.bind(chats[position], onChatClick)
     }
 
-    override fun getItemCount() = chats.size
+    override fun getItemCount(): Int = chats.size
 
-    class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtNombreUsuario: TextView = itemView.findViewById(R.id.txtNombreUsuario)
         private val txtUltimoMensaje: TextView = itemView.findViewById(R.id.txtUltimoMensaje)
 

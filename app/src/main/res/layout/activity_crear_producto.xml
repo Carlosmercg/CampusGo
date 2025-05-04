@@ -2,45 +2,42 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".producto.CrearProductoActivity"
     android:padding="16dp">
 
-    <!-- Imagen del Producto -->
+    <!-- Imagen -->
     <ImageView
         android:id="@+id/imgProducto"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="200dp"
-        android:src="@drawable/ic_placeholder"
         android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray"
+        android:background="@android:color/transparent"
         android:contentDescription="Imagen del producto"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Botón para seleccionar imagen -->
+    <!-- Botón Imagen -->
     <Button
         android:id="@+id/btnSeleccionarImagen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Seleccionar Imagen"
         app:layout_constraintTop_toBottomOf="@id/imgProducto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Nombre del Producto -->
+    <!-- Nombre -->
     <EditText
         android:id="@+id/inputNombre"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Nombre del producto"
-        android:background="@android:color/white"
-        android:padding="12dp"
         android:layout_marginTop="8dp"
+        android:hint="Nombre del producto"
+        android:padding="12dp"
+        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/btnSeleccionarImagen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -48,25 +45,25 @@
     <!-- Precio -->
     <EditText
         android:id="@+id/inputPrecio"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:hint="Precio"
         android:inputType="numberDecimal"
-        android:background="@android:color/white"
         android:padding="12dp"
-        android:layout_marginTop="8dp"
+        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/inputNombre"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Categoría del Producto -->
+    <!-- Categoría -->
     <Spinner
         android:id="@+id/spinnerCategoria"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:padding="12dp"
         android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/inputPrecio"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -74,27 +71,26 @@
     <!-- Descripción -->
     <EditText
         android:id="@+id/inputDescripcion"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:hint="Descripción del producto"
-        android:background="@android:color/white"
         android:minHeight="100dp"
         android:gravity="top"
         android:padding="12dp"
-        android:layout_marginTop="8dp"
+        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/spinnerCategoria"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Botón Publicar Producto -->
+    <!-- Publicar -->
     <Button
         android:id="@+id/btnPublicar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Publicar Producto"
         android:layout_marginTop="16dp"
+        android:text="Publicar Producto"
         app:layout_constraintTop_toBottomOf="@id/inputDescripcion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

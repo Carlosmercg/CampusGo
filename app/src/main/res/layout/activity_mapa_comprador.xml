@@ -48,7 +48,7 @@
             app:layout_constraintStart_toEndOf="@+id/textView4"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/logomensajito" />
+            app:srcCompat="@drawable/ic_chats" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
@@ -93,7 +93,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.134"
-            app:srcCompat="@drawable/placeholder_usuario" />
+            app:srcCompat="@drawable/ic_placeholder" />
 
         <TextView
             android:id="@+id/textView4"

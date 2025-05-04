@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app  ="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,27 +10,26 @@
     <!-- AppBar con back -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarDetalle"
-        style="@style/Widget.Material3.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:backgroundTint="?attr/colorPrimary"
-        app:navigationIcon="@drawable/ic_back_arrow"
+        app:navigationIcon="@drawable/ic_back"
         app:title="@string/detalle_producto"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@android:color/white"/>
 
+    <!-- Contenido desplazable -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:clipToPadding="false">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Header vendedor -->
+            <!-- Card vendedor -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,36 +43,34 @@
                     android:padding="8dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/imgVendedor"
+                        android:id="@+id/imgVendedorDetalle"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_profile"
                         app:civ_border_width="0dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
                         android:id="@+id/txtNombreVendedor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="María  Victoria Muñoz Santos"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@id/imgVendedor"
-                        app:layout_constraintTop_toTopOf="@id/imgVendedor"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintStart_toEndOf="@id/imgVendedorDetalle"
+                        app:layout_constraintTop_toTopOf="@id/imgVendedorDetalle"
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                     <TextView
                         android:id="@+id/txtUniversidad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Universidad de Los Andes"
                         android:textSize="14sp"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         app:layout_constraintStart_toStartOf="@id/txtNombreVendedor"
                         app:layout_constraintTop_toBottomOf="@id/txtNombreVendedor"
-                        app:layout_constraintEnd_toEndOf="@id/txtNombreVendedor" />
+                        app:layout_constraintEnd_toEndOf="@id/txtNombreVendedor"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -83,62 +81,56 @@
                 android:layout_height="250dp"
                 android:layout_marginTop="12dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_placeholder" />
+                android:src="@drawable/ic_placeholder"/>
 
-            <!-- Info producto -->
+            <!-- Título y descripción -->
             <TextView
                 android:id="@+id/txtTituloProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Pinceles"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="22sp"/>
 
             <TextView
                 android:id="@+id/txtDescripcionProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/lorem_ipsum_short"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
+            <!-- Precio -->
             <TextView
                 android:id="@+id/txtPrecio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="$31 500"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <!-- Botones acción -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnContactar"
-                    style="@style/Widget.Material3.Button.Filled"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Contactar" />
+                    android:text="@string/menu_chats"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAgregarCarrito"
-                    style="@style/Widget.Material3.Button.Tonal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Añadir_carrito" />
+                    android:text="@string/addCarrito"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

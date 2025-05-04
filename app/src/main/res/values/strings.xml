@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- ===================== COMMON ===================== -->
     <string name="app_name">CampusGo</string>
+    <string name="Background">background_image</string>
+    <string name="error_required">Campo requerido</string>
+
+    <!-- ===================== LoginActivity ===================== -->
     <string name="titulo_login">¡Bienvenido a!</string>
     <string name="descripcion_login">Ingresa con tu cuenta o crea una nueva.</string>
     <string name="sign_in">SIGN IN</string>
     <string name="log_in">LOG IN</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="Background">background_image</string>
-    <string-array name="ciudades">
-        <item>Bogotá</item>
-    </string-array>
-    <string-array name="universidades">
-        <item>Pontificia Universidad Javeriana</item>
-        <item>Universidad Distrital</item>
-        <item>Universidad Gran Colombia</item>
-    </string-array>
+
+    <!-- ===================== SignUpActivity ===================== -->
+    <!-- (añade aquí futuros textos de registro) -->
+
+    <!-- ===================== HomeActivity / Navigation Drawer & BottomNav ===================== -->
+    <string name="home_title">Home</string>
+    <string name="open_drawer">Abrir menú</string>
+    <string name="close_drawer">Cerrar menú</string>
+
+    <!-- BottomNavigation labels -->
+    <string name="menu_home">Home</string>
+    <string name="menu_carrito">Carrito</string>
+    <string name="menu_chats">Chats</string>
+    <string name="menu_account">Cuenta</string>
+
+    <!-- ===================== Search Bar ===================== -->
+    <string name="hint_buscar">¿Qué quieres buscar?</string>
+
+    <!-- ===================== DetalleProductoActivity ===================== -->
+    <string name="detalle_producto">Detalle del producto</string>
+    <string name="pedidos">Pedidos</string>
+    <string name="producto_imagen_desc">Imagen del producto</string>
+
+    <!-- ===================== CarritoActivity ===================== -->
+    <string name="recycler_carrito_description">Lista de artículos en el carrito</string>
+    <string name="btn_Confcompra">Confirmar compra</string>
+    <string name="addCarrito"> Añadir al carrito</string>
+    <!-- ===================== Categorías ===================== -->
+    <string name="categoria_icon_cd">Ícono de categoría</string>
     <string-array name="categorias">
         <item>Mecánica</item>
         <item>Arquitectura</item>
@@ -24,4 +50,20 @@
         <item>Medicina</item>
         <item>Educación</item>
     </string-array>
+
+    <!-- ===================== Spinners ===================== -->
+    <string-array name="ciudades">
+        <item>Bogotá</item>
+    </string-array>
+    <string-array name="universidades">
+        <item>Pontificia Universidad Javeriana</item>
+        <item>Universidad Distrital</item>
+        <item>Universidad Gran Colombia</item>
+    </string-array>
+
+    <!-- ===================== Botones & Descripciones ===================== -->
+    <string name="btn_eliminar">Eliminar</string>
+    <string name="btn_eliminar_producto_desc">Botón para eliminar producto</string>
+    <string name="vendedor_foto_desc">Foto de perfil del vendedor</string>
+
 </resources>

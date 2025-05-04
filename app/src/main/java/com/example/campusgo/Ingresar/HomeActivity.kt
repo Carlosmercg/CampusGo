@@ -2,62 +2,75 @@ package com.example.campusgo.Ingresar
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.campusgo.adapters.CategoriaAdapter
-import com.example.campusgo.compra.CarritoActivity
-import com.example.campusgo.databinding.ActivityHomeBinding
-import com.example.campusgo.models.Categoria
+import androidx.recyclerview.widget.RecyclerView
+import com.example.campusgo.BottomMenuActivity
 import com.example.campusgo.R
+import com.example.campusgo.databinding.ActivityHomeBinding
+import com.example.campusgo.databinding.ItemCategoriaBinding
+import com.example.campusgo.producto.ListaProductosActivity
 import com.example.campusgo.usuario.PerfilActivity
+import com.example.campusgo.compra.CarritoActivity
+import com.example.campusgo.chat.ChatsActivity
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BottomMenuActivity() {
+
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var categoriaAdapter: CategoriaAdapter
+
+    private val nombres by lazy {
+        resources.getStringArray(R.array.categorias)
+    }
+
+    private val iconos = listOf(
+        R.drawable.ic_mecanica,
+        R.drawable.ic_arquitectura,
+        R.drawable.ic_artes,
+        R.drawable.ic_musica,
+        R.drawable.ic_medicina,
+        R.drawable.ic_educacion
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val categorias = listOf(
-            Categoria("1", "Mecánica", R.drawable.ic_mecanica),
-            Categoria("2", "Arquitectura", R.drawable.ic_arquitectura),
-            Categoria("3", "Artes Visuales", R.drawable.ic_artes),
-            Categoria("4", "Música", R.drawable.ic_musica),
-            Categoria("5", "Medicina", R.drawable.ic_medicina),
-            Categoria("6", "Educación", R.drawable.ic_educacion)
-        )
+        // Grid de categorías
+        binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)
+        binding.recyclerCategorias.adapter = object : RecyclerView.Adapter<CategoriaVH>() {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriaVH {
+                val itemBinding = ItemCategoriaBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                )
+                return CategoriaVH(itemBinding)
+            }
 
-        categoriaAdapter = CategoriaAdapter(categorias) { categoria ->
-            val intent = Intent(this,   CategoriasActivity::class.java)
-            intent.putExtra("categoriaId", categoria.id)
-            intent.putExtra("categoriaNombre", categoria.nombre)
-            startActivity(intent)
-        }
+            override fun getItemCount(): Int = nombres.size
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.nav_cart -> {
-                    val intent = Intent(this, CarritoActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.nav_account -> {
-                    val intent = Intent(this, PerfilActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                else -> false
+            override fun onBindViewHolder(holder: CategoriaVH, position: Int) {
+                holder.bind(nombres[position], iconos[position])
             }
         }
 
-        binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)
-        binding.recyclerCategorias.adapter = categoriaAdapter
+        // Bottom Navigation
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_home)
+    }
+
+    inner class CategoriaVH(private val itemBinding: ItemCategoriaBinding) :
+        RecyclerView.ViewHolder(itemBinding.root) {
+
+        fun bind(nombre: String, iconRes: Int) {
+            itemBinding.txtNombreCategoria.text = nombre
+            itemBinding.imgCategoria.setImageResource(iconRes)
+            itemBinding.root.setOnClickListener {
+                val intent = Intent(this@HomeActivity, ListaProductosActivity::class.java)
+                intent.putExtra("categoriaNombre", nombre)
+                startActivity(intent)
+            }
+        }
     }
 }

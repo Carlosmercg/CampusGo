@@ -1,16 +1,23 @@
 package com.example.campusgo.compra
-//Carrito→ Productos agregados con opción de pago.
+
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.campusgo.adapters.CarritoAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.campusgo.R
+import com.example.campusgo.BottomMenuActivity
 import com.example.campusgo.databinding.ActivityCarritoBinding
+import com.example.campusgo.databinding.ItemCarritoBinding
+import com.example.campusgo.databinding.ItemVendedorBinding
 import com.example.campusgo.models.Producto
 
-class CarritoActivity : AppCompatActivity() {
+class CarritoActivity : BottomMenuActivity() {
+
     private lateinit var binding: ActivityCarritoBinding
-    private lateinit var carritoAdapter: CarritoAdapter
     private val productosCarrito = mutableListOf<Producto>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,17 +25,90 @@ class CarritoActivity : AppCompatActivity() {
         binding = ActivityCarritoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnComprar.setOnClickListener {
-            val intent = Intent(this, ComprarActivity::class.java)
-            startActivity(intent)
+        setSupportActionBar(binding.toolbarCarrito)
+        supportActionBar?.apply {
+            title = getString(R.string.pedidos)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_back)
         }
 
-        carritoAdapter = CarritoAdapter(productosCarrito) { producto ->
-            productosCarrito.remove(producto)
-            carritoAdapter.notifyDataSetChanged()
+        // Datos de ejemplo (más adelante vendrán de Firebase)
+        productosCarrito.addAll(
+            listOf(
+                Producto("P1", "Compás Técnico", "Vendedor A", 12000.0, ""),
+                Producto("P2", "Regla T", "Vendedor A", 8000.0, ""),
+                Producto("P3", "Atlas Médico", "Vendedor B", 45000.0, "")
+            )
+        )
+
+        val grupos = productosCarrito.groupBy { it.vendedor }
+        val items = mutableListOf<Any>().apply {
+            grupos.forEach { (vendedor, productos) ->
+                add(vendedor)
+                addAll(productos)
+            }
         }
 
         binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
-        binding.recyclerCarrito.adapter = carritoAdapter
+        binding.recyclerCarrito.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+            override fun getItemViewType(position: Int) = if (items[position] is String) 0 else 1
+            override fun getItemCount() = items.size
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val inflater = LayoutInflater.from(parent.context)
+                return if (viewType == 0) {
+                    val vb = ItemVendedorBinding.inflate(inflater, parent, false)
+                    VendedorVH(vb)
+                } else {
+                    val pb = ItemCarritoBinding.inflate(inflater, parent, false)
+                    ProductoVH(pb)
+                }
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                if (holder is VendedorVH) holder.bind(items[position] as String)
+                else if (holder is ProductoVH) holder.bind(items[position] as Producto)
+            }
+
+            inner class VendedorVH(private val vb: ItemVendedorBinding) :
+                RecyclerView.ViewHolder(vb.root) {
+                fun bind(vendedor: String) {
+                    vb.txtVendedor.text = vendedor
+                    vb.btnConfirmar.setOnClickListener {
+                        val productosDelVendedor = productosCarrito.filter { it.vendedor == vendedor }
+                        val intent = Intent(this@CarritoActivity, ComprarActivity::class.java)
+                        intent.putParcelableArrayListExtra("productos", ArrayList(productosDelVendedor))
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            inner class ProductoVH(private val pb: ItemCarritoBinding) :
+                RecyclerView.ViewHolder(pb.root) {
+                fun bind(producto: Producto) {
+                    pb.txtNombreProductoCarrito.text = producto.nombre
+                    pb.txtPrecioProductoCarrito.text = "$${producto.precio}"
+
+                    // Imagen temporal (más adelante será con Glide y URL real)
+                    Glide.with(pb.imgProductoCarrito.context)
+                        .load(producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
+                        .into(pb.imgProductoCarrito)
+
+                    pb.btnEliminarProducto.setOnClickListener {
+                        productosCarrito.remove(producto)
+                        recreate()
+                    }
+                }
+            }
+        }
+
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_carrito)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
+            finish(); true
+        } else super.onOptionsItemSelected(item)
     }
 }

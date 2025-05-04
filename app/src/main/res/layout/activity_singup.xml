@@ -19,9 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 2. Overlay semitransparente -->
-
-    <!-- 3. Controles por encima del overlay -->
 
     <!-- Título -->
 
@@ -42,20 +39,31 @@
         style="@style/TitleTextW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Regístrate en CampusGo"
+        android:text="Regístrate en CampusGo!"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="80dp"/>
 
+    <TextView
+        android:id="@+id/txtDescripcion"
+        style="@style/SubtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crea una cuenta con tu correo"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
     <!-- Nombre -->
     <EditText
         android:id="@+id/etName"
         style="@style/EditTextStyleW"
+        android:background="#90000000"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Nombres"
-        app:layout_constraintTop_toBottomOf="@id/txtTituloRegistro"
+        app:layout_constraintTop_toBottomOf="@id/txtDescripcion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
@@ -65,6 +73,7 @@
     <!-- Usuario -->
     <EditText
         android:id="@+id/etUsername"
+        android:background="#90000000"
         style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -79,6 +88,7 @@
     <!-- Correo -->
     <EditText
         android:id="@+id/etEmail"
+        android:background="#90000000"
         style="@style/EditTextStyleW"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -91,13 +101,14 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"/>
 
-    <!-- Clase / Carrera -->
+    <!-- Universidad -->
     <EditText
-        android:id="@+id/etClass"
+        android:id="@+id/etUni"
+        android:background="#90000000"
         style="@style/EditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Carrera / Clase"
+        android:hint="Universidad"
         app:layout_constraintTop_toBottomOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -109,11 +120,12 @@
     <EditText
         android:id="@+id/etConfirmPassword"
         style="@style/EditTextStyleW"
+        android:background="#90000000"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Confirmar contraseña"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/etClass"
+        app:layout_constraintTop_toBottomOf="@id/etUni"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"
@@ -125,7 +137,9 @@
         android:id="@+id/imgPreview"
         android:layout_width="247dp"
         android:layout_height="133dp"
+        android:layout_marginTop="30dp"
         android:background="@android:color/transparent"
+        android:paddingBottom="30dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ph_camera"
         app:layout_constraintEnd_toEndOf="parent"
