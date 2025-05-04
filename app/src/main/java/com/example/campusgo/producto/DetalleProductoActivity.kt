@@ -1,4 +1,3 @@
-// com/example/campusgo/producto/DetalleProductoActivity.kt
 package com.example.campusgo.producto
 
 import android.os.Bundle
@@ -20,7 +19,6 @@ class DetalleProductoActivity : AppCompatActivity() {
         binding = ActivityDetalleProductoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Toolbar con flecha de “back”
         setSupportActionBar(binding.toolbarDetalle)
         supportActionBar?.apply {
             title = getString(R.string.detalle_producto)
@@ -28,7 +26,6 @@ class DetalleProductoActivity : AppCompatActivity() {
         }
         binding.toolbarDetalle.setNavigationOnClickListener { onBackPressed() }
 
-        // Obtengo el Producto completo del Intent
         producto = intent.getSerializableExtra("producto") as? Producto
             ?: run {
                 Toast.makeText(this, "Producto no válido", Toast.LENGTH_SHORT).show()
@@ -39,14 +36,12 @@ class DetalleProductoActivity : AppCompatActivity() {
         mostrarProducto(producto)
         obtenerDatosVendedor(producto.vendedorId)
 
-        // Botones de acción
         binding.btnContactar.setOnClickListener {
             Toast.makeText(this, "Funcionalidad de chat pendiente", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnAgregarCarrito.setOnClickListener {
             Toast.makeText(this, "${producto.nombre} agregado al carrito", Toast.LENGTH_SHORT).show()
-            // TODO: Lógica real para guardar en el carrito
         }
     }
 

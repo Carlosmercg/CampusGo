@@ -1,8 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // Añadimos el plugin de Parcelize:
-    id("kotlin-parcelize")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -15,7 +14,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,7 +42,7 @@ android {
 }
 
 dependencies {
-    // Core Android
+    // Android Core & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -52,31 +50,30 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
 
-    // UI libs
+    // UI extra
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
-    implementation("com.google.android.material:material:1.9.0")
-
-    // Image loading
     implementation("com.github.bumptech.glide:glide:4.12.0")
-
+    implementation(libs.firebase.storage.ktx)
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-    //Firebase
-    implementation(libs.firebase.firestore.ktx)
+    // Firebase BoM y servicios
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
 
-    // Architecture components
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+    // Jetpack Lifecycle
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Corrutinas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Networking & JSON
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation("com.google.code.gson:gson:2.8.9")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // Testing
     testImplementation(libs.junit)

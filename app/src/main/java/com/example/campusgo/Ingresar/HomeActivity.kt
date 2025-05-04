@@ -4,71 +4,74 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.BottomMenuActivity
 import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityHomeBinding
 import com.example.campusgo.databinding.ItemCategoriaBinding
+import com.example.campusgo.models.Categoria
 import com.example.campusgo.producto.ListaProductosActivity
-import com.example.campusgo.usuario.PerfilActivity
-import com.example.campusgo.compra.CarritoActivity
-import com.example.campusgo.chat.ChatsActivity
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-
-    private val nombres by lazy {
-        resources.getStringArray(R.array.categorias)
-    }
-
-    private val iconos = listOf(
-        R.drawable.ic_mecanica,
-        R.drawable.ic_arquitectura,
-        R.drawable.ic_artes,
-        R.drawable.ic_musica,
-        R.drawable.ic_medicina,
-        R.drawable.ic_educacion
-    )
+    private val categorias = mutableListOf<Categoria>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Grid de categorías
+        // Configurar RecyclerView
+        val adapter = CategoriaAdapter()
         binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)
-        binding.recyclerCategorias.adapter = object : RecyclerView.Adapter<CategoriaVH>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriaVH {
-                val itemBinding = ItemCategoriaBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent, false
-                )
-                return CategoriaVH(itemBinding)
+        binding.recyclerCategorias.adapter = adapter
+
+        // Cargar categorías desde Firestore
+        FirebaseFirestore.getInstance().collection("Categorías")
+            .get()
+            .addOnSuccessListener { result ->
+                categorias.clear()
+                for (doc in result) {
+                    val categoria = Categoria(
+                        id = doc.id,
+                        nombre = doc.getString("nombre") ?: "",
+                        iconResName = doc.getString("iconResName") ?: ""
+                    )
+                    categorias.add(categoria)
+                }
+                adapter.notifyDataSetChanged()
             }
 
-            override fun getItemCount(): Int = nombres.size
+        // Menú inferior
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_home)
+    }
 
-            override fun onBindViewHolder(holder: CategoriaVH, position: Int) {
-                holder.bind(nombres[position], iconos[position])
-            }
+    inner class CategoriaAdapter : RecyclerView.Adapter<CategoriaVH>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriaVH {
+            val itemBinding = ItemCategoriaBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return CategoriaVH(itemBinding)
         }
 
-        // Bottom Navigation
-        setupBottomNavigation(binding.bottomNavigation, R.id.nav_home)
+        override fun getItemCount(): Int = categorias.size
+
+        override fun onBindViewHolder(holder: CategoriaVH, position: Int) {
+            holder.bind(categorias[position])
+        }
     }
 
     inner class CategoriaVH(private val itemBinding: ItemCategoriaBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bind(nombre: String, iconRes: Int) {
-            itemBinding.txtNombreCategoria.text = nombre
-            itemBinding.imgCategoria.setImageResource(iconRes)
+        fun bind(categoria: Categoria) {
+            itemBinding.txtNombreCategoria.text = categoria.nombre
+            val resId = resources.getIdentifier(categoria.iconResName, "drawable", packageName)
+            itemBinding.imgCategoria.setImageResource(resId)
             itemBinding.root.setOnClickListener {
                 val intent = Intent(this@HomeActivity, ListaProductosActivity::class.java)
-                intent.putExtra("categoriaNombre", nombre)
+                intent.putExtra("categoriaNombre", categoria.nombre)
                 startActivity(intent)
             }
         }

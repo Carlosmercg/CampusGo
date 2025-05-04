@@ -1,4 +1,4 @@
-package com.example.campusgo.models
+package com.example.campusgo.mapas
 
 import android.content.Intent
 import android.os.Bundle

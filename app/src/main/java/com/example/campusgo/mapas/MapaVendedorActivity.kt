@@ -1,4 +1,4 @@
-package com.example.campusgo.models
+package com.example.campusgo.mapas
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

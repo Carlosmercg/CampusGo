@@ -6,6 +6,7 @@ data class Usuario(
     val nombre: String = "",
     val apellido: String = "",
     val universidad: String = "",
+    val password: String = "",
     val correo: String = "",
     val fotoPerfilUrl: String = "",     // URL a Firebase Storage
     val fotoCarnetUrl: String = "",     // URL a Firebase Storage

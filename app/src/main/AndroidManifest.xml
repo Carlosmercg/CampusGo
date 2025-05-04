@@ -71,10 +71,10 @@
             android:name=".compra.ComprarActivity"
             android:exported="false" />
         <activity
-            android:name=".models.MapaCompradorActivity"
+            android:name=".mapas.MapaCompradorActivity"
             android:exported="false" />
         <activity
-            android:name=".models.MapaVendedorActivity"
+            android:name=".mapas.MapaVendedorActivity"
             android:exported="false" />
         <activity
             android:name=".compra.CalificarActivityVendedor"

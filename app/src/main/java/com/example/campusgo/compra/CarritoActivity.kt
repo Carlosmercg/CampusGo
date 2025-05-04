@@ -2,9 +2,7 @@ package com.example.campusgo.compra
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.ViewGroup
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -19,6 +17,7 @@ class CarritoActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityCarritoBinding
     private val productosCarrito = mutableListOf<Producto>()
+    private lateinit var adapter: RecyclerView.Adapter<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,25 +31,26 @@ class CarritoActivity : BottomMenuActivity() {
             setHomeAsUpIndicator(R.drawable.ic_back)
         }
 
-        // Datos de ejemplo (más adelante vendrán de Firebase)
         productosCarrito.addAll(
             listOf(
-                Producto("P1", "Compás Técnico", "Vendedor A", 12000.0, ""),
-                Producto("P2", "Regla T", "Vendedor A", 8000.0, ""),
-                Producto("P3", "Atlas Médico", "Vendedor B", 45000.0, "")
+                Producto("P1", "Compás Técnico", "vendedorA", 12000.0, "", "Vendedor A", "Descripción"),
+                Producto("P2", "Regla T", "vendedorA", 8000.0, "", "Vendedor A", "Descripción"),
+                Producto("P3", "Atlas Médico", "vendedorB", 45000.0, "", "Vendedor B", "Descripción")
             )
         )
 
-        val grupos = productosCarrito.groupBy { it.vendedor }
-        val items = mutableListOf<Any>().apply {
-            grupos.forEach { (vendedor, productos) ->
-                add(vendedor)
-                addAll(productos)
-            }
+        cargarRecycler()
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_carrito)
+    }
+
+    private fun cargarRecycler() {
+        val items = mutableListOf<Any>()
+        productosCarrito.groupBy { it.vendedorNombre }.forEach { (vendedor, productos) ->
+            items.add(vendedor)
+            items.addAll(productos)
         }
 
-        binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
-        binding.recyclerCarrito.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             override fun getItemViewType(position: Int) = if (items[position] is String) 0 else 1
             override fun getItemCount() = items.size
@@ -73,12 +73,12 @@ class CarritoActivity : BottomMenuActivity() {
 
             inner class VendedorVH(private val vb: ItemVendedorBinding) :
                 RecyclerView.ViewHolder(vb.root) {
-                fun bind(vendedor: String) {
-                    vb.txtVendedor.text = vendedor
+                fun bind(vendedorNombre: String) {
+                    vb.txtVendedor.text = vendedorNombre
                     vb.btnConfirmar.setOnClickListener {
-                        val productosDelVendedor = productosCarrito.filter { it.vendedor == vendedor }
+                        val productosDelVendedor = productosCarrito.filter { it.vendedorNombre == vendedorNombre }
                         val intent = Intent(this@CarritoActivity, ComprarActivity::class.java)
-                        intent.putParcelableArrayListExtra("productos", ArrayList(productosDelVendedor))
+                        intent.putExtra("productos", ArrayList(productosDelVendedor))
                         startActivity(intent)
                     }
                 }
@@ -90,20 +90,20 @@ class CarritoActivity : BottomMenuActivity() {
                     pb.txtNombreProductoCarrito.text = producto.nombre
                     pb.txtPrecioProductoCarrito.text = "$${producto.precio}"
 
-                    // Imagen temporal (más adelante será con Glide y URL real)
                     Glide.with(pb.imgProductoCarrito.context)
                         .load(producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
                         .into(pb.imgProductoCarrito)
 
                     pb.btnEliminarProducto.setOnClickListener {
                         productosCarrito.remove(producto)
-                        recreate()
+                        cargarRecycler()
                     }
                 }
             }
         }
 
-        setupBottomNavigation(binding.bottomNavigation, R.id.nav_carrito)
+        binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
+        binding.recyclerCarrito.adapter = adapter
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

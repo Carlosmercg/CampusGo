@@ -11,7 +11,6 @@
         android:id="@+id/imgProductoCarrito"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_margin="8dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/producto_imagen_desc"
         app:layout_constraintTop_toTopOf="parent"

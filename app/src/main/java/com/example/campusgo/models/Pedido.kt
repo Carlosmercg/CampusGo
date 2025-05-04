@@ -5,6 +5,6 @@ data class Pedido(
     val compradorId: String,
     val vendedorId: String,
     val productos: List<Producto>,
-    val estado: String, // "Pendiente", "En camino", "Entregado"
+    val estado: String,
     val fecha: Long
 )

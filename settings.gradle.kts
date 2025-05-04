@@ -16,8 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io")
+        }
     }
-}
 
-rootProject.name = "CampusGo"
-include(":app")
+    rootProject.name = "Taller2-SaraAlbarracin"
+    include(":app")}

@@ -1,6 +1,7 @@
 package com.example.campusgo.compra
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,9 @@ class ComprarActivity : AppCompatActivity() {
         binding = ActivityComprarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        productosSeleccionados = intent.getParcelableArrayListExtra("productos") ?: emptyList()
+        // ✅ Usar Serializable en lugar de Parcelable
+        @Suppress("UNCHECKED_CAST")
+        productosSeleccionados = intent.getSerializableExtra("productos") as? ArrayList<Producto> ?: emptyList()
 
         if (productosSeleccionados.isEmpty()) {
             Toast.makeText(this, "No hay productos para comprar", Toast.LENGTH_SHORT).show()
@@ -91,7 +94,7 @@ class ComprarActivity : AppCompatActivity() {
                 .load(producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
                 .into(item.imgProductoCarrito)
 
-            item.btnEliminarProducto.visibility = android.view.View.GONE
+            item.btnEliminarProducto.visibility = View.GONE
         }
     }
 }
