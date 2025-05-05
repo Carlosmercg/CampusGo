@@ -5,29 +5,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:id="@+id/rootLayout">
 
     <ImageView
         android:id="@+id/imgUsuarioChat"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_profile"
-        android:scaleType="centerCrop"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintBottom_toBottomOf="@id/txtMensaje"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/txtMensaje" />
+
+    <ImageView
+        android:id="@+id/checkImageView"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/txtMensaje"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtMensaje"
+        app:layout_constraintTop_toTopOf="@id/txtMensaje"
+        app:srcCompat="@drawable/check" />
 
     <TextView
         android:id="@+id/txtMensaje"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_message_received"
         android:padding="12dp"
         android:text="Hola! Estoy interesado en los pinceles"
-        android:textSize="16sp"
         android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/checkImageView"
         app:layout_constraintStart_toEndOf="@id/imgUsuarioChat"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

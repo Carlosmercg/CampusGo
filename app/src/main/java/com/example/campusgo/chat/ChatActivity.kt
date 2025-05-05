@@ -11,12 +11,14 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var mensajeAdapter: MensajeAdapter
     private val mensajes = mutableListOf<Mensaje>()
+    private var chatId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        chatId = intent.getStringExtra("chatId")
+        setupEnviarBtn()
         setupToolbar()
         setupRecyclerView()
         loadDummyMessages()
@@ -25,6 +27,7 @@ class ChatActivity : AppCompatActivity() {
     private fun setupToolbar() {
         val nombreUsuario = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         supportActionBar?.title = nombreUsuario
+
     }
 
     private fun setupRecyclerView() {
@@ -41,5 +44,31 @@ class ChatActivity : AppCompatActivity() {
             add(Mensaje("Sí, aún está disponible", false))
         }
         mensajeAdapter.notifyDataSetChanged()
+    }
+    private fun setupEnviarBtn() {
+        binding.btnEnviar.setOnClickListener {
+            val mensajeTexto = binding.etMensaje.text.toString().trim()
+            if (mensajeTexto.isNotEmpty()) {
+                // Crear y añadir mensaje
+                val nuevoMensaje = Mensaje(mensajeTexto, true)
+                mensajes.add(nuevoMensaje)
+                mensajeAdapter.notifyItemInserted(mensajes.size - 1)
+                binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
+
+                // Actualizar último mensaje en Chats
+                actualizarUltimoMensajeEnChats(mensajeTexto)
+
+                binding.etMensaje.setText("")
+            }
+        }
+    }
+    private fun actualizarUltimoMensajeEnChats(mensaje: String) {
+        chatId?.let { id ->
+            ChatManager.actualizarChat(
+                id,
+                nuevoMensaje = mensaje,
+                nuevoTimestamp = System.currentTimeMillis()
+            )
+        }
     }
 }

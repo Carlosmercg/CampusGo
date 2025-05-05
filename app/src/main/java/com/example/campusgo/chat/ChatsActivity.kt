@@ -49,6 +49,7 @@ class ChatsActivity : AppCompatActivity() {
         chatAdapter = ChatAdapter(listaChats) { chatSeleccionado ->
             Intent(this, ChatActivity::class.java).apply {
                 putExtra("nombreUsuario", chatSeleccionado.nombreUsuario)
+                putExtra("chatId", chatSeleccionado.id)
             }.also { startActivity(it) }
         }
 
@@ -59,10 +60,12 @@ class ChatsActivity : AppCompatActivity() {
     }
 
     private fun loadDummyData() {
-        listaChats.apply {
-            add(Chat("1", "Juan Pérez", "Hola, ¿tienes el libro disponible?", 1710853400))
-            add(Chat("2", "María López", "Gracias, ya realicé el pago.",     1710853460))
-        }
+        listaChats.clear()
+        listaChats.addAll(ChatManager.obtenerChats())
         chatAdapter.notifyDataSetChanged()
+    }
+    override fun onResume() {
+        super.onResume()
+        loadDummyData() // Actualizar lista al regresar
     }
 }
