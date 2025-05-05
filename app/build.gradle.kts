@@ -15,6 +15,11 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // 🔒 Usar la API Key solo desde código (BuildConfig.IMGBB_API_KEY)
+        val imgbbKey = project.findProperty("IMGBB_API_KEY") as? String ?: ""
+        buildConfigField("String", "IMGBB_API_KEY", "\"$imgbbKey\"")
+
     }
 
     buildTypes {
@@ -29,7 +34,9 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -42,7 +49,6 @@ android {
 }
 
 dependencies {
-    // Android Core & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -50,20 +56,18 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
 
-    // UI extra
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation(libs.firebase.storage.ktx)
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-    // Firebase BoM y servicios
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
 
-
-    // Jetpack Lifecycle
+    // Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -71,11 +75,11 @@ dependencies {
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // Networking & JSON
+    // Networking
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Testing
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

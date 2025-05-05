@@ -26,9 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
-        <activity
-            android:name=".usuario.ListaProductosVendidosActivity"
-            android:exported="false" />
+
+        <meta-data
+            android:name="IMGBB_API_KEY"
+            android:value="08f73b3fbe9b508ca8e5fe30838e0965" />
+
         <!-- FileProvider para la cámara -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -40,6 +42,9 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity
+            android:name=".usuario.ListaProductosVendidosActivity"
+            android:exported="false" />
         <activity
             android:name=".producto.ListaProductosActivity"
             android:exported="false" />
@@ -90,10 +95,10 @@
             android:exported="false" />
         <activity
             android:name=".Ingresar.HomeActivity"
-            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
+            android:exported="false" />
         <activity
             android:name=".Ingresar.LoginActivity"
-            android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
+            android:exported="true" />
         <activity
             android:name=".Ingresar.MainActivity"
             android:exported="true">

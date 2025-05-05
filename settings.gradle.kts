@@ -20,5 +20,5 @@ dependencyResolutionManagement {
         }
     }
 
-    rootProject.name = "Taller2-SaraAlbarracin"
+    rootProject.name = "CampusGo"
     include(":app")}
