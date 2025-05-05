@@ -12,7 +12,6 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mensajeAdapter: MensajeAdapter
     private val mensajes = mutableListOf<Mensaje>()
     private var chatId: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
@@ -21,7 +20,7 @@ class ChatActivity : AppCompatActivity() {
         setupEnviarBtn()
         setupToolbar()
         setupRecyclerView()
-        loadDummyMessages()
+        loadMessages()
     }
 
     private fun setupToolbar() {
@@ -38,30 +37,33 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadDummyMessages() {
-        mensajes.apply {
-            add(Mensaje("Hola, ¿sigues vendiendo el producto?", true))
-            add(Mensaje("Sí, aún está disponible", false))
+    private fun loadMessages() {
+        chatId?.let {
+            mensajes.clear()
+            mensajes.addAll(ChatManager.obtenerMensajes(it))
+            mensajeAdapter.notifyDataSetChanged()
+            binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
         }
-        mensajeAdapter.notifyDataSetChanged()
     }
+
     private fun setupEnviarBtn() {
         binding.btnEnviar.setOnClickListener {
             val mensajeTexto = binding.etMensaje.text.toString().trim()
             if (mensajeTexto.isNotEmpty()) {
-                // Crear y añadir mensaje
                 val nuevoMensaje = Mensaje(mensajeTexto, true)
+                chatId?.let { id ->
+                    ChatManager.agregarMensaje(id, nuevoMensaje)
+                }
                 mensajes.add(nuevoMensaje)
                 mensajeAdapter.notifyItemInserted(mensajes.size - 1)
                 binding.recyclerMensajes.scrollToPosition(mensajes.size - 1)
-
-                // Actualizar último mensaje en Chats
                 actualizarUltimoMensajeEnChats(mensajeTexto)
-
                 binding.etMensaje.setText("")
             }
         }
     }
+
+
     private fun actualizarUltimoMensajeEnChats(mensaje: String) {
         chatId?.let { id ->
             ChatManager.actualizarChat(
@@ -71,4 +73,5 @@ class ChatActivity : AppCompatActivity() {
             )
         }
     }
+
 }

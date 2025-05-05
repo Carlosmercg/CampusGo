@@ -48,8 +48,8 @@
 
         <EditText
             android:id="@+id/etMensaje"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:hint="Escribe un mensaje..."
             android:inputType="textMultiLine"
@@ -59,7 +59,7 @@
             android:id="@+id/btnEnviar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_send"
+            android:src="@drawable/enviar_msg"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.campusgo.chat
 
 import com.example.campusgo.models.Chat
+import com.example.campusgo.models.Mensaje
 
 object ChatManager {
     private val chats = mutableListOf(
@@ -19,4 +20,16 @@ object ChatManager {
             )
         }
     }
+    // Agrega al final del archivo ChatManager.kt
+    val mensajesPorChat = mutableMapOf<String, MutableList<Mensaje>>()
+
+    fun obtenerMensajes(chatId: String): List<Mensaje> {
+        return mensajesPorChat[chatId] ?: emptyList()
+    }
+
+    fun agregarMensaje(chatId: String, mensaje: Mensaje) {
+        val lista = mensajesPorChat.getOrPut(chatId) { mutableListOf() }
+        lista.add(mensaje)
+    }
+
 }

@@ -64,7 +64,7 @@
             android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
             android:name=".chat.ChatsActivity"
-            android:exported="false" /> <!-- Actividades de la aplicación -->
+            android:exported="true" /> <!-- Actividades de la aplicación -->
         <activity
             android:name=".compra.SeguimientoActivity"
             android:exported="false" />
@@ -73,7 +73,7 @@
             android:exported="false" />
         <activity
             android:name=".chat.ChatActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".compra.ComprarActivity"
             android:exported="false" />
