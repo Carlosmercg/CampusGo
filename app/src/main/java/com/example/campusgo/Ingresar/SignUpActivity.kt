@@ -4,10 +4,9 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
-import android.view.MotionEvent
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,20 +17,20 @@ import com.example.campusgo.databinding.ActivitySingupBinding
 import com.example.campusgo.models.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.io.File
-import java.util.*
+import java.io.FileOutputStream
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySingupBinding
     private lateinit var auth: FirebaseAuth
-    private val storageRef by lazy { FirebaseStorage.getInstance().reference }
     private val db by lazy { FirebaseFirestore.getInstance() }
-
     private var carnetUri: Uri? = null
-    private var photoFile: File? = null
-    private lateinit var uriCamera: Uri
+    private var archivoCamara: File? = null
 
     private val universidades = listOf(
         "Pontificia Universidad Javeriana",
@@ -48,174 +47,184 @@ class SignUpActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        // Adaptador de universidades con bloqueo manual
-        val adapterUni = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades)
-        binding.etUni.setAdapter(adapterUni)
-        binding.etUni.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                binding.etUni.showDropDown()
+        configurarPermisos()
+        configurarSelectorUniversidades()
+        configurarBotones()
+    }
+
+    private fun configurarPermisos() {
+        val permisos = mutableListOf(Manifest.permission.CAMERA)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            permisos.add(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            permisos.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        permisos.forEach {
+            if (ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(it), 0)
             }
+        }
+    }
+
+    private fun configurarSelectorUniversidades() {
+        val adaptador = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades)
+        binding.etUni.setAdapter(adaptador)
+        binding.etUni.setOnTouchListener { view, event ->
+            view.performClick()
+            binding.etUni.showDropDown()
             true
         }
+    }
 
-        // Galería
-        val pickGaleria = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            it?.let { uri ->
-                carnetUri = uri
-                mostrarImagen(uri)
+    private fun configurarBotones() {
+        val cargarGaleria = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                carnetUri = it
+                mostrarImagen(it)
+                mostrarToast("Imagen seleccionada desde galería")
             }
         }
 
-        // Cámara
-        val takeCamera = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success && photoFile?.exists() == true && photoFile?.length() ?: 0L > 0L) {
-                carnetUri = uriCamera
-                mostrarImagen(uriCamera)
+        val tomarFoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { fueExitosa ->
+            if (fueExitosa && archivoCamara?.exists() == true) {
+                carnetUri = FileProvider.getUriForFile(this, "$packageName.fileprovider", archivoCamara!!)
+                mostrarImagen(carnetUri!!)
+                mostrarToast("Foto tomada correctamente")
             } else {
-                Toast.makeText(this, "Error: la foto no se guardó correctamente", Toast.LENGTH_LONG).show()
+                mostrarToast("Error al tomar la foto")
             }
         }
 
         binding.btnUploadGaleria.setOnClickListener {
-            solicitarPermisoGaleria { pickGaleria.launch("image/*") }
+            cargarGaleria.launch("image/*")
         }
 
         binding.btnUploadDocCamara.setOnClickListener {
-            solicitarPermisoCamara {
-                photoFile = File(getExternalFilesDir(null), "carnet_${System.currentTimeMillis()}.jpg")
-                uriCamera = FileProvider.getUriForFile(this, "$packageName.fileprovider", photoFile!!)
-                takeCamera.launch(uriCamera)
-            }
+            archivoCamara = File(getExternalFilesDir(null), "carnet_${System.currentTimeMillis()}.jpg")
+            val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", archivoCamara!!)
+            tomarFoto.launch(uri)
         }
 
         binding.btnSignUp.setOnClickListener {
-            val nombre = binding.etName.text.toString().trim()
-            val apellido = binding.etApellido.text.toString().trim()
-            val universidad = binding.etUni.text.toString().trim()
-            val correo = binding.etEmail.text.toString().trim()
-            val password = binding.etPassword.text.toString().trim()
-            val confirmPassword = binding.etConfirmPassword.text.toString().trim()
-
-            if (!validar(nombre, apellido, universidad, correo, password, confirmPassword)) return@setOnClickListener
-
+            val usuario = recolectarDatos() ?: return@setOnClickListener
             if (carnetUri == null) {
-                Toast.makeText(this, "Debes subir una imagen del carné", Toast.LENGTH_SHORT).show()
+                mostrarToast("Debes subir una imagen de tu carné")
                 return@setOnClickListener
             }
 
-            subirCarnetYCrearUsuario(nombre, apellido, universidad, correo, password)
+            mostrarToast("Registrando usuario...")
+            crearUsuarioEnAuth(usuario, carnetUri!!)
         }
+    }
+
+    private fun recolectarDatos(): Usuario? {
+        val nombre = binding.etName.text.toString().trim()
+        val apellido = binding.etApellido.text.toString().trim()
+        val universidad = binding.etUni.text.toString().trim()
+        val correo = binding.etEmail.text.toString().trim()
+        val password = binding.etPassword.text.toString().trim()
+        val confirmar = binding.etConfirmPassword.text.toString().trim()
+
+        return when {
+            nombre.isEmpty() || apellido.isEmpty() || universidad.isEmpty() -> {
+                mostrarToast("Completa todos los campos"); null
+            }
+            !universidades.contains(universidad) -> {
+                mostrarToast("Selecciona una universidad válida"); null
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(correo).matches() -> {
+                mostrarToast("Correo inválido"); null
+            }
+            password.length < 6 || password != confirmar -> {
+                mostrarToast("Contraseña inválida o no coinciden"); null
+            }
+            else -> Usuario(nombre, apellido, universidad, correo, password)
+        }
+    }
+
+    private fun crearUsuarioEnAuth(usuario: Usuario, uri: Uri) {
+        auth.createUserWithEmailAndPassword(usuario.correo, usuario.password)
+            .addOnSuccessListener {
+                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener mostrarToast("UID es null")
+                subirImagen(uri) { urlImagen ->
+                    val usuarioFinal = usuario.copy(id = uid, fotoCarnetUrl = urlImagen)
+                    registrarEnFirestore(usuarioFinal)
+                }
+            }
+            .addOnFailureListener {
+                mostrarToast("Error creando usuario: ${it.message}")
+            }
+    }
+
+    private fun subirImagen(uri: Uri, onUrlObtenida: (String) -> Unit) {
+        val key = applicationContext.packageManager
+            .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+            .metaData.getString("IMGBB_API_KEY")
+
+        if (key.isNullOrEmpty()) {
+            mostrarToast("API Key imgbb no configurada")
+            return
+        }
+
+        try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return
+            val archivoTemp = File.createTempFile("temp_img", ".jpg", cacheDir)
+            FileOutputStream(archivoTemp).use { output -> inputStream.copyTo(output) }
+
+            val cuerpo = archivoTemp.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val multipart = MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("image", archivoTemp.name, cuerpo).build()
+
+            val solicitud = Request.Builder()
+                .url("https://api.imgbb.com/1/upload?key=$key")
+                .post(multipart)
+                .build()
+
+            Thread {
+                try {
+                    val respuesta = OkHttpClient().newCall(solicitud).execute()
+                    val cuerpoTexto = respuesta.body?.string() ?: return@Thread
+                    val urlImagen = JSONObject(cuerpoTexto).getJSONObject("data").getString("url")
+
+                    runOnUiThread {
+                        mostrarToast("Imagen subida con éxito")
+                        onUrlObtenida(urlImagen)
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread { mostrarToast("Error subiendo imagen: ${e.message}") }
+                }
+            }.start()
+
+        } catch (e: Exception) {
+            mostrarToast("Error preparando imagen: ${e.message}")
+        }
+    }
+
+    private fun registrarEnFirestore(usuario: Usuario) {
+        db.collection("usuarios").document(usuario.id).set(usuario)
+            .addOnSuccessListener {
+                mostrarToast("🎉 Cuenta registrada correctamente")
+                finish()
+            }
+            .addOnFailureListener {
+                mostrarToast("Error al guardar usuario: ${it.message}")
+            }
     }
 
     private fun mostrarImagen(uri: Uri) {
         try {
-            val inputStream = contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
-            binding.imgPreview.setImageBitmap(bitmap)
-            binding.btnSignUp.isEnabled = true
+            contentResolver.openInputStream(uri)?.use {
+                val bitmap = BitmapFactory.decodeStream(it)
+                binding.imgPreview.setImageBitmap(bitmap)
+            }
         } catch (e: Exception) {
-            Toast.makeText(this, "Error al cargar imagen", Toast.LENGTH_SHORT).show()
+            mostrarToast("Error al mostrar la imagen")
         }
     }
 
-    private fun solicitarPermisoGaleria(onGranted: () -> Unit) {
-        val permiso = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            Manifest.permission.READ_MEDIA_IMAGES
-        else
-            Manifest.permission.READ_EXTERNAL_STORAGE
-
-        if (ContextCompat.checkSelfPermission(this, permiso) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(permiso), 100)
-            this.onGaleriaPermitida = onGranted
-        } else {
-            onGranted()
-        }
-    }
-
-    private fun solicitarPermisoCamara(onGranted: () -> Unit) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), 101)
-            this.onCamaraPermitida = onGranted
-        } else {
-            onGranted()
-        }
-    }
-
-    private var onGaleriaPermitida: (() -> Unit)? = null
-    private var onCamaraPermitida: (() -> Unit)? = null
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-            when (requestCode) {
-                100 -> onGaleriaPermitida?.invoke()
-                101 -> onCamaraPermitida?.invoke()
-            }
-        } else {
-            Toast.makeText(this, "Permiso denegado", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun validar(nombre: String, apellido: String, universidad: String, correo: String, password: String, confirmPassword: String): Boolean {
-        var valido = true
-        if (nombre.isEmpty()) { binding.etName.error = "Requerido"; valido = false }
-        if (apellido.isEmpty()) { binding.etApellido.error = "Requerido"; valido = false }
-        if (universidad.isEmpty()) { binding.etUni.error = "Requerido"; valido = false }
-        else if (!universidades.contains(universidad)) {
-            binding.etUni.error = "Selecciona una universidad válida"; valido = false
-        }
-        if (correo.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-            binding.etEmail.error = "Correo inválido"; valido = false
-        }
-        if (password.isEmpty()) { binding.etPassword.error = "Requerido"; valido = false }
-        if (confirmPassword.isEmpty()) { binding.etConfirmPassword.error = "Requerido"; valido = false }
-        if (password != confirmPassword) {
-            binding.etConfirmPassword.error = "Las contraseñas no coinciden"
-            valido = false
-        }
-        return valido
-    }
-
-    private fun subirCarnetYCrearUsuario(nombre: String, apellido: String, universidad: String, correo: String, password: String) {
-        val nombreArchivo = "carnets/${UUID.randomUUID()}.jpg"
-        carnetUri?.let { uri ->
-            storageRef.child(nombreArchivo).putFile(uri)
-                .addOnSuccessListener {
-                    storageRef.child(nombreArchivo).downloadUrl.addOnSuccessListener { url ->
-                        crearUsuarioFirebase(nombre, apellido, universidad, correo, password, url.toString())
-                    }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Error al subir carné: ${it.message}", Toast.LENGTH_LONG).show()
-                }
-        }
-    }
-
-    private fun crearUsuarioFirebase(nombre: String, apellido: String, universidad: String, correo: String, password: String, carnetUrl: String) {
-        auth.createUserWithEmailAndPassword(correo, password)
-            .addOnSuccessListener {
-                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
-                val usuario = Usuario(
-                    id = uid,
-                    nombre = nombre,
-                    apellido = apellido,
-                    universidad = universidad,
-                    correo = correo,
-                    fotoCarnetUrl = carnetUrl,
-                    fotoPerfilUrl = "",
-                    compras = emptyList(),
-                    ventas = emptyList(),
-                    chats = emptyList()
-                )
-                db.collection("usuarios").document(uid).set(usuario)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error al registrar: ${it.message}", Toast.LENGTH_LONG).show()
-            }
+    private fun mostrarToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        Log.d("SignUpActivity", msg)
     }
 }

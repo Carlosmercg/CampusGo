@@ -2,8 +2,10 @@ package com.example.campusgo.Ingresar
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.BottomMenuActivity
@@ -24,29 +26,43 @@ class HomeActivity : BottomMenuActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configurar RecyclerView
         val adapter = CategoriaAdapter()
         binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)
         binding.recyclerCategorias.adapter = adapter
 
-        // Cargar categorías desde Firestore
+        cargarCategorias(adapter)
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_home)
+    }
+
+    private fun cargarCategorias(adapter: CategoriaAdapter) {
+        // Asegúrate de usar el mismo nombre que en Firestore: "Categorias" sin tilde
         FirebaseFirestore.getInstance().collection("Categorías")
             .get()
             .addOnSuccessListener { result ->
                 categorias.clear()
                 for (doc in result) {
-                    val categoria = Categoria(
-                        id = doc.id,
-                        nombre = doc.getString("nombre") ?: "",
-                        iconResName = doc.getString("iconResName") ?: ""
-                    )
-                    categorias.add(categoria)
+                    val nombre = doc.getString("nombre") ?: ""
+                    val icono = doc.getString("iconResName") ?: ""
+
+                    if (nombre.isNotBlank() && icono.isNotBlank()) {
+                        categorias.add(
+                            Categoria(
+                                id = doc.id,
+                                nombre = nombre,
+                                iconResName = icono
+                            )
+                        )
+                    } else {
+                        Log.w("HomeActivity", "Documento con campos incompletos: ${doc.id}")
+                    }
                 }
+                Log.i("HomeActivity", "Total categorías cargadas: ${categorias.size}")
                 adapter.notifyDataSetChanged()
             }
-
-        // Menú inferior
-        setupBottomNavigation(binding.bottomNavigation, R.id.nav_home)
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error al cargar categorías", Toast.LENGTH_SHORT).show()
+                Log.e("HomeActivity", "Fallo al obtener categorías: ${e.message}", e)
+            }
     }
 
     inner class CategoriaAdapter : RecyclerView.Adapter<CategoriaVH>() {
@@ -66,9 +82,14 @@ class HomeActivity : BottomMenuActivity() {
         RecyclerView.ViewHolder(itemBinding.root) {
 
         fun bind(categoria: Categoria) {
-            itemBinding.txtNombreCategoria.text = categoria.nombre
             val resId = resources.getIdentifier(categoria.iconResName, "drawable", packageName)
-            itemBinding.imgCategoria.setImageResource(resId)
+            if (resId != 0) {
+                itemBinding.imgCategoria.setImageResource(resId)
+            } else {
+                Log.w("HomeActivity", "Icono no encontrado: ${categoria.iconResName}")
+                Toast.makeText(itemView.context, "Icono '${categoria.iconResName}' no encontrado", Toast.LENGTH_SHORT).show()
+            }
+
             itemBinding.root.setOnClickListener {
                 val intent = Intent(this@HomeActivity, ListaProductosActivity::class.java)
                 intent.putExtra("categoriaNombre", categoria.nombre)
