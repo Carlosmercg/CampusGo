@@ -6,5 +6,8 @@ data class Pedido(
     val vendedorId: String,
     val productos: List<Producto>,
     val estado: String,
-    val fecha: Long
+    val fecha: Long,
+    val direccion: String,
+    val latVendedor: Double,
+    val longVendedor: Double
 )
