@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:background="@color/white">
 
     <!-- Título -->
     <TextView
@@ -13,9 +14,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="¡Califica tu experiencia!"
-        android:textColor="@android:color/holo_purple"
-        android:textSize="25sp"
+        android:textColor="@color/gray_dark"
+        android:textSize="24sp"
         android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -27,14 +29,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Ten en cuenta el tiempo de llegada, la calidad del producto y su precio"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_purple"
-        android:textSize="19sp"
+        android:textColor="@color/gray"
+        android:textSize="16sp"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/textView6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Avatar -->
+    <!-- Avatar redondo -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView1"
         android:layout_width="120dp"
@@ -60,10 +62,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Maria Victoria Muñoz Santos"
-        android:textColor="@android:color/holo_purple"
-        android:textSize="16sp"
+        android:text="María Victoria Muñoz Santos"
+        android:textColor="@color/gray_dark"
+        android:textSize="18sp"
         android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/cardView1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -75,21 +78,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Universidad de los Andes"
-        android:textColor="@android:color/holo_purple"
-        android:textSize="16sp"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/textView8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Estrellas -->
+    <!-- Estrellas (horizontal chain) -->
     <ImageButton
         android:id="@+id/btncal1"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="@null"
-        android:src="@drawable/star"
+        android:src="@drawable/estrella"
+        android:contentDescription="Estrella 1"
         app:layout_constraintTop_toBottomOf="@id/textView9"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_margin="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btncal2"
+        app:layout_constraintHorizontal_chainStyle="spread"/>
 
     <ImageButton
         android:id="@+id/btncal2"
@@ -97,9 +105,11 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:background="@null"
-        android:src="@drawable/star"
+        android:src="@drawable/estrella"
+        android:contentDescription="Estrella 2"
         app:layout_constraintTop_toTopOf="@id/btncal1"
-        app:layout_constraintStart_toEndOf="@id/btncal1"/>
+        app:layout_constraintStart_toEndOf="@id/btncal1"
+        app:layout_constraintEnd_toStartOf="@+id/btncal3"/>
 
     <ImageButton
         android:id="@+id/btncal3"
@@ -107,9 +117,11 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:background="@null"
-        android:src="@drawable/star"
+        android:src="@drawable/estrella"
+        android:contentDescription="Estrella 3"
         app:layout_constraintTop_toTopOf="@id/btncal1"
-        app:layout_constraintStart_toEndOf="@id/btncal2"/>
+        app:layout_constraintStart_toEndOf="@id/btncal2"
+        app:layout_constraintEnd_toStartOf="@+id/btncal4"/>
 
     <ImageButton
         android:id="@+id/btncal4"
@@ -117,9 +129,11 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:background="@null"
-        android:src="@drawable/star"
+        android:src="@drawable/estrella"
+        android:contentDescription="Estrella 4"
         app:layout_constraintTop_toTopOf="@id/btncal1"
-        app:layout_constraintStart_toEndOf="@id/btncal3"/>
+        app:layout_constraintStart_toEndOf="@id/btncal3"
+        app:layout_constraintEnd_toStartOf="@+id/btncal5"/>
 
     <ImageButton
         android:id="@+id/btncal5"
@@ -127,19 +141,23 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:background="@null"
-        android:src="@drawable/star"
+        android:src="@drawable/estrella"
+        android:contentDescription="Estrella 5"
         app:layout_constraintTop_toTopOf="@id/btncal1"
-        app:layout_constraintStart_toEndOf="@id/btncal4"/>
+        app:layout_constraintStart_toEndOf="@id/btncal4"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Botón -->
     <Button
         android:id="@+id/button"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Gracias por la colaboración"
-        android:textSize="20sp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:text="¡Gracias por tu colaboración!"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/primary"
         app:layout_constraintTop_toBottomOf="@id/btncal1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
