@@ -51,7 +51,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
     implementation(libs.firebase.common.ktx)
-    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth.ktx.v2230)
+
 
 
     // Testing

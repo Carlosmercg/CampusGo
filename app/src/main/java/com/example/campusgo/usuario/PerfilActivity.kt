@@ -19,11 +19,11 @@ class PerfilActivity : AppCompatActivity() {
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val usuario = Firebase.auth.currentUser
-        usuario?.let {
+        //val usuario = Firebase.auth.currentUser
+        /*usuario?.let {
             val nombre = it.displayName
             binding.nombres.text = nombre
-        }
+        }*/
 
         binding.back.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
