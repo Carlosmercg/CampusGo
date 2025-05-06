@@ -35,7 +35,7 @@ class HomeActivity : BottomMenuActivity() {
     }
 
     private fun cargarCategorias(adapter: CategoriaAdapter) {
-        // Asegúrate de usar el mismo nombre que en Firestore: "Categorias" sin tilde
+
         FirebaseFirestore.getInstance().collection("Categorías")
             .get()
             .addOnSuccessListener { result ->
@@ -91,9 +91,10 @@ class HomeActivity : BottomMenuActivity() {
             }
 
             itemBinding.root.setOnClickListener {
-                val intent = Intent(this@HomeActivity, ListaProductosActivity::class.java)
-                intent.putExtra("categoriaNombre", categoria.nombre)
-                startActivity(intent)
+                Intent(this@HomeActivity, ListaProductosActivity::class.java).apply {
+                                 putExtra("categoriaNombre", categoria.nombre)
+                                  putExtra("categoriaId", categoria.id)    // <-- AQUÍ
+                             }.also { startActivity(it) }
             }
         }
     }
