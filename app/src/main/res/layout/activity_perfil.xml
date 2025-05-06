@@ -33,7 +33,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back"
-        app:srcCompat="@drawable/profile_picture_default" />
+        app:srcCompat="@drawable/placeholder_usuario" />
 
     <TextView
         android:id="@+id/nombres"
@@ -189,7 +189,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView"
-                    app:srcCompat="@drawable/profile_picture_default" />
+                    app:srcCompat="@drawable/placeholder_usuario" />
 
                 <TextView
                     android:id="@+id/textView"

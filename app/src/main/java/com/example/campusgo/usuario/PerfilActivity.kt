@@ -2,10 +2,11 @@ package com.example.campusgo.usuario
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.compra.ListaComprasPasadasActivity
-import com.example.campusgo.compra.SubirProductoActivity
+import com.example.campusgo.producto.CrearProductoActivity
 import com.example.campusgo.databinding.ActivityPerfilBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -19,11 +20,12 @@ class PerfilActivity : AppCompatActivity() {
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //val usuario = Firebase.auth.currentUser
-        /*usuario?.let {
-            val nombre = it.displayName
+        val usuario = Firebase.auth.currentUser
+        usuario?.let {
+            val nombre = it.email
             binding.nombres.text = nombre
-        }*/
+            Log.d("PERFIL", "Nombre de usuario: $nombre")
+        }
 
         binding.back.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
@@ -41,7 +43,7 @@ class PerfilActivity : AppCompatActivity() {
         }
 
         binding.subirProducto.setOnClickListener {
-            val intent = Intent(this, SubirProductoActivity::class.java)
+            val intent = Intent(this, CrearProductoActivity::class.java)
             startActivity(intent)
         }
 

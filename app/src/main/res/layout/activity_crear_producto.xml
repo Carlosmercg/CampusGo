@@ -1,96 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    tools:context=".producto.CrearProductoActivity">
 
-    <!-- Imagen -->
-    <ImageView
-        android:id="@+id/imgProducto"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:background="@android:color/transparent"
-        android:contentDescription="Imagen del producto"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Botón Imagen -->
-    <Button
-        android:id="@+id/btnSeleccionarImagen"
+    <TextView
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Seleccionar Imagen"
-        app:layout_constraintTop_toBottomOf="@id/imgProducto"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="&lt; Subir Producto"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Tooltip"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <!-- Nombre -->
+    <ImageView
+        android:id="@+id/fotoProducto"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="6"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textStyle="bold"
+        android:text="Titulo" />
+
     <EditText
-        android:id="@+id/inputNombre"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Nombre del producto"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/btnSeleccionarImagen"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:id="@+id/nombre"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="2"
+        android:ems="10"
+        android:hint="El nombre de tu producto"
+        android:inputType="text" />
 
-    <!-- Precio -->
     <EditText
-        android:id="@+id/inputPrecio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Precio"
-        android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/inputNombre"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:id="@+id/descripcion"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="4"
+        android:ems="10"
+        android:hint="Describe tu producto"
+        android:inputType="text" />
 
-    <!-- Categoría -->
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="Precio Sugerido"/>
+
+    <EditText
+        android:id="@+id/precio"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:ems="10"
+        android:inputType="number" />
+
     <Spinner
-        android:id="@+id/spinnerCategoria"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/inputPrecio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:id="@+id/categoria"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:entries="@array/categorias"/>
 
-    <!-- Descripción -->
-    <EditText
-        android:id="@+id/inputDescripcion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Descripción del producto"
-        android:minHeight="100dp"
-        android:gravity="top"
-        android:padding="12dp"
-        android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/spinnerCategoria"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <TextView
+        android:id="@+id/guardar"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="right"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:text="Guardar >"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Tooltip"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
-    <!-- Publicar -->
-    <Button
-        android:id="@+id/btnPublicar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Publicar Producto"
-        app:layout_constraintTop_toBottomOf="@id/inputDescripcion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
