@@ -31,11 +31,6 @@ class PerfilActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.mediosDePago.setOnClickListener {
-            val intent = Intent(this, PerfilMetodosDePagoActivity::class.java)
-            startActivity(intent)
-        }
-
         binding.subirProducto.setOnClickListener {
             val intent = Intent(this, SubirProductoActivity::class.java)
             startActivity(intent)
