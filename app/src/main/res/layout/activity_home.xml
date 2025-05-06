@@ -1,92 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Ingresar.HomeActivity">
+    android:background="@color/background"
+    android:padding="16dp">
 
-    <!-- Contenedor principal -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Buscador -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
+        android:layout_height="wrap_content"
+        app:boxBackgroundColor="#FFFFFF"
+        app:endIconDrawable="@drawable/ic_arrow"
+        app:endIconMode="custom">
 
-        <!-- Toolbar con botón de menú y título -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardToolbar"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchMap"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            android:background="@color/primary">
+            android:layout_height="48dp"
+            android:hint="@string/hint_buscar"
+            android:singleLine="true"
+            android:imeOptions="actionSend"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp">
+    <!-- Grid de Categorías -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCategorias"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="12dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
-                <!-- Botón de menú lateral -->
-                <ImageView
-                    android:id="@+id/btnMenu"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_menu"
-                    android:tint="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="16dp"/>
-
-                <!-- Título "Home" -->
-                <TextView
-                    android:id="@+id/txtHomeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Home"
-                    android:textSize="20sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/btnMenu"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="16dp"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- RecyclerView de Categorías -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCategorias"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/cardToolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"/>
-
-        <!-- Bottom Navigation -->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:itemIconTint="@color/primary"
-            app:itemTextColor="@color/primary"
-            app:menu="@menu/bottom_nav_menu"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Menú lateral (SideMenu) -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <!-- Menú inferior -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:background="@color/white"
-        app:menu="@menu/menu_sidemenu"
-        android:layout_gravity="start"/>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+        app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="labeled" />
+</LinearLayout>

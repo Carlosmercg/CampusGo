@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    tools:context=".models.MapaCompradorActivity">
+    android:paddingTop="20dp"
+    tools:context=".mapas.MapaCompradorActivity">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/osmap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="180dp"
+        android:paddingHorizontal="5dp"
+        android:paddingLeft="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        tools:layout_editor_absoluteX="20dp"></org.osmdroid.views.MapView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -48,7 +58,7 @@
             app:layout_constraintStart_toEndOf="@+id/textView4"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/logomensajito" />
+            app:srcCompat="@drawable/ic_chats" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
@@ -93,7 +103,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.134"
-            app:srcCompat="@drawable/placeholder_usuario" />
+            app:srcCompat="@drawable/ic_placeholder" />
 
         <TextView
             android:id="@+id/textView4"
@@ -110,16 +120,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="180dp"
-        android:background="@drawable/mapa"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

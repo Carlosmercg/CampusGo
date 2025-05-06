@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
-    android:layout_margin="8dp">
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Imagen de la categoría -->
         <ImageView
             android:id="@+id/img_categoria"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/categoria_icon_cd"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_placeholder"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
-        <!-- Nombre de la categoría -->
         <TextView
             android:id="@+id/txt_nombre_categoria"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:gravity="center"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/img_categoria"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Categoría"/>
-
+            android:paddingTop="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityMainBinding
+import com.example.campusgo.mapas.MapaCompradorActivity
+import com.example.campusgo.mapas.MapaVendedorActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

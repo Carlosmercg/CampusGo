@@ -6,6 +6,9 @@
     <external-files-path
         name="external_files"
         path="." />
+    <external-files-path
+            name="carnet_images"
+            path="." />
 </paths>
 
 
