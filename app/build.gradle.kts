@@ -19,7 +19,6 @@ android {
         // 🔒 Usar la API Key solo desde código (BuildConfig.IMGBB_API_KEY)
         val imgbbKey = project.findProperty("IMGBB_API_KEY") as? String ?: ""
         buildConfigField("String", "IMGBB_API_KEY", "\"$imgbbKey\"")
-
     }
 
     buildTypes {
@@ -37,7 +36,6 @@ android {
         buildConfig = true
     }
 
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -49,6 +47,7 @@ android {
 }
 
 dependencies {
+    // Android Core & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -56,18 +55,23 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
 
+    // UI extra
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-    // Firebase
+    // Firebase BoM y servicios
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation("com.google.firebase:firebase-database-ktx")
 
-    // Lifecycle
+    // Firebase UI para Realtime Database
+    implementation("com.firebaseui:firebase-ui-database:8.0.2")
+
+    // Jetpack Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -75,12 +79,19 @@ dependencies {
     // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // Networking
+    // Networking & JSON
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Tests
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Open Street Maps
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("com.github.MKergall:osmbonuspack:6.8.0")
+
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }

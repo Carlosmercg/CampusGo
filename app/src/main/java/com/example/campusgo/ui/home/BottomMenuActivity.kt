@@ -1,13 +1,13 @@
-package com.example.campusgo.ui.main
+package com.example.campusgo.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.R
 import com.example.campusgo.ui.compra.CarritoActivity
 import com.example.campusgo.ui.chat.ChatsActivity
 import com.example.campusgo.ui.usuario.PerfilActivity
-import com.example.campusgo.ui.home.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BottomMenuActivity : AppCompatActivity() {
@@ -24,8 +24,9 @@ open class BottomMenuActivity : AppCompatActivity() {
                 R.id.nav_home -> {
                     if (currentActivityId != R.id.nav_home) {
                         startActivity(Intent(this, HomeActivity::class.java))
+                        overridePendingTransition(0, 0) // Elimina la animación
                         finish()
-                    } else recreate()
+                    }
                     true
                 }
                 R.id.nav_carrito -> {
@@ -37,11 +38,15 @@ open class BottomMenuActivity : AppCompatActivity() {
                 }
                 R.id.nav_chats -> {
                     if (currentActivityId != R.id.nav_chats) {
+                        Log.d("ChatsActivityTest", "Se intenta abrir ChatsActivity")
                         startActivity(Intent(this, ChatsActivity::class.java))
+                        overridePendingTransition(0, 0)
                         finish()
                     }
                     true
                 }
+
+
                 R.id.nav_cuenta -> {
                     if (currentActivityId != R.id.nav_cuenta) {
                         startActivity(Intent(this, PerfilActivity::class.java))

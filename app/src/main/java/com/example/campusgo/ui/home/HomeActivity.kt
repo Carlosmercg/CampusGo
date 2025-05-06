@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityHomeBinding
 import com.example.campusgo.databinding.ItemCategoriaBinding

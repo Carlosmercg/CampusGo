@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
-import com.example.campusgo.ui.main.BottomMenuActivity
+import com.example.campusgo.ui.home.BottomMenuActivity
 import com.example.campusgo.databinding.ActivityCarritoBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.databinding.ItemVendedorBinding
@@ -33,9 +33,9 @@ class CarritoActivity : BottomMenuActivity() {
 
         productosCarrito.addAll(
             listOf(
-                Producto("P1", "Compás Técnico", "vendedorA", 12000.0, "", "Vendedor A", "Descripción"),
-                Producto("P2", "Regla T", "vendedorA", 8000.0, "", "Vendedor A", "Descripción"),
-                Producto("P3", "Atlas Médico", "vendedorB", 45000.0, "", "Vendedor B", "Descripción")
+                Producto("P1", "Compás Técnico", "vendedorA", " ",12000.0, "", "Vendedor A", "Descripción"),
+                Producto("P2", "Regla T", "vendedorA", " ",8000.0, "", "Vendedor A", "Descripción"),
+                Producto("P3", "Atlas Médico", "vendedorB", " ",45000.0, "", "Vendedor B", "Descripción")
             )
         )
 
