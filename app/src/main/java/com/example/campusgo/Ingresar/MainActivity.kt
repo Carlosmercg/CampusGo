@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityMainBinding
+import com.example.campusgo.mapas.MapaCompradorActivity
+import com.example.campusgo.mapas.MapaVendedorActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         // Pasar a la pantalla de login después de 10 segundos
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, MapaCompradorActivity::class.java)
             startActivity(intent)
             finish() // Finaliza MainActivity para que no vuelva atrás
         }, 2000) // 5 segundos
