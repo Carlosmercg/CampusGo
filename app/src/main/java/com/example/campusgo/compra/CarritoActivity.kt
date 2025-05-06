@@ -1,7 +1,9 @@
 package com.example.campusgo.compra
 
+import android.R.attr.title
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
