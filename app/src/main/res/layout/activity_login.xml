@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_campus"
-    tools:context=".Ingresar.LoginActivity">
+    tools:context=".ui.auth.LoginActivity">
 
 
     <!-- 1. Fondo -->

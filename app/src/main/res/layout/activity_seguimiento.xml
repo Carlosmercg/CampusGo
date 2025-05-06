@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".compra.SeguimientoActivity">
+    tools:context=".ui.compra.SeguimientoActivity">
 
     <!-- TODO: Añade aquí tu UI para el seguimiento de la orden -->
 
