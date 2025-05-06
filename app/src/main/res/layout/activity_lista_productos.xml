@@ -14,9 +14,8 @@
         android:layout_height="?attr/actionBarSize"
         android:backgroundTint="?attr/colorPrimary"
         app:navigationIcon="@drawable/ic_back_arrow"
-        app:title="@string/titulo_artes_visuales"
-        app:titleTextColor="@color/white"
-        app:menu="@menu/menu_carrito" />
+        app:title=""
+        app:titleTextColor="@color/white" />
 
     <!-- Scroll principal -->
     <androidx.core.widget.NestedScrollView
@@ -53,7 +52,7 @@
                         android:id="@+id/etBuscarProducto"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:hint="@string/hint_buscar_especifico"
+                        android:hint=""
                         android:imeOptions="actionSearch"
                         android:inputType="text"
                         app:layout_constraintStart_toStartOf="parent"
@@ -63,11 +62,10 @@
 
                     <ImageButton
                         android:id="@+id/btnVoice"
-                        style="@style/Widget.Material3.IconButton.Filled"
+                        style=""
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:backgroundTint="@android:color/transparent"
-                        android:src="@drawable/ic_mic"
                         app:tint="?attr/colorOnSurfaceVariant"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

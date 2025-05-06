@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
+    implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.auth.ktx)
+
 
     // Testing
     testImplementation(libs.junit)

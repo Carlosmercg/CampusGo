@@ -14,7 +14,6 @@
         android:layout_height="?attr/actionBarSize"
         android:backgroundTint="?attr/colorPrimary"
         app:navigationIcon="@drawable/ic_back_arrow"
-        app:title="@string/detalle_producto"
         app:titleTextColor="@color/white" />
 
     <androidx.core.widget.NestedScrollView
@@ -42,12 +41,11 @@
                     android:layout_height="wrap_content"
                     android:padding="8dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <TextView
                         android:id="@+id/imgVendedor"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_profile"
-                        app:civ_border_width="0dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
@@ -100,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/lorem_ipsum_short"
+                android:text=""
                 android:textSize="16sp" />
 
             <TextView
@@ -123,7 +121,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnContactar"
-                    style="@style/Widget.Material3.Button.Filled"
+                    style=""
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -132,7 +130,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAgregarCarrito"
-                    style="@style/Widget.Material3.Button.Tonal"
+                    style=""
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

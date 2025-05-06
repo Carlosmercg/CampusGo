@@ -18,7 +18,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.root.setBackgroundResource(R.drawable.bg_campus)
 
         // Manejo del botón de registro
-        binding.btnRegistrar.setOnClickListener {
+        /*binding.btnRegistrar.setOnClickListener {
             val username = binding.usernameEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
             val confirmPassword = binding.confirmPasswordEditText.text.toString()
@@ -33,6 +33,6 @@ class SignUpActivity : AppCompatActivity() {
                     binding.confirmPasswordEditText.error = "Las contraseñas no coinciden"
                 }
             }
-        }
+        }*/
     }
 }
