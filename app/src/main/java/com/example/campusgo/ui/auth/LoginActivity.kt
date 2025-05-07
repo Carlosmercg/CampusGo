@@ -7,8 +7,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import com.example.campusgo.ui.auth.SignUpActivity
 import com.example.campusgo.databinding.ActivityLoginBinding
+import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.session.UsuarioSesion
 import com.example.campusgo.ui.home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private val db by lazy { FirebaseFirestore.getInstance() }
@@ -47,20 +49,27 @@ class LoginActivity : AppCompatActivity() {
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    val uid = auth.currentUser?.uid ?: ""
+                    val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
+
                     db.collection("usuarios").document(uid).get()
                         .addOnSuccessListener { doc ->
                             if (doc.exists()) {
-                                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this, HomeActivity::class.java).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                })
+                                val usuario = doc.toObject(Usuario::class.java)
+                                if (usuario != null) {
+                                    UsuarioSesion.usuarioActual = usuario
+                                    Toast.makeText(this, "¡Bienvenido, ${usuario.nombre}!", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, HomeActivity::class.java).apply {
+                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    })
+                                } else {
+                                    Toast.makeText(this, "Datos del usuario inválidos", Toast.LENGTH_LONG).show()
+                                }
                             } else {
-                                Toast.makeText(this, "Usuario autenticado pero no encontrado en Firestore", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, "Usuario autenticado pero no registrado en Firestore", Toast.LENGTH_LONG).show()
                             }
                         }
                         .addOnFailureListener {
-                            Toast.makeText(this, "Error al verificar datos del usuario", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Error al consultar usuario: ${it.message}", Toast.LENGTH_LONG).show()
                         }
                 }
                 .addOnFailureListener { ex ->
@@ -84,11 +93,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Valida correo y contraseña
+    // Valida campos de login
     private fun validateFields() {
-        val emailValid = binding.emailEditText.text.toString().trim().let {
-            it.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(it).matches()
-        }
+        val emailValid = binding.emailEditText.text.toString().trim()
+            .let { it.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(it).matches() }
         val passwordValid = binding.passwordEditText.text.toString().trim().isNotEmpty()
         binding.btnLogin.isEnabled = emailValid && passwordValid
     }

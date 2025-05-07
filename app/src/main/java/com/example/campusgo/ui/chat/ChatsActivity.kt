@@ -3,11 +3,19 @@ package com.example.campusgo.ui.chat
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Chat
+import com.example.campusgo.data.repository.DescargadorImagenes
+import com.example.campusgo.data.session.UsuarioSesion
 import com.example.campusgo.databinding.ActivityChatsBinding
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -15,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class ChatsActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityChatsBinding
     private lateinit var adapter: FirebaseRecyclerAdapter<Chat, ChatViewHolder>
     private val auth = FirebaseAuth.getInstance()
@@ -24,6 +33,14 @@ class ChatsActivity : AppCompatActivity() {
         binding = ActivityChatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val usuario = UsuarioSesion.usuarioActual
+        if (usuario == null) {
+            Toast.makeText(this, "Sesión expirada. Vuelve a iniciar sesión.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
+        // Configurar Toolbar
         setSupportActionBar(binding.toolbarMensajeria)
         supportActionBar?.apply {
             title = getString(R.string.menu_chats)
@@ -31,7 +48,7 @@ class ChatsActivity : AppCompatActivity() {
             setHomeAsUpIndicator(R.drawable.ic_back)
         }
 
-        setupRecycler()
+        setupRecycler(usuario.id)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -42,18 +59,19 @@ class ChatsActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setupRecycler() {
-        val uid = auth.currentUser?.uid ?: return
+    private fun setupRecycler(uid: String) {
         val ref = FirebaseDatabase.getInstance().getReference("chats")
-        val query = ref.orderByChild("idUsuario").equalTo(uid)
+
+        val query = ref.orderByChild("usuarios/$uid").equalTo(true)
 
         val options = FirebaseRecyclerOptions.Builder<Chat>()
             .setQuery(query, Chat::class.java)
             .build()
 
         adapter = object : FirebaseRecyclerAdapter<Chat, ChatViewHolder>(options) {
-            override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ChatViewHolder {
-                val view = layoutInflater.inflate(android.R.layout.simple_list_item_2, parent, false)
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_chat, parent, false)
                 return ChatViewHolder(view)
             }
 
@@ -63,6 +81,7 @@ class ChatsActivity : AppCompatActivity() {
                     val intent = Intent(this@ChatsActivity, ChatActivity::class.java).apply {
                         putExtra("chatId", model.id)
                         putExtra("nombreUsuario", model.nombreUsuario)
+                        putExtra("fotoUrl", model.fotoUrl)
                     }
                     startActivity(intent)
                 }
@@ -83,10 +102,21 @@ class ChatsActivity : AppCompatActivity() {
         adapter.stopListening()
     }
 
-    class ChatViewHolder(view: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val imageView = itemView.findViewById<ImageView>(R.id.imageView)
+        private val txtNombre = itemView.findViewById<TextView>(R.id.txtNombreUsuario)
+        private val txtMensaje = itemView.findViewById<TextView>(R.id.txtUltimoMensaje)
+
         fun bind(chat: Chat) {
-            itemView.findViewById<TextView>(android.R.id.text1).text = chat.nombreUsuario
-            itemView.findViewById<TextView>(android.R.id.text2).text = chat.ultimoMensaje
+            txtNombre.text = chat.nombreUsuario
+            txtMensaje.text = chat.ultimoMensaje
+
+            val descargador = DescargadorImagenes(itemView.context)
+            if (!chat.fotoUrl.isNullOrBlank()) {
+                descargador.cargarEn(imageView, chat.fotoUrl, R.drawable.placeholder_usuario)
+            } else {
+                imageView.setImageResource(R.drawable.placeholder_usuario)
+            }
         }
     }
 }

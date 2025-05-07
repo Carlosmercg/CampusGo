@@ -5,5 +5,6 @@ data class Chat(
     val nombreUsuario: String = "",
     val ultimoMensaje: String = "",
     val timestamp: Long = 0,
-    val idUsuario: String = ""
+    val idUsuario: String = "",
+    val fotoUrl: String = "" // ¡Nuevo campo!
 )

@@ -7,13 +7,12 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <!-- Toolbar -->
+    <!-- Toolbar superior -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/chat_toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primaryLight"
-        app:title="María Victoria Muñoz Santos"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/ic_back"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -21,12 +20,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Mensajes -->
+
+    <!-- Sección de mensajes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_mensajes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="8dp"
+        android:padding="12dp"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_mensaje"
@@ -35,33 +35,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Input para enviar mensajes -->
+    <!-- Zona de input para mensaje -->
     <LinearLayout
         android:id="@+id/layoutEnviarMensaje"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
             android:id="@+id/etMensaje"
-            android:layout_width="48dp"
-            android:layout_height="50dp"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Escribe un mensaje..."
             android:inputType="textMultiLine"
-            android:maxLines="3"/>
+            android:padding="12dp"
+            android:maxLines="4"
+            android:layout_marginEnd="8dp"/>
 
         <ImageButton
             android:id="@+id/btnEnviar"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/enviar_msg"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Enviar"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

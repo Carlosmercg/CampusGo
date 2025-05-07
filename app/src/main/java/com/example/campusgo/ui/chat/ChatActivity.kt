@@ -32,6 +32,8 @@ class ChatActivity : AppCompatActivity() {
         setupEnviarBtn()
     }
 
+
+
     private fun setupToolbar() {
         val nombreUsuario = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         binding.chatToolbar.title = nombreUsuario
