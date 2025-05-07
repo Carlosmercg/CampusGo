@@ -39,4 +39,16 @@ class ProductoAdapter(
             binding.root.setOnClickListener { onItemClick(producto) }
         }
     }
+
+    fun updateList(nuevos: List<Producto>) {
+        if (productos is MutableList) {
+            (productos as MutableList<Producto>).apply {
+                clear()
+                addAll(nuevos)
+            }
+            notifyDataSetChanged()
+        } else {
+            throw IllegalStateException("Para usar updateList() debes pasar un MutableList al constructor")
+        }
+    }
 }

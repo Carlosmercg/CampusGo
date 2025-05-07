@@ -1,5 +1,6 @@
 package com.example.campusgo.ui.compra
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -13,6 +14,7 @@ import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class ComprarActivity : AppCompatActivity() {
 
@@ -63,10 +65,34 @@ class ComprarActivity : AppCompatActivity() {
 
         binding.btnComprar.setOnClickListener {
             Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
+            obtenerUltimoPedidoId { pedidoId ->
+                // Lanzamos VentaActivity con el ID
+                Intent(this, VentaActivity::class.java).apply {
+                    putExtra("pedidoId", pedidoId)
+                }.also { startActivity(it) }
+            }
             finish()
         }
     }
-
+    private fun obtenerUltimoPedidoId(callback: (String) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("Pedidos")
+            .orderBy("fecha", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { snapshots ->
+                val doc = snapshots.documents.firstOrNull()
+                val id = doc?.getString("id") ?: doc?.id
+                if (!id.isNullOrBlank()) {
+                    callback(id)
+                } else {
+                    Toast.makeText(this, "No se encontró ningún pedido", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al obtener pedido: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
     private fun obtenerDatosVendedor(vendedorId: String) {
         FirebaseFirestore.getInstance().collection("usuarios")
             .document(vendedorId)
