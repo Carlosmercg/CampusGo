@@ -78,6 +78,13 @@ class MapaVendedorActivity : AppCompatActivity() {
     private lateinit var lightSensor: Sensor
     private lateinit var lightEventListener: SensorEventListener
 
+    private lateinit var accelerometer: Sensor
+    private lateinit var magnetometer: Sensor
+    private lateinit var orientationListener: SensorEventListener
+
+    private var gravity: FloatArray? = null
+    private var geomagnetic: FloatArray? = null
+
     // Cliente de ubicación y configuraciones
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationRequest: com.google.android.gms.location.LocationRequest
@@ -119,6 +126,11 @@ class MapaVendedorActivity : AppCompatActivity() {
         sensorManager.registerListener(lightEventListener, lightSensor,
             SensorManager.SENSOR_DELAY_FASTEST)
 
+        sensorManager.registerListener(orientationListener, accelerometer,
+            SensorManager.SENSOR_DELAY_UI)
+        sensorManager.registerListener(orientationListener, magnetometer,
+            SensorManager.SENSOR_DELAY_UI)
+
     }
     override fun onPause() {
         super.onPause()
@@ -126,6 +138,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         map.onPause()
         // Detiene el sensor de luz
         sensorManager.unregisterListener(lightEventListener)
+        sensorManager.unregisterListener(orientationListener)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,6 +171,10 @@ class MapaVendedorActivity : AppCompatActivity() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
         lightEventListener = createLightSensorListener()
+
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)!!
+        orientationListener = createOrientationListener()
 
         binding.btnNFC.setOnClickListener{
             startActivity(Intent(this, Codigo_NFC_Comprador::class.java))
@@ -288,7 +305,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         marker.title = direccion
         marker.subDescription = "Latitud: ${posicion.latitude}\nLongitud: ${posicion.longitude}"
 
-        val myIcon = resources.getDrawable(R.drawable.baseline_add_location_alt_24, theme)
+        val myIcon = resources.getDrawable(R.drawable.baseline_arrow_circle_up_24, theme)
         marker.icon = myIcon
         marker.position = posicion
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -337,6 +354,36 @@ class MapaVendedorActivity : AppCompatActivity() {
         }
         return ret
     }
+
+    fun createOrientationListener(): SensorEventListener {
+        return object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                when (event?.sensor?.type) {
+                    Sensor.TYPE_ACCELEROMETER -> gravity = event.values.clone()
+                    Sensor.TYPE_MAGNETIC_FIELD -> geomagnetic = event.values.clone()
+                }
+
+                if (gravity != null && geomagnetic != null) {
+                    val R = FloatArray(9)
+                    val I = FloatArray(9)
+                    val success = SensorManager.getRotationMatrix(R, I, gravity, geomagnetic)
+
+                    if (success) {
+                        val orientation = FloatArray(3)
+                        SensorManager.getOrientation(R, orientation)
+
+                        val azimut = Math.toDegrees(orientation[0].toDouble()).toFloat()
+
+                        // Rota el marcador si está colocado
+                        currentLocationMarker?.rotation = -azimut
+                    }
+                }
+            }
+
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+    }
+
     /**
      * Agrega un marcador al mapa.
      * @param p GeoPoint de la posición
