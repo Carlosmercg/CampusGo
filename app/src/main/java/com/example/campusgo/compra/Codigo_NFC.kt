@@ -3,7 +3,9 @@ package com.example.campusgo.compra
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.databinding.ActivityCodigoNfcBinding
 import kotlin.random.Random
 
@@ -27,7 +29,8 @@ class Codigo_NFC : AppCompatActivity() {
             "Dale este código al vendedor para confirmar que recibiste el producto"
 
         binding.imgSync.setOnClickListener {
-            startActivity(Intent(this, CalificarActivityVendedor::class.java))
+            Toast.makeText(this, "gracias por compartir el codigo!", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
     }
