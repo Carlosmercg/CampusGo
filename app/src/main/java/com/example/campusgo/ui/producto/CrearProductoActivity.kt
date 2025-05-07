@@ -46,7 +46,25 @@ class CrearProductoActivity : AppCompatActivity() {
 
     private fun guardarProducto() {
         if(binding.nombre.text.isNotEmpty() && binding.descripcion.text.isNotEmpty() && binding.precio.text.isNotEmpty() && binding.categoria.isNotEmpty() && imageChanged){
-
+            val db = FirebaseFirestore.getInstance()
+            val producto = hashMapOf(
+                "nombre" to binding.nombre.text.toString(),
+                "descripcion" to binding.descripcion.text.toString(),
+                "precio" to binding.precio.text.toString().toDouble(),
+                "categoria" to binding.categoria.selectedItem.toString(),
+                "imagen" to imageUri.toString()
+            )
+            db.collection("Productos")
+                .add(producto)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("Firestore", "Producto agregado con ID: ${documentReference.id}")
+                    Toast.makeText(baseContext, "Producto agregado con ID: ${documentReference.id}", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error al agregar producto", e)
+                    Toast.makeText(baseContext, "Error al agregar producto", Toast.LENGTH_SHORT).show()
+                }
         }
         else {
             Toast.makeText(baseContext, "Debe llenar todos los campos", Toast.LENGTH_SHORT).show()
