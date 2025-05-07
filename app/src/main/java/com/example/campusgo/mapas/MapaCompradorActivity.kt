@@ -29,14 +29,6 @@ import com.example.campusgo.chat.ChatActivity
 import com.example.campusgo.compra.NFCActivity
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsResponse
-import com.google.android.gms.location.Priority
-import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
@@ -134,6 +126,10 @@ class MapaCompradorActivity : AppCompatActivity() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
         lightEventListener = createLightSensorListener()
+
+        binding.btnnfc.setOnClickListener{
+            startActivity(Intent(this, NFCActivity::class.java))
+        }
 
     }
     /**
