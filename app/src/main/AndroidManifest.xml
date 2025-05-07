@@ -35,7 +35,7 @@
             android:name=".compra.CalificarActivityComprador"
             android:exported="false" />
         <activity
-            android:name=".compra.VentaActivity"
+            android:name=".venta.VentaActivity"
             android:exported="false" />
         <activity
             android:name=".compra.Codigo_NFC_Comprador"

@@ -125,14 +125,9 @@ class ComprarActivity : AppCompatActivity() {
 
             db.collection("usuarios").document(uid)
                 .update("compras", FieldValue.arrayUnion(pedidoId))
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Pedido creado y registrado correctamente", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, VentaActivity::class.java).putExtra("pedidoId", pedidoId))
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Pedido creado, pero no se actualizó el usuario: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+
+            db.collection("usuarios").document(uid)
+                .update("ventas", FieldValue.arrayUnion(productosSeleccionados[0].vendedorId))
 
             Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
             obtenerUltimoPedidoId { pedidoId ->

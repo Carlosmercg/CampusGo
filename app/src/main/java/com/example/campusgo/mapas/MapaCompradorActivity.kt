@@ -28,7 +28,6 @@ import com.example.campusgo.R
 import com.example.campusgo.chat.ChatActivity
 import com.example.campusgo.compra.Codigo_NFC
 import com.example.campusgo.compra.NFCActivity
-import com.example.campusgo.compra.VentaActivity
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.model.LatLng
