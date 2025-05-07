@@ -30,7 +30,7 @@ class Codigo_NFC : AppCompatActivity() {
 
         binding.imgSync.setOnClickListener {
             Toast.makeText(this, "gracias por compartir el codigo!", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, CalificarActivityVendedor::class.java))
             finish()
         }
     }

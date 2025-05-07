@@ -32,7 +32,7 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:text="Dale este código a [nombre del vendedor] para confirmar que recibiste el producto"
+        android:text="Dale este código al vendedor para confirmar que recibiste el producto"
         android:textColor="@color/gray"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

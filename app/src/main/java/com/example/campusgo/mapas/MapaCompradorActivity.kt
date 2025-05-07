@@ -26,7 +26,9 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.campusgo.R
 import com.example.campusgo.chat.ChatActivity
+import com.example.campusgo.compra.Codigo_NFC
 import com.example.campusgo.compra.NFCActivity
+import com.example.campusgo.compra.VentaActivity
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.model.LatLng
@@ -128,7 +130,7 @@ class MapaCompradorActivity : AppCompatActivity() {
         lightEventListener = createLightSensorListener()
 
         binding.btnnfc.setOnClickListener{
-            startActivity(Intent(this, NFCActivity::class.java))
+            startActivity(Intent(this, Codigo_NFC::class.java))
         }
 
     }
