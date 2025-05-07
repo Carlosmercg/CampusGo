@@ -41,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/tiempo"
+            app:layout_constraintStart_toEndOf="@+id/destino"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.018"
             app:srcCompat="@drawable/icononfc" />
@@ -56,16 +56,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/tiempo"
+            app:layout_constraintStart_toEndOf="@+id/destino"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
             app:srcCompat="@drawable/ic_chats" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/Comprador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Antonio Sanchez Montoya"
+            android:text=" "
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -87,11 +87,11 @@
             app:srcCompat="@drawable/ic_placeholder" />
 
         <TextView
-            android:id="@+id/tiempo"
+            android:id="@+id/destino"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Universidad Javeriana"
+            android:text=" "
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -55,6 +55,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     private lateinit var posicionVendedor: GeoPoint
     private var ultimaPosicionVendedor: GeoPoint? = null
     private var marcadorVendedor: Marker? = null
+    lateinit var pedidoId : String
 
     private lateinit var geocoder: Geocoder
     private lateinit var roadManager: RoadManager
@@ -70,6 +71,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         map.onResume()
+        pedidoId = intent.getStringExtra("pedidoID").toString()
         lifecycleScope.launch {
             direccionFirestore()
             delay(6000)
@@ -287,6 +289,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     fun direccionFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
+            .whereEqualTo("id", pedidoId)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -314,6 +317,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     fun posicionVendedoresFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
+            .whereEqualTo("id", pedidoId)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {

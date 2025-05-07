@@ -66,6 +66,7 @@ class MapaVendedorActivity : AppCompatActivity() {
     private var currentLocationMarker: Marker? = null
     private var direccionMarker: Marker? = null
     private var lastSavedLocation: GeoPoint? = null
+    lateinit var pedidoId : String
 
     private lateinit var geocoder: Geocoder
     private lateinit var roadManager: RoadManager
@@ -116,6 +117,7 @@ class MapaVendedorActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        pedidoId = intent.getStringExtra("pedidoID").toString()
         locationPermission.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         map.onResume()
         val uims = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -394,7 +396,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
-        Toast.makeText(baseContext, "Distancia: %.2f km".format(distancia), Toast.LENGTH_LONG).show()
+
 
         if (addresses != null && addresses.isNotEmpty()) {
             addressText = addresses[0].getAddressLine(0) ?: "Ubicación desconocida"
@@ -481,11 +483,18 @@ class MapaVendedorActivity : AppCompatActivity() {
     fun direccionFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
+            .whereEqualTo("id", pedidoId)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     val direccion = document.getString("direccion")
+                    binding.destino.text=direccion
                     val compradorId = document.getString("compradorID")
+                    if (compradorId != null) {
+                        buscarNombreComprador(compradorId) { nombre ->
+                            binding.Comprador.text = nombre
+                        }
+                    }
                     if (direccion != null) {
                         val latLng = findLocation(direccion)
                         if (latLng != null) {
@@ -502,6 +511,21 @@ class MapaVendedorActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error al leer pedidos", exception)
+            }
+    }
+
+    fun buscarNombreComprador(compradorId: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(compradorId)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val nombre = usuarioDoc.getString("nombre") ?: "Nombre desconocido"
+                callback(nombre)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener nombre del comprador", e)
+                callback("Nombre desconocido")
             }
     }
     /**
