@@ -22,7 +22,7 @@
     <color name="dividerDark">#4B5563</color>  <!-- Gris Oscuro para Secciones Importantes -->
 
     <!-- 🖼️ Fondos y Tarjetas -->
-    <color name="background">#B4D1F8</color>  <!-- Azul Muy Claro para Fondo General -->
+    <color name="background">#FFFFFF</color>  <!-- Azul Muy Claro para Fondo General -->
     <color name="cardBackground">#DBEAFE</color>  <!-- Azul Suave para Tarjetas -->
     <color name="modalBackground">#F3F4F6</color>  <!-- Gris Claro para Modales y Pop-ups -->
 
