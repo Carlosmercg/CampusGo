@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.compra
+package com.example.campusgo.ui.venta
 
 import android.content.Intent
 import android.os.Bundle

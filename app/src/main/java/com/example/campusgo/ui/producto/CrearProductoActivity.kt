@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
 import com.example.campusgo.databinding.ActivityCrearProductoBinding
-import com.example.campusgo.models.Categoria
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.util.GeoPoint
 

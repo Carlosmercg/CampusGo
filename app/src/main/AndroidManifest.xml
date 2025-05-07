@@ -32,13 +32,13 @@
         <activity android:name=".ui.compra.Codigo_NFC"
             android:exported="false"/>
         <activity
-            android:name=".ui.compra.CalificarActivityComprador"
+            android:name=".ui.venta.CalificarActivityComprador"
             android:exported="false" />
         <activity
             android:name=".ui.venta.VentaActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.compra.Codigo_NFC_Comprador"
+            android:name=".ui.venta.Codigo_NFC_Comprador"
             android:exported="false" />
         <activity
             android:name=".ui.compra.CalificarActivityVendedor"

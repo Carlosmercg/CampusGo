@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.compra
+package com.example.campusgo.ui.venta
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -9,8 +9,9 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.campusgo.databinding.ActivityNfcactivityBinding
 import com.example.campusgo.databinding.ActivityNfcvendedorBinding
+import com.example.campusgo.ui.compra.Codigo_NFC
+import com.example.campusgo.ui.compra.CalificarActivityVendedor
 
 class NFCActivity_Vendedor : AppCompatActivity() {
 
