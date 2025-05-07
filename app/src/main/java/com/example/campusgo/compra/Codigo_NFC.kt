@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.campusgo.Ingresar.HomeActivity
+import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.databinding.ActivityCodigoNfcBinding
 import kotlin.random.Random
 

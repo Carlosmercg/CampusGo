@@ -30,7 +30,7 @@ import com.example.campusgo.R
 
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.example.campusgo.databinding.ActivityMapaVendedorBinding
-import com.example.campusgo.venta.NFCActivity_Vendedor
+import com.example.campusgo.ui.venta.NFCActivity_Vendedor
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
