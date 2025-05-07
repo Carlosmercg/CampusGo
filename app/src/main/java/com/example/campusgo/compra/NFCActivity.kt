@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.compra
+package com.example.campusgo.compra
 
 import android.app.PendingIntent
 import android.content.Intent

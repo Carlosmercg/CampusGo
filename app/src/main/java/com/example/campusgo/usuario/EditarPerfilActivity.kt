@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.usuario
+package com.example.campusgo.usuario
 
 import android.app.Activity
 import android.content.Intent

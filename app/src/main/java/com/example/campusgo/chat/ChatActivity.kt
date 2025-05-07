@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.chat
+package com.example.campusgo.chat
 
 import android.os.Bundle
 import android.text.TextUtils

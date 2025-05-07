@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.compra
+package com.example.campusgo.compra
 
 import android.os.Bundle
 import android.widget.ImageButton

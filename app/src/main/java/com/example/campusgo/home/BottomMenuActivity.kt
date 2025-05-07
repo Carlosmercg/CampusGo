@@ -1,13 +1,13 @@
-package com.example.campusgo.ui.home
+package com.example.campusgo.home
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.R
-import com.example.campusgo.ui.compra.CarritoActivity
-import com.example.campusgo.ui.chat.ChatsActivity
-import com.example.campusgo.ui.usuario.PerfilActivity
+import com.example.campusgo.compra.CarritoActivity
+import com.example.campusgo.chat.ChatsActivity
+import com.example.campusgo.usuario.PerfilActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BottomMenuActivity : AppCompatActivity() {

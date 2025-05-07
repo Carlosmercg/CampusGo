@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.producto
+package com.example.campusgo.producto
 
 import android.app.Activity
 import android.content.Intent

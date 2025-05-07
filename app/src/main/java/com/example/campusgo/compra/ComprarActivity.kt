@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.compra
+package com.example.campusgo.compra
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,11 @@ import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
-import com.example.campusgo.ui.venta.VentaActivity
+import com.example.campusgo.venta.VentaActivity
+import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -65,6 +69,66 @@ class ComprarActivity : AppCompatActivity() {
         binding.tvTotal.text = "TOTAL: $${total}"
 
         binding.btnComprar.setOnClickListener {
+            val db = FirebaseFirestore.getInstance()
+            val uid = Firebase.auth.currentUser?.uid ?: return@setOnClickListener
+            val pedidoId = db.collection("Pedidos").document().id
+            val fecha = Timestamp.now()
+
+            val direccion = binding.etPuntoEntrega.text.toString()
+            val estado = "activo"
+            lateinit var metodoPago: String
+            if(binding.spinnerMetodoPago.selectedItemId.toString()=="1"){
+                metodoPago = "Efectivo"
+            } else metodoPago = "Tarjeta"
+
+
+            val latVendedor = 4.7338184
+            val longVendedor = -74.0381694
+
+            val productosMapeados = productosSeleccionados.map { producto ->
+                mapOf(
+                    "id" to producto.id,
+                    "nombre" to producto.nombre,
+                    "descripcion" to producto.descripcion,
+                    "imagenUrl" to producto.imagenUrl,
+                    "precio" to producto.precio,
+                    "categoriaId" to producto.categoriaId,
+                    "vendedorId" to producto.vendedorId,
+                    "vendedorNombre" to producto.vendedorNombre
+                )
+            }
+
+            val pedido = mapOf(
+                "id" to pedidoId,
+                "compradorID" to uid,
+                "direccion" to direccion,
+                "estado" to estado,
+                "fecha" to fecha,
+                "metodoPago" to metodoPago,
+                "latvendedor" to latVendedor,
+                "longvendedor" to longVendedor,
+                "vendedorID" to productosSeleccionados[0].vendedorId,
+                "productos" to productosMapeados
+            )
+
+            db.collection("Pedidos").document(pedidoId)
+                .set(pedido)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Pedido creado correctamente", Toast.LENGTH_SHORT).show()
+                    // Ir a siguiente pantalla si quieres
+                    startActivity(Intent(this, VentaActivity::class.java).putExtra("pedidoId", pedidoId))
+                    finish()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al crear pedido: ${it.message}", Toast.LENGTH_LONG).show()
+                }
+
+            db.collection("usuarios").document(uid)
+                .update("compras", FieldValue.arrayUnion(pedidoId))
+
+            db.collection("usuarios").document(uid)
+                .update("ventas", FieldValue.arrayUnion(productosSeleccionados[0].vendedorId))
+
             Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
             obtenerUltimoPedidoId { pedidoId ->
                 // Lanzamos VentaActivity con el ID

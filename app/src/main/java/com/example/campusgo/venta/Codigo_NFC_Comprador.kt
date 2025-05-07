@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.venta
+package com.example.campusgo.venta
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.home.HomeActivity
 import com.example.campusgo.databinding.ActivityCodigoNfcCompradorBinding
 
 

@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.producto
+package com.example.campusgo.producto
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusgo.R
-import com.example.campusgo.ui.adapters.ProductoAdapter
+import com.example.campusgo.adapters.ProductoAdapter
 import com.example.campusgo.databinding.ActivityListaProductosBinding
 import com.example.campusgo.data.models.Producto
 import com.google.firebase.firestore.FirebaseFirestore

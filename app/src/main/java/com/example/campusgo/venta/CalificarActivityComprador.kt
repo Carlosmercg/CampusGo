@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.venta
+package com.example.campusgo.venta
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityCalificarBinding
 import com.example.campusgo.databinding.ActivityCalificarCompradorBinding
-import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.home.HomeActivity
 
 import com.google.firebase.firestore.FirebaseFirestore
 

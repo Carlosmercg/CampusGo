@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.adapters
+package com.example.campusgo.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

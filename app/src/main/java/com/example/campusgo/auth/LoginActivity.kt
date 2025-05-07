@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.auth
+package com.example.campusgo.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.campusgo.databinding.ActivityLoginBinding
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.data.session.UsuarioSesion
-import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException

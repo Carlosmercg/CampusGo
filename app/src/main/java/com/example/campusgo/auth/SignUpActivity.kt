@@ -1,4 +1,4 @@
-package com.example.campusgo.ui.auth
+package com.example.campusgo.auth
 
 import android.Manifest
 import android.content.pm.PackageManager
