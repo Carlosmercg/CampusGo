@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Home -->
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/menu_home"
+        app:showAsAction="ifRoom" />
+
+    <!-- Carrito -->
+    <item
+        android:id="@+id/nav_carrito"
+        android:icon="@drawable/ic_cart"
+        android:title="@string/menu_carrito"
+        app:showAsAction="ifRoom" />
+
+    <!-- Chats -->
+    <item
+        android:id="@+id/nav_chats"
+        android:icon="@drawable/ic_chats"
+        android:title="@string/menu_chats"
+        app:showAsAction="ifRoom" />
+
+    <!-- Cuenta -->
+    <item
+        android:id="@+id/nav_cuenta"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/menu_account"
+        app:showAsAction="ifRoom" />
+
+</menu>

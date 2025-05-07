@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -13,14 +14,12 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
-    android {
-        buildFeatures {
-            viewBinding = true
-        }
+        // 🔒 Usar la API Key solo desde código (BuildConfig.IMGBB_API_KEY)
+        val imgbbKey = project.findProperty("IMGBB_API_KEY") as? String ?: ""
+        buildConfigField("String", "IMGBB_API_KEY", "\"$imgbbKey\"")
+
     }
 
     buildTypes {
@@ -32,18 +31,25 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
 }
 
 dependencies {
-
-    // Dependencias base de Android
+    // Android Core & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,34 +57,45 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
 
+    // UI extra
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.inappmessaging)
+    implementation(libs.androidx.recyclerview)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    // Firebase BoM y servicios
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
+
+
+    // Jetpack Lifecycle
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Corrutinas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Networking & JSON
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.google.code.gson:gson:2.10.1")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // 🔹 Dependencias adicionales necesarias para la app
+    //Open Streets Maps
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation ("com.github.MKergall:osmbonuspack:6.8.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // RecyclerView para listas de productos, chats y categorías
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-
-    // ViewBinding para facilitar la manipulación de vistas
-    implementation("androidx.databinding:viewbinding:7.1.2")
-
-    // Glide para manejo eficiente de imágenes en lugar de Picasso
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-
-    // LiveData y ViewModel para gestión de UI
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-
-    // OkHttp para conexiones HTTP en caso de uso de API
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
-
-    // Gson para trabajar con JSON en caso de integración con API
-    implementation("com.google.code.gson:gson:2.8.9")
-
-    // Kotlin Coroutines para tareas asíncronas
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
 }

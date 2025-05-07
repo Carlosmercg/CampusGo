@@ -14,7 +14,7 @@
     <color name="textTitle">#1E3A8A</color>  <!-- Azul Profundo para Títulos -->
     <color name="textSubtitle">#3B82F6</color>  <!-- Azul Brillante para Subtítulos -->
     <color name="textParagraph">#374151</color>  <!-- Gris Oscuro para Párrafos -->
-    <color name="textHint">#6B7280</color>  <!-- Gris Medio para Hints y Placeholders -->
+    <color name="textHint">#C5C9D3</color>  <!-- Gris Medio para Hints y Placeholders -->
     <color name="textDisabled">#9CA3AF</color>  <!-- Gris Claro para Texto Deshabilitado -->
 
     <!-- ✂️ Colores de Divisores y Separadores -->
@@ -22,9 +22,9 @@
     <color name="dividerDark">#4B5563</color>  <!-- Gris Oscuro para Secciones Importantes -->
 
     <!-- 🖼️ Fondos y Tarjetas -->
-    <color name="background">#B4D1F8</color>  <!-- Azul Muy Claro para Fondo General -->
-    <color name="cardBackground">#DBEAFE</color>  <!-- Azul Suave para Tarjetas -->
-    <color name="modalBackground">#F3F4F6</color>  <!-- Gris Claro para Modales y Pop-ups -->
+    <color name="background">#F3F4F6</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="modalBackground">#FFFFFF</color>  <!-- Gris Claro para Modales y Pop-ups -->
 
     <!-- 🎨 Colores para Formas y Componentes -->
     <color name="shapePrimary">#1E40AF</color>  <!-- Azul Intenso para Bordes y Formas -->
@@ -50,5 +50,6 @@
     <!-- 🧭 Colores de Navegación -->
     <color name="navTextColor">#FFFFFF</color>  <!-- Blanco puro -->
     <color name="navIconColor">#B4DEFA</color>  <!-- Azul Claro para Íconos -->
-
+    <color name="gray">#757575</color>
+    <color name="gray_dark">#424242</color>
 </resources>

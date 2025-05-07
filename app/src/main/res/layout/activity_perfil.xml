@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#DADADA"
     android:backgroundTint="#DADADA"
-    tools:context=".PerfilActivity">
+    tools:context=".ui.usuario.PerfilActivity">
 
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:text="&lt; Cuenta"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Tooltip"
         android:textColor="@color/black"
@@ -33,13 +33,13 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back"
-        app:srcCompat="@drawable/profile_picture_default" />
+        app:srcCompat="@drawable/ic_profile" />
 
     <TextView
         android:id="@+id/nombres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Antonio Sanchez Montoya"
+        android:text="Nombre del Usuario"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -65,7 +65,7 @@
         android:background="#FBFBFB"
         android:backgroundTint="#FDFDFD"
         android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/ayuda"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
 
@@ -84,78 +84,10 @@
             android:layout_margin="5dp"
             android:layout_weight="3"
             android:gravity="center_horizontal"
-            android:text="Pedidos"
+            android:text="Ventas Recientes"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ayuda"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:background="#FBFBFB"
-        android:backgroundTint="#FDFDFD"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/mediosDePago"
-        app:layout_constraintStart_toEndOf="@+id/pedidos"
-        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="9"
-            app:srcCompat="@drawable/headset" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:text="Ayuda"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/mediosDePago"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:background="#DADADA"
-        android:backgroundTint="#FDFDFD"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ayuda"
-        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="9"
-            app:srcCompat="@drawable/credit_card" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:text="Medios de Pago"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
     </LinearLayout>
 
     <android.widget.ScrollView
@@ -164,7 +96,7 @@
         android:layout_marginTop="10dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ayuda">
+        app:layout_constraintTop_toBottomOf="@+id/pedidos">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -257,7 +189,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView"
-                    app:srcCompat="@drawable/profile_picture_default" />
+                    app:srcCompat="@drawable/ic_profile" />
 
                 <TextView
                     android:id="@+id/textView"
@@ -275,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="12dp"
-                    android:text="Antonio Sanchez Montoya"
+                    android:text="Nombre del vendedor"
                     android:textSize="12sp"
                     app:layout_constraintStart_toEndOf="@+id/comprasRecientesProfilePicture"
                     app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -285,14 +217,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="25 de Febrero de 2025"
+                    android:text="Fecha de la venta"
                     android:textSize="9sp"
                     app:layout_constraintEnd_toEndOf="@+id/comprasRecientesName"
                     app:layout_constraintStart_toStartOf="@+id/comprasRecientesName"
                     app:layout_constraintTop_toBottomOf="@+id/comprasRecientesName" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/tiempo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
