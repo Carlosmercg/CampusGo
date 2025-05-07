@@ -31,6 +31,7 @@ import com.example.campusgo.chat.ChatActivity
 import com.example.campusgo.compra.NFCActivity
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.example.campusgo.databinding.ActivityMapaVendedorBinding
+import com.example.campusgo.venta.NFCActivity_Vendedor
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -158,6 +159,10 @@ class MapaVendedorActivity : AppCompatActivity() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
         lightEventListener = createLightSensorListener()
+
+        binding.btnNFC.setOnClickListener{
+            startActivity(Intent(this, NFCActivity_Vendedor::class.java))
+        }
 
     }
 

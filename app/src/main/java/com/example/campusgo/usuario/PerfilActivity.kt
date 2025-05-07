@@ -8,6 +8,8 @@ import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.R
 import com.example.campusgo.compra.ListaComprasPasadasActivity
 import com.example.campusgo.databinding.ActivityPerfilBinding
+import com.example.campusgo.mapas.MapaCompradorActivity
+import com.example.campusgo.mapas.MapaVendedorActivity
 import com.example.campusgo.models.Usuario
 import com.example.campusgo.producto.CrearProductoActivity
 import com.example.campusgo.usuario.ListaProductosVendidosActivity
@@ -57,6 +59,16 @@ class PerfilActivity : AppCompatActivity() {
         // Ver compras pasadas
         binding.comprasMasRecientes.setOnClickListener {
             startActivity(Intent(this, ListaComprasPasadasActivity::class.java))
+        }
+
+        //Prueba para ver mapa del Comprador
+        binding.mapaComprador.setOnClickListener{
+            startActivity(Intent(this, MapaCompradorActivity::class.java))
+        }
+
+        //Prueba para ver mapa del Vendedor
+        binding.mapaVendedor.setOnClickListener{
+            startActivity(Intent(this, MapaVendedorActivity::class.java))
         }
     }
 

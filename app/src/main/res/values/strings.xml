@@ -80,19 +80,6 @@
 
     <!-- ========== BOTONES GENERALES ========== -->
     <string name="btn_eliminar">Eliminar</string>
-    <resources>
-        <string name="titulo_calificacion">¡Califica tu experiencia!</string>
-        <string name="subtitulo_calificacion">Ten en cuenta el tiempo de llegada, la calidad del producto y su precio</string>
-        <string name="nombre_usuario">María Victoria Muñoz Santos</string>
-        <string name="universidad_usuario">Universidad de los Andes</string>
-        <string name="desc_avatar">Avatar del usuario</string>
-        <string name="desc_estrella_1">1 estrella</string>
-        <string name="desc_estrella_2">2 estrellas</string>
-        <string name="desc_estrella_3">3 estrellas</string>
-        <string name="desc_estrella_4">4 estrellas</string>
-        <string name="desc_estrella_5">5 estrellas</string>
-        <string name="boton_gracias">¡Gracias por tu colaboración!</string>
-    </resources>
 
 
 </resources>
