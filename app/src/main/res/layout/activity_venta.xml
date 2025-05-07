@@ -103,7 +103,7 @@
                     android:id="@+id/imgComprador"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/placeholder_usuario"
+                    android:src="@drawable/ic_profile"
                     android:scaleType="centerCrop"
                     android:contentDescription="Foto comprador"/>
 

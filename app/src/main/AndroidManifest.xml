@@ -29,17 +29,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
+        <activity android:name=".compra.Codigo_NFC"
+            android:exported="false"/>
         <activity
-            android:name=".venta.NFCActivity_Vendedor"
+            android:name=".compra.CalificarActivityComprador"
             android:exported="false" />
         <activity
-            android:name=".venta.VentaActivity"
+            android:name=".compra.VentaActivity"
             android:exported="false" />
         <activity
-            android:name=".venta.Codigo_NFC_Comprador"
+            android:name=".compra.Codigo_NFC_Comprador"
             android:exported="false" />
         <activity
-            android:name=".venta.CalificarActivityComprador"
+            android:name=".compra.CalificarActivityVendedor"
             android:exported="false" />
 
         <meta-data
@@ -95,9 +97,6 @@
             android:name=".mapas.MapaVendedorActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.CalificarActivityVendedor"
-            android:exported="false" />
-        <activity
             android:name=".compra.NFCActivity"
             android:exported="false" />
         <activity
@@ -115,6 +114,7 @@
         <activity
             android:name=".Ingresar.MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,21 +1,89 @@
-package com.example.campusgo.venta
+// src/main/java/com/example/campusgo/compra/CalificarActivityVendedor.kt
+package com.example.campusgo.compra
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
+import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.R
+import com.example.campusgo.databinding.ActivityCalificarBinding
+import com.example.campusgo.databinding.ActivityCalificarCompradorBinding
+import com.example.campusgo.models.Usuario
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CalificarActivityComprador : AppCompatActivity() {
+
+    private lateinit var binding: ActivityCalificarCompradorBinding
+    private lateinit var stars: List<ImageButton>
+    private var rating = 0
+
+    private val vendedorId = "jY6VoRW0pLhM1Yq4MSECkeoSs3r2"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_calificar_comprador)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityCalificarCompradorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        FirebaseFirestore.getInstance()
+            .collection("usuarios")
+            .document(vendedorId)
+            .get()
+            .addOnSuccessListener { doc ->
+                doc.toObject(Usuario::class.java)?.let { usr ->
+                    // Nombre completo
+                    binding.textView8.text = "${usr.nombre} ${usr.apellido}"
+                    // Universidad
+                    binding.textView9.text = usr.universidad
+                    // Foto de perfil
+                    if (usr.fotoPerfilUrl.isNotBlank()) {
+                        Glide.with(this)
+                            .load(usr.fotoPerfilUrl)
+                            .placeholder(R.drawable.placeholder_usuario)
+                            .error(R.drawable.placeholder_usuario)
+                            .into(binding.imageView15)
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error cargando datos del vendedor", Toast.LENGTH_SHORT).show()
+            }
+
+        stars = listOf(
+            binding.btncal1,
+            binding.btncal2,
+            binding.btncal3,
+            binding.btncal4,
+            binding.btncal5
+        )
+        stars.forEachIndexed { index, btn ->
+            btn.setOnClickListener { setRating(index + 1) }
+        }
+
+        binding.button.setOnClickListener {
+            if (rating == 0) {
+                Toast.makeText(this, "Selecciona una calificación", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    this,
+                    "¡Gracias por calificar con $rating estrellas!",
+                    Toast.LENGTH_LONG
+                ).show()
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish()
+            }
+        }
+    }
+
+    private fun setRating(value: Int) {
+        rating = value
+        stars.forEachIndexed { index, btn ->
+            btn.setImageResource(
+                if (index < value) R.drawable.star_filled
+                else R.drawable.star_test
+            )
         }
     }
 }

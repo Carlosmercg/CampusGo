@@ -13,7 +13,6 @@ import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.models.Producto
 import com.example.campusgo.models.Usuario
-import com.example.campusgo.venta.VentaActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 

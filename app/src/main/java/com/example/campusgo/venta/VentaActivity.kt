@@ -11,6 +11,7 @@ import com.example.campusgo.databinding.ActivityVentaBinding
 import com.example.campusgo.models.Producto
 import com.example.campusgo.models.Usuario
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,7 +19,6 @@ class VentaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityVentaBinding
     private lateinit var productoAdapter: ProductoAdapter
-    // Lista mutable para que el adapter pueda actualizarse
     private val productosVenta = mutableListOf<Producto>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,24 +26,21 @@ class VentaActivity : AppCompatActivity() {
         binding = ActivityVentaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        // Flecha atrás
         binding.ivBack.setOnClickListener { onBackPressed() }
 
+        // ID del pedido (o uno de prueba si no llega)
+        val pedidoId = intent.getStringExtra("pedidoId")
+            ?: "fcFwgPfYyu9O6gAzftPD"
 
-        val pedidoId = intent.getStringExtra("pedidoId") ?: run {
-            Toast.makeText(this, "Pedido inválido", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
-
-
+        // RecyclerView
         productoAdapter = ProductoAdapter(productosVenta) { /* click opcional */ }
         binding.rvProductosVenta.apply {
             layoutManager = LinearLayoutManager(this@VentaActivity)
             adapter = productoAdapter
         }
 
-        // Cargamos todos los datos del pedido
+        // Carga de datos desde Firestore
         FirebaseFirestore.getInstance()
             .collection("Pedidos")
             .document(pedidoId)
@@ -57,13 +54,13 @@ class VentaActivity : AppCompatActivity() {
                 // 1) Dirección
                 binding.tvDireccion.text = doc.getString("direccion") ?: "-"
 
-                // 2) Hora (campo fecha → Timestamp)
+                // 2) Hora
                 doc.getTimestamp("fecha")?.toDate()?.let { date ->
                     val fmt = SimpleDateFormat("HH:mm", Locale.getDefault())
                     binding.tvHora.text = fmt.format(date)
                 }
 
-                // 3) Méto-do de pago
+                // 3) Método de pago
                 val metodo = doc.getString("metodoPago") ?: ""
                 binding.tvMetodoText.text = metodo.uppercase(Locale.getDefault())
                 val iconRes = if (metodo.equals("tarjeta", true))
@@ -72,16 +69,15 @@ class VentaActivity : AppCompatActivity() {
                     R.drawable.cash
                 binding.imgIconPago.setImageResource(iconRes)
 
-                // 4) Lista de productos embebidos en el pedido
+                // 4) Productos embebidos
                 @Suppress("UNCHECKED_CAST")
                 val listaMap = doc.get("productos") as? List<Map<String, Any>> ?: emptyList()
                 val listaProductos = listaMap.map { m ->
-                    // parseo defensivo de precio
                     val rawPrecio = m["precio"]
                     val precio = when (rawPrecio) {
                         is Number -> rawPrecio.toDouble()
                         is String -> rawPrecio.toDoubleOrNull() ?: 0.0
-                        else -> 0.0
+                        else       -> 0.0
                     }
                     Producto(
                         id             = m["id"]                as? String ?: "",
@@ -94,8 +90,22 @@ class VentaActivity : AppCompatActivity() {
                         descripcion    = m["descripcion"]       as? String ?: ""
                     )
                 }
-                // Actualizamos el adapter
-                productoAdapter.updateList(listaProductos)
+
+                // Actualizar lista y adapter
+                productosVenta.clear()
+                productosVenta.addAll(listaProductos)
+                productoAdapter.notifyDataSetChanged()
+
+                // ─── Cálculo de tarifas ────────────────────────────────────────
+                val subtotal = listaProductos.sumOf { it.precio }
+                val servicio = subtotal * 0.02
+                val total    = subtotal + servicio
+
+                // Formateador con dos decimales y separador de miles
+                val df = DecimalFormat("#,##0.00")
+
+                binding.tvServicios.text = "$${df.format(servicio)}"
+                binding.tvTotal.text     = "Total: $${df.format(total)}"
 
                 // 5) Cargar datos del comprador
                 val compradorId = doc.getString("compradorID") ?: ""
@@ -114,9 +124,7 @@ class VentaActivity : AppCompatActivity() {
             .addOnSuccessListener { doc ->
                 val usr = doc.toObject(Usuario::class.java)
                 if (usr != null) {
-                    // Nombre completo
                     binding.tvCompradorNombre.text = "${usr.nombre} ${usr.apellido}"
-                    // Foto de perfil
                     if (usr.fotoPerfilUrl.isNotBlank()) {
                         Glide.with(this)
                             .load(usr.fotoPerfilUrl)
