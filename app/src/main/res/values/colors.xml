@@ -50,5 +50,6 @@
     <!-- 🧭 Colores de Navegación -->
     <color name="navTextColor">#FFFFFF</color>  <!-- Blanco puro -->
     <color name="navIconColor">#B4DEFA</color>  <!-- Azul Claro para Íconos -->
-
+    <color name="gray">#757575</color>
+    <color name="gray_dark">#424242</color>
 </resources>

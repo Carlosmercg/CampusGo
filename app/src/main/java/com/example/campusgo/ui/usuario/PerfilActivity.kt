@@ -2,6 +2,7 @@ package com.example.campusgo.ui.usuario
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.campusgo.ui.home.HomeActivity
@@ -10,6 +11,11 @@ import com.example.campusgo.ui.compra.ListaComprasPasadasActivity
 import com.example.campusgo.databinding.ActivityPerfilBinding
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.ui.producto.CrearProductoActivity
+import com.example.campusgo.ui.usuario.EditarPerfilActivity
+import com.example.campusgo.ui.usuario.ListaProductosVendidosActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PerfilActivity : AppCompatActivity() {
 
@@ -21,15 +27,17 @@ class PerfilActivity : AppCompatActivity() {
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Simulación de datos del usuario (luego se cargará desde Firebase)
-        usuarioActual = Usuario(
-            id = "u1",
-            nombre = "Antonio",
-            apellido = "Sánchez Montoya",
-            universidad = "PUJ",
-            correo = "antonio@campusgo.com",
-            fotoPerfilUrl = "", // Si estuviera vacío, usa placeholder
-        )
+        val usuario = Firebase.auth.currentUser
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios").document(usuario?.uid ?: "").get()
+            .addOnSuccessListener { document ->
+                val nombre = document.getString("nombre")
+                val apellido = document.getString("apellido")
+                binding.nombres.text = nombre + " " + apellido
+            }
+            .addOnFailureListener { exception ->
+                Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
+            }
 
         mostrarDatosUsuario()
 

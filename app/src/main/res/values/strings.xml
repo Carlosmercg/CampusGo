@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ========== GENERAL APP STRINGS ========== -->
+    <!-- ===================== COMMON ===================== -->
     <string name="app_name">CampusGo</string>
     <string name="Background">background_image</string>
     <string name="error_required">Campo requerido</string>
@@ -36,33 +36,32 @@
     <string name="btn_galeria">Galería</string>
     <string name="btn_crear_cuenta">Crear Cuenta</string>
 
-    <!-- ========== HOME ACTIVITY & NAVEGACIÓN ========== -->
+    <!-- ===================== HomeActivity / Navigation Drawer & BottomNav ===================== -->
     <string name="home_title">Home</string>
     <string name="open_drawer">Abrir menú</string>
     <string name="close_drawer">Cerrar menú</string>
 
-    <!-- Bottom Navigation -->
+    <!-- BottomNavigation labels -->
     <string name="menu_home">Home</string>
     <string name="menu_carrito">Carrito</string>
     <string name="menu_chats">Chats</string>
     <string name="menu_account">Cuenta</string>
 
-    <!-- ========== BARRA DE BÚSQUEDA ========== -->
+    <!-- ===================== Search Bar ===================== -->
     <string name="hint_buscar">¿Qué quieres buscar?</string>
 
-    <!-- ========== DETALLE PRODUCTO ========== -->
+    <!-- ===================== DetalleProductoActivity ===================== -->
     <string name="detalle_producto">Detalle del producto</string>
     <string name="pedidos">Pedidos</string>
 
-    <!-- ========== CARRITO ========== -->
+    <!-- ===================== CarritoActivity ===================== -->
     <string name="btn_Confcompra">Confirmar compra</string>
     <string name="addCarrito">Añadir al carrito</string>
 
-    <!-- ========== SPINNERS ========== -->
+    <!-- ===================== Spinners ===================== -->
     <string-array name="ciudades">
         <item>Bogotá</item>
     </string-array>
-
     <string-array name="universidades">
         <item>Pontificia Universidad Javeriana</item>
         <item>Universidad Distrital</item>
@@ -80,5 +79,6 @@
 
     <!-- ========== BOTONES GENERALES ========== -->
     <string name="btn_eliminar">Eliminar</string>
+
 
 </resources>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -12,6 +14,7 @@
         android:padding="24dp">
 
         <!-- Volver -->
+
         <TextView
             android:id="@+id/back"
             android:layout_width="wrap_content"
@@ -122,7 +125,34 @@
                 android:textColor="@color/white"
                 android:backgroundTint="@color/primary"
                 android:icon="@drawable/shopping_bag"
+                app:iconPadding="8dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mapaComprador"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary"
+                android:icon="@drawable/shopping_bag"
+                android:iconTint="@color/white"
+                android:text="Mapa Comprador"
+                android:textColor="@color/white"
+                app:iconPadding="8dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mapaVendedor"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary"
+                android:icon="@drawable/shopping_bag"
+                android:iconTint="@color/white"
+                android:text="MapaVendedor"
+                android:textColor="@color/white"
                 app:iconPadding="8dp" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
