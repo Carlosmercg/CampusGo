@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings.Global.getString
 import android.view.*
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -14,6 +15,9 @@ import com.example.campusgo.databinding.ActivityCarritoBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.databinding.ItemVendedorBinding
 import com.example.campusgo.models.Producto
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CarritoActivity : BottomMenuActivity() {
 
@@ -32,15 +36,7 @@ class CarritoActivity : BottomMenuActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_back)
         }
-
-        productosCarrito.addAll(
-            listOf(
-                Producto("P1", "Compás Técnico", "vendedorA", " ",12000.0, "", "Vendedor A", "Descripción"),
-                Producto("P2", "Regla T", "vendedorA", " ",8000.0, "", "Vendedor A", "Descripción"),
-                Producto("P3", "Atlas Médico", "vendedorB", " ",45000.0, "", "Vendedor B", "Descripción")
-            )
-        )
-
+        cargarCarritoDesdeFirestore()
         cargarRecycler()
         setupBottomNavigation(binding.bottomNavigation, R.id.nav_carrito)
     }
@@ -107,6 +103,64 @@ class CarritoActivity : BottomMenuActivity() {
         binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
         binding.recyclerCarrito.adapter = adapter
     }
+
+    private fun cargarCarritoDesdeFirestore() {
+
+        val uid = Firebase.auth.currentUser?.uid ?: return
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("Carrito")
+            .whereEqualTo("compradorId", uid)
+            .get()
+            .addOnSuccessListener { carritoDocs ->
+                if (carritoDocs.isEmpty) {
+                    productosCarrito.clear()
+                    cargarRecycler()
+                    return@addOnSuccessListener
+                }
+
+                productosCarrito.clear()
+
+                val totalProductos = carritoDocs.size()
+                var productosCargados = 0
+
+                for (doc in carritoDocs) {
+                    val productoId = doc.getString("productoId") ?: continue
+
+                    db.collection("Productos").document(productoId)
+                        .get()
+                        .addOnSuccessListener { productoDoc ->
+                            productoDoc?.let {
+                                val producto = Producto(
+                                    id = it.id,
+                                    nombre = it.getString("Nombre") ?: "",
+                                    vendedorId = it.getString("VendedorID") ?: "",
+                                    imagenUrl = it.getString("ImagenURL") ?: "",
+                                    precio = it.getDouble("Precio") ?: 0.0,
+                                    descripcion = it.getString("Descripcion") ?: "",
+                                    vendedorNombre = it.getString("VendedorNombre") ?: ""
+                                )
+                                productosCarrito.add(producto)
+                            }
+                            productosCargados++
+                            if (productosCargados == totalProductos) {
+                                cargarRecycler()
+                            }
+                        }
+                        .addOnFailureListener {
+                            productosCargados++
+                            if (productosCargados == totalProductos) {
+                                cargarRecycler()
+                            }
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al cargar carrito", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
