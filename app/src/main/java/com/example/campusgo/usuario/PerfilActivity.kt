@@ -10,6 +10,7 @@ import com.example.campusgo.producto.CrearProductoActivity
 import com.example.campusgo.databinding.ActivityPerfilBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PerfilActivity : AppCompatActivity() {
 
@@ -21,11 +22,18 @@ class PerfilActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val usuario = Firebase.auth.currentUser
-        usuario?.let {
-            val nombre = it.email
-            binding.nombres.text = nombre
-            Log.d("PERFIL", "Nombre de usuario: $nombre")
-        }
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios").document(usuario?.uid ?: "").get()
+            .addOnSuccessListener { document ->
+                val nombre = document.getString("nombre")
+                val apellido = document.getString("apellido")
+                binding.nombres.text = nombre + " " + apellido
+            }
+            .addOnFailureListener { exception ->
+                Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
+            }
+
+
 
         binding.back.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
