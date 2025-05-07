@@ -25,10 +25,13 @@ class ListaProductosActivity : AppCompatActivity() {
         val categoriaId = intent.getStringExtra("categoriaId") ?: ""
         val categoriaNombre = intent.getStringExtra("categoriaNombre") ?: getString(R.string.home_title)
 
+        cargarProductosDesdeFirebase(categoriaId)
+
         binding.toolbarLista.title = categoriaNombre
         setSupportActionBar(binding.toolbarLista)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbarLista.setNavigationOnClickListener { finish() }
+
 
         adapter = ProductoAdapter(productos) { producto ->
             Intent(this, DetalleProductoActivity::class.java).apply {
@@ -38,19 +41,26 @@ class ListaProductosActivity : AppCompatActivity() {
 
         binding.rvProductos.layoutManager = LinearLayoutManager(this)
         binding.rvProductos.adapter = adapter
-
-        cargarProductosDesdeFirebase(categoriaId)
     }
 
     private fun cargarProductosDesdeFirebase(categoriaId: String) {
         FirebaseFirestore.getInstance()
-            .collection("productos")
-            .whereEqualTo("categoriaId", categoriaId)
+            .collection("Productos")
+            .whereEqualTo("CategoriaID", categoriaId)
             .get()
             .addOnSuccessListener { resultado ->
                 productos.clear()
                 for (document in resultado) {
-                    val producto = document.toObject(Producto::class.java).copy(id = document.id)
+                    val producto = Producto(
+                        id = document.getString("ID") ?: "",
+                        categoriaId = document.getString("CategoriaID") ?: "",
+                        descripcion = document.getString("Descripcion") ?: "",
+                        imagenUrl = document.getString("ImagenURL") ?: "",
+                        nombre = document.getString("Nombre") ?: "",
+                        precio = document.getDouble("Precio") ?: 0.0,
+                        vendedorId = document.getString("VendedorID") ?: "",
+                        vendedorNombre = document.getString("VendedorNombre") ?: ""
+                    )
                     productos.add(producto)
                 }
                 adapter.notifyDataSetChanged()
@@ -59,4 +69,5 @@ class ListaProductosActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error al cargar productos", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

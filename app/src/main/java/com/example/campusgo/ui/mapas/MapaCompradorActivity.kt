@@ -55,6 +55,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     private lateinit var posicionVendedor: GeoPoint
     private var ultimaPosicionVendedor: GeoPoint? = null
     private var marcadorVendedor: Marker? = null
+    lateinit var pedidoId : String
 
     private lateinit var geocoder: Geocoder
     private lateinit var roadManager: RoadManager
@@ -70,6 +71,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         map.onResume()
+        pedidoId = intent.getStringExtra("pedidoID").toString()
         lifecycleScope.launch {
             direccionFirestore()
             delay(6000)
@@ -182,7 +184,6 @@ class MapaCompradorActivity : AppCompatActivity() {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
-        Toast.makeText(baseContext, "Distancia: %.2f km".format(distancia), Toast.LENGTH_LONG).show()
 
         if (addresses != null && addresses.isNotEmpty()) {
             addressText = addresses[0].getAddressLine(0) ?: "Ubicación desconocida"
@@ -202,7 +203,6 @@ class MapaCompradorActivity : AppCompatActivity() {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
-        Toast.makeText(baseContext, "Distancia: %.2f km".format(distancia), Toast.LENGTH_LONG).show()
 
         if (addresses != null && addresses.isNotEmpty()) {
             addressText = addresses[0].getAddressLine(0) ?: "Ubicación desconocida"
@@ -210,7 +210,7 @@ class MapaCompradorActivity : AppCompatActivity() {
 
          marcadorVendedor = createMarker(
             p, addressText, "",
-            R.drawable.baseline_add_location_alt_24
+            R.drawable.baseline_arrow_circle_up_24
         )
         if (marcadorVendedor != null) {
             map.overlays.add(marcadorVendedor)
@@ -289,6 +289,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     fun direccionFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
+            .whereEqualTo("id", pedidoId)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -316,6 +317,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     fun posicionVendedoresFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
+            .whereEqualTo("id", pedidoId)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -370,7 +372,9 @@ class MapaCompradorActivity : AppCompatActivity() {
             roadOverlay!!.getOutlinePaint().setColor(Color.RED)
             roadOverlay!!.getOutlinePaint().setStrokeWidth(10F)
             map.getOverlays().add(roadOverlay)
-        }
+            var tiempo= road.mDuration/60
+            binding.tiempo.text = String.format("Duration: %.2f minutos", tiempo)
+            }
     }
 
 }

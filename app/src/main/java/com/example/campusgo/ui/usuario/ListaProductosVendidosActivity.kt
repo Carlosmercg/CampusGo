@@ -32,7 +32,7 @@ class ListaProductosVendidosActivity : AppCompatActivity() {
         //Create the adapter
         adapter = PedidoAdapter(mutableListOf()) { pedido ->
             val intent = Intent(this, MapaVendedorActivity::class.java)
-            intent.putExtra("vendedorID", pedido.vendedorId)
+            intent.putExtra("pedidoID", pedido.id)
             startActivity(intent)
         }
         //set the adapter to the recycler view

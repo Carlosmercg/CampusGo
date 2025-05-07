@@ -3,6 +3,7 @@ package com.example.campusgo.ui.compra
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusgo.data.models.Pedido
@@ -33,8 +34,9 @@ class ListaComprasPasadasActivity : AppCompatActivity() {
         binding.productos.layoutManager = LinearLayoutManager(this)
         //Create the adapter
         adapter = PedidoAdapter(mutableListOf()) { pedido ->
+
             val intent = Intent(this, MapaCompradorActivity::class.java)
-            intent.putExtra("compradorID", pedido.vendedorId)
+            intent.putExtra("pedidoID", pedido.id)
             startActivity(intent)
         }
         //set the adapter to the recycler view

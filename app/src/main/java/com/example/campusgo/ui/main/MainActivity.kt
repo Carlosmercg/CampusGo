@@ -7,6 +7,8 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.ui.auth.LoginActivity
 import com.example.campusgo.databinding.ActivityMainBinding
+import com.example.campusgo.ui.mapas.MapaCompradorActivity
+import com.example.campusgo.ui.mapas.MapaVendedorActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
