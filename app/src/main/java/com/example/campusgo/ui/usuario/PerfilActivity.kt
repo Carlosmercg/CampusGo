@@ -1,18 +1,18 @@
-package com.example.campusgo.usuario
+package com.example.campusgo.ui.usuario
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.R
-import com.example.campusgo.compra.ListaComprasPasadasActivity
+import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityPerfilBinding
-import com.example.campusgo.mapas.MapaCompradorActivity
-import com.example.campusgo.mapas.MapaVendedorActivity
-import com.example.campusgo.models.Usuario
-import com.example.campusgo.producto.CrearProductoActivity
+import com.example.campusgo.ui.mapas.MapaVendedorActivity
+import com.example.campusgo.ui.mapas.MapaCompradorActivity
+import com.example.campusgo.ui.producto.CrearProductoActivity
+import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.compra.ListaComprasPasadasActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,7 +39,6 @@ class PerfilActivity : AppCompatActivity() {
                 Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
             }
 
-        mostrarDatosUsuario()
 
         // Navegar al Home
         binding.back.setOnClickListener {

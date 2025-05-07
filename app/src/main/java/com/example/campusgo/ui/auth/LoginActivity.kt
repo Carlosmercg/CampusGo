@@ -1,4 +1,4 @@
-package com.example.campusgo.Ingresar
+package com.example.campusgo.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.campusgo.databinding.ActivityLoginBinding
 import com.example.campusgo.Ingresar.SignUpActivity
+import com.example.campusgo.ui.home.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException

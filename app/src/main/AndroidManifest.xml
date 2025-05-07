@@ -29,19 +29,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
-        <activity android:name=".compra.Codigo_NFC"
+        <activity android:name=".ui.compra.Codigo_NFC"
             android:exported="false"/>
         <activity
-            android:name=".compra.CalificarActivityComprador"
+            android:name=".ui.compra.CalificarActivityComprador"
             android:exported="false" />
         <activity
-            android:name=".venta.VentaActivity"
+            android:name=".ui.venta.VentaActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.Codigo_NFC_Comprador"
+            android:name=".ui.compra.Codigo_NFC_Comprador"
             android:exported="false" />
         <activity
-            android:name=".compra.CalificarActivityVendedor"
+            android:name=".ui.compra.CalificarActivityVendedor"
             android:exported="false" />
 
         <meta-data
@@ -58,64 +58,61 @@
         </provider>
 
         <activity
-            android:name=".usuario.ListaProductosVendidosActivity"
+            android:name=".ui.usuario.ListaProductosVendidosActivity"
             android:exported="false" />
         <activity
-            android:name=".producto.ListaProductosActivity"
+            android:name=".ui.producto.ListaProductosActivity"
             android:exported="false" />
         <activity
             android:name=".Ingresar.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.ListaComprasPasadasActivity"
+            android:name=".ui.compra.ListaComprasPasadasActivity"
             android:exported="false" />
         <activity
-            android:name=".usuario.PerfilActivity"
+            android:name=".ui.usuario.PerfilActivity"
             android:exported="false" />
         <activity
-            android:name=".usuario.EditarPerfilActivity"
+            android:name=".ui.usuario.EditarPerfilActivity"
             android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
-            android:name=".chat.ChatsActivity"
+            android:name=".ui.chat.ChatsActivity"
             android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
-            android:name=".compra.SeguimientoActivity"
+            android:name=".ui.compra.SeguimientoActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.CarritoActivity"
+            android:name=".ui.compra.CarritoActivity"
             android:exported="false" />
         <activity
-            android:name=".chat.ChatActivity"
+            android:name=".ui.chat.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.ComprarActivity"
+            android:name=".ui.compra.ComprarActivity"
             android:exported="false" />
         <activity
-            android:name=".mapas.MapaCompradorActivity"
+            android:name=".ui.mapas.MapaCompradorActivity"
             android:exported="false" />
         <activity
-            android:name=".mapas.MapaVendedorActivity"
+            android:name=".ui.mapas.MapaVendedorActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.CalificarActivityVendedor"
+            android:name=".ui.compra.NFCActivity"
             android:exported="false" />
         <activity
-            android:name=".compra.NFCActivity"
+            android:name=".ui.producto.DetalleProductoActivity"
             android:exported="false" />
         <activity
-            android:name=".producto.DetalleProductoActivity"
+            android:name=".ui.producto.CrearProductoActivity"
             android:exported="false" />
         <activity
-            android:name=".producto.CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Ingresar.HomeActivity"
+            android:name=".ui.home.HomeActivity"
             android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
         <activity
-            android:name=".Ingresar.LoginActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
         <activity
-            android:name=".Ingresar.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true">
 
             <intent-filter>

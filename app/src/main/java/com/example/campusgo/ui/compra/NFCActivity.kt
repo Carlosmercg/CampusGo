@@ -1,5 +1,5 @@
 // src/main/java/com/example/campusgo/compra/NFCActivity.kt
-package com.example.campusgo.compra
+package com.example.campusgo.ui.compra
 
 import android.app.PendingIntent
 import android.content.Intent

@@ -1,4 +1,4 @@
-package com.example.campusgo.venta
+package com.example.campusgo.ui.venta
 
 import android.os.Bundle
 import android.widget.Toast
@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
-import com.example.campusgo.adapters.ProductoAdapter
+import com.example.campusgo.data.models.Producto
+import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityVentaBinding
-import com.example.campusgo.models.Producto
-import com.example.campusgo.models.Usuario
+import com.example.campusgo.ui.adapters.ProductoAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat

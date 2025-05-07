@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.R
 import com.example.campusgo.ui.compra.CarritoActivity
 import com.example.campusgo.ui.chat.ChatsActivity
-import com.example.campusgo.ui.usuario.PerfilActivity
 import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BottomMenuActivity : AppCompatActivity() {

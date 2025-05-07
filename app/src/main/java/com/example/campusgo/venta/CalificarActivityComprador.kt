@@ -1,5 +1,4 @@
-// src/main/java/com/example/campusgo/compra/CalificarActivityVendedor.kt
-package com.example.campusgo.compra
+package com.example.campusgo.ui.compra
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,11 +6,11 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.campusgo.Ingresar.HomeActivity
 import com.example.campusgo.R
+import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityCalificarBinding
 import com.example.campusgo.databinding.ActivityCalificarCompradorBinding
-import com.example.campusgo.models.Usuario
+import com.example.campusgo.ui.home.HomeActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CalificarActivityComprador : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.example.campusgo.compra
+package com.example.campusgo.ui.compra
 
 import android.R.attr.title
 import android.content.Intent
@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
-import com.example.campusgo.BottomMenuActivity
+import com.example.campusgo.data.models.Producto
 import com.example.campusgo.databinding.ActivityCarritoBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.databinding.ItemVendedorBinding
-import com.example.campusgo.models.Producto
+import com.example.campusgo.ui.main.BottomMenuActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore

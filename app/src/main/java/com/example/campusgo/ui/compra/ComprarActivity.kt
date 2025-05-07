@@ -1,4 +1,4 @@
-package com.example.campusgo.compra
+package com.example.campusgo.ui.compra
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
+import com.example.campusgo.data.models.Producto
 import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
-import com.example.campusgo.models.Producto
-import com.example.campusgo.models.Usuario
-import com.example.campusgo.venta.VentaActivity
+import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.ui.venta.VentaActivity
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.auth
@@ -126,8 +126,8 @@ class ComprarActivity : AppCompatActivity() {
             db.collection("usuarios").document(uid)
                 .update("compras", FieldValue.arrayUnion(pedidoId))
 
-            db.collection("usuarios").document(uid)
-                .update("ventas", FieldValue.arrayUnion(productosSeleccionados[0].vendedorId))
+            db.collection("usuarios").document(productosSeleccionados[0].vendedorId)
+                .update("ventas", FieldValue.arrayUnion(pedidoId))
 
             Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
             obtenerUltimoPedidoId { pedidoId ->

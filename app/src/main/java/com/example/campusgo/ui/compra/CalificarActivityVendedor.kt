@@ -1,4 +1,4 @@
-package com.example.campusgo.compra
+package com.example.campusgo.ui.compra
 
 import android.os.Bundle
 import android.widget.ImageButton
@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
+import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityCalificarBinding
-import com.example.campusgo.models.Usuario
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CalificarActivityVendedor : AppCompatActivity() {

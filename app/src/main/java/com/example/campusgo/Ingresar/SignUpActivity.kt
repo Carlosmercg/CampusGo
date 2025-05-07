@@ -13,8 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivitySingupBinding
-import com.example.campusgo.models.Usuario
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.*
@@ -119,7 +119,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun recolectarDatos(): Usuario? {
-        val nombre = binding.etName.text.toString().trim()
+        val nombre = binding.etNombre.text.toString().trim()
         val apellido = binding.etApellido.text.toString().trim()
         val universidad = binding.etUni.text.toString().trim()
         val correo = binding.etEmail.text.toString().trim()
@@ -148,7 +148,7 @@ class SignUpActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 val uid = auth.currentUser?.uid ?: return@addOnSuccessListener mostrarToast("UID es null")
                 subirImagen(uri) { urlImagen ->
-                    val usuarioFinal = usuario.copy(id = uid, fotoCarnetUrl = urlImagen)
+                    val usuarioFinal = usuario.copy(id = uid, urlCarnet = urlImagen)
                     registrarEnFirestore(usuarioFinal)
                 }
             }
