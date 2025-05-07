@@ -3,14 +3,15 @@ package com.example.campusgo.ui.chat
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusgo.R
-import com.example.campusgo.ui.adapters.ChatAdapter
-import com.example.campusgo.databinding.ActivityChatsBinding
 import com.example.campusgo.data.models.Chat
+import com.example.campusgo.databinding.ActivityChatsBinding
+import com.example.campusgo.ui.adapters.ChatAdapter
+import com.example.campusgo.ui.main.BottomMenuActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.recyclerview.widget.LinearLayoutManager
 
-class ChatsActivity : AppCompatActivity() {
+class ChatsActivity : BottomMenuActivity() {
     private lateinit var binding: ActivityChatsBinding
     private lateinit var chatAdapter: ChatAdapter
     private val listaChats = mutableListOf<Chat>()
@@ -20,7 +21,7 @@ class ChatsActivity : AppCompatActivity() {
         binding = ActivityChatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1) Configurar la Toolbar como ActionBar
+        // Configurar Toolbar
         setSupportActionBar(binding.toolbarMensajeria)
         supportActionBar?.apply {
             title = getString(R.string.menu_chats)
@@ -28,10 +29,13 @@ class ChatsActivity : AppCompatActivity() {
             setHomeAsUpIndicator(R.drawable.ic_back)
         }
 
-        // 2) Configurar RecyclerView
+        // Configurar BottomNavigation
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_chats)
+
+        // Configurar RecyclerView
         setupRecyclerView()
 
-        // 3) Cargar datos (simulados)
+        // Datos de prueba
         loadDummyData()
     }
 
@@ -49,6 +53,7 @@ class ChatsActivity : AppCompatActivity() {
         chatAdapter = ChatAdapter(listaChats) { chatSeleccionado ->
             Intent(this, ChatActivity::class.java).apply {
                 putExtra("nombreUsuario", chatSeleccionado.nombreUsuario)
+                putExtra("chatId", chatSeleccionado.id)
             }.also { startActivity(it) }
         }
 
@@ -61,7 +66,7 @@ class ChatsActivity : AppCompatActivity() {
     private fun loadDummyData() {
         listaChats.apply {
             add(Chat("1", "Juan Pérez", "Hola, ¿tienes el libro disponible?", 1710853400))
-            add(Chat("2", "María López", "Gracias, ya realicé el pago.",     1710853460))
+            add(Chat("2", "María López", "Gracias, ya realicé el pago.", 1710853460))
         }
         chatAdapter.notifyDataSetChanged()
     }

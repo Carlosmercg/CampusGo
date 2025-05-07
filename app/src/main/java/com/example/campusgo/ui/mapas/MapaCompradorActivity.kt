@@ -210,7 +210,7 @@ class MapaCompradorActivity : AppCompatActivity() {
 
          marcadorVendedor = createMarker(
             p, addressText, "",
-            R.drawable.baseline_add_location_alt_24
+            R.drawable.baseline_arrow_circle_up_24
         )
         if (marcadorVendedor != null) {
             map.overlays.add(marcadorVendedor)

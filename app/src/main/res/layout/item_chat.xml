@@ -6,24 +6,43 @@
     android:layout_height="wrap_content"
     android:padding="12dp">
 
+    <!-- Imagen del usuario a la izquierda -->
+    <ImageView
+        android:id="@+id/imgPerfilChat"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Nombre del usuario -->
     <TextView
         android:id="@+id/txtNombreUsuario"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Nombre del usuario"
         android:textAppearance="?attr/textAppearanceBody1"
-        android:textStyle="bold"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imgPerfilChat"
+        app:layout_constraintTop_toTopOf="@id/imgPerfilChat" />
 
+    <!-- Último mensaje -->
     <TextView
         android:id="@+id/txtUltimoMensaje"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="25dp"
+        android:text="Último mensaje del chat"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/textHint"
+        app:layout_constraintBottom_toBottomOf="@id/imgPerfilChat"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/txtNombreUsuario"
-        app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario" />
 </androidx.constraintlayout.widget.ConstraintLayout>
