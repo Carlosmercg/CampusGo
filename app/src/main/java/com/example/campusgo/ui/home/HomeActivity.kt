@@ -93,6 +93,7 @@ class HomeActivity : BottomMenuActivity() {
             itemBinding.root.setOnClickListener {
                 val intent = Intent(this@HomeActivity, ListaProductosActivity::class.java)
                 intent.putExtra("categoriaNombre", categoria.nombre)
+                intent.putExtra("categoriaId", categoria.id)
                 startActivity(intent)
             }
         }
