@@ -48,7 +48,6 @@ android {
     }
 }
 
-
 dependencies {
     // Android Core & UI
     implementation(libs.androidx.core.ktx)
@@ -57,7 +56,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
-
 
     // UI extra
     implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -71,6 +69,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
 
 
     // Jetpack Lifecycle

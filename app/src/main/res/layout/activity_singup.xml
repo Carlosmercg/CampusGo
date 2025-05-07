@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Ingresar.SignUpActivity">
+    tools:context=".ui.auth.SignUpActivity">
 
     <ImageView
         android:id="@+id/backgroundImage"
@@ -19,6 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+
+
     <View
         android:id="@+id/overlay"
         android:layout_width="0dp"
@@ -28,6 +30,7 @@
         app:layout_constraintEnd_toEndOf="@id/backgroundImage"
         app:layout_constraintStart_toStartOf="@id/backgroundImage"
         app:layout_constraintTop_toTopOf="@id/backgroundImage" />
+
 
     <TextView
         android:id="@+id/txtTituloRegistro"
@@ -52,7 +55,7 @@
         android:layout_marginTop="4dp"/>
 
     <EditText
-        android:id="@+id/etName"
+        android:id="@+id/etNombre"
         style="@style/EditTextStyleW"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -75,7 +78,7 @@
         android:inputType="textPersonName"
         android:autofillHints="name"
         android:background="#90000000"
-        app:layout_constraintTop_toBottomOf="@id/etName"
+        app:layout_constraintTop_toBottomOf="@id/etNombre"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="24dp"
@@ -191,7 +194,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_crear_cuenta"
-        android:enabled="false"
+        android:enabled="true"
         android:backgroundTint="@color/primary"
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/uploadButtons"
@@ -199,4 +202,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

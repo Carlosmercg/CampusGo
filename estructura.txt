@@ -1,0 +1,168 @@
+.
+├── Documentación
+│   ├── CampusGo_1era_Iteracion-1.pdf
+│   ├── Especificacion_Requisitos_CampusGo.docx
+│   ├── Plan_Administracion_Proyecto_CampusGo.docx
+│   ├── Propuesta Proyecto (1).pdf
+│   └── VISUALIZACIÓN DE MOCKUPS.pdf
+├── Invalidate
+├── README.md
+├── Sync
+├── app
+│   ├── app
+│   │   └── src
+│   │       └── main
+│   │           └── res
+│   │               └── layout
+│   ├── build.gradle.kts
+│   ├── google-services.json
+│   ├── proguard-rules.pro
+│   ├── sampledata
+│   └── src
+│       ├── androidTest
+│       │   └── java
+│       │       └── com
+│       │           └── example
+│       │               └── campusgo
+│       │                   └── ExampleInstrumentedTest.kt
+│       ├── main
+│       │   ├── AndroidManifest.xml
+│       │   ├── java
+│       │   │   └── com
+│       │   │       └── example
+│       │   │           └── campusgo
+│       │   │               ├── data
+│       │   │               │   ├── models
+│       │   │               │   └── repository
+│       │   │               └── ui
+│       │   │                   ├── adapters
+│       │   │                   ├── auth
+│       │   │                   ├── chat
+│       │   │                   ├── compra
+│       │   │                   ├── home
+│       │   │                   ├── main
+│       │   │                   ├── mapas
+│       │   │                   ├── producto
+│       │   │                   └── usuario
+│       │   └── res
+│       │       ├── drawable
+│       │       │   ├── bandera_colombia.png
+│       │       │   ├── bg_campus.jpg
+│       │       │   ├── bg_message_received.xml
+│       │       │   ├── bg_message_sent.xml
+│       │       │   ├── credit_card.png
+│       │       │   ├── ic_arquitectura.png
+│       │       │   ├── ic_arrow.xml
+│       │       │   ├── ic_artes.png
+│       │       │   ├── ic_back.xml
+│       │       │   ├── ic_cart.png
+│       │       │   ├── ic_chats.jpg
+│       │       │   ├── ic_edit.xml
+│       │       │   ├── ic_educacion.png
+│       │       │   ├── ic_error.xml
+│       │       │   ├── ic_history.xml
+│       │       │   ├── ic_home.png
+│       │       │   ├── ic_launcher_background.xml
+│       │       │   ├── ic_launcher_foreground.xml
+│       │       │   ├── ic_logout.xml
+│       │       │   ├── ic_mecanica.png
+│       │       │   ├── ic_medicina.png
+│       │       │   ├── ic_menu.xml
+│       │       │   ├── ic_message.xml
+│       │       │   ├── ic_musica.png
+│       │       │   ├── ic_orders.xml
+│       │       │   ├── ic_placeholder.xml
+│       │       │   ├── ic_profile.png
+│       │       │   ├── ic_search.png
+│       │       │   ├── ic_sell.xml
+│       │       │   ├── ic_send.xml
+│       │       │   ├── ic_upload.xml
+│       │       │   ├── iconoderecha.jpg
+│       │       │   ├── icononfc.png
+│       │       │   ├── mapa.png
+│       │       │   ├── mapazul.jpg
+│       │       │   ├── nfc.jpg
+│       │       │   ├── ph_camera.xml
+│       │       │   ├── placeholder_usuario.jpg
+│       │       │   ├── reloj.png
+│       │       │   ├── shopping_bag.png
+│       │       │   └── star.jpg
+│       │       ├── layout
+│       │       │   ├── activity_calificar.xml
+│       │       │   ├── activity_carrito.xml
+│       │       │   ├── activity_chat.xml
+│       │       │   ├── activity_chats.xml
+│       │       │   ├── activity_comprar.xml
+│       │       │   ├── activity_crear_producto.xml
+│       │       │   ├── activity_detalle_producto.xml
+│       │       │   ├── activity_editar_perfil.xml
+│       │       │   ├── activity_home.xml
+│       │       │   ├── activity_lista_compras_pasadas.xml
+│       │       │   ├── activity_lista_productos.xml
+│       │       │   ├── activity_lista_productos_vendidos.xml
+│       │       │   ├── activity_login.xml
+│       │       │   ├── activity_main.xml
+│       │       │   ├── activity_mapa_comprador.xml
+│       │       │   ├── activity_mapa_vendedor.xml
+│       │       │   ├── activity_nfcactivity.xml
+│       │       │   ├── activity_perfil.xml
+│       │       │   ├── activity_seguimiento.xml
+│       │       │   ├── activity_singup.xml
+│       │       │   ├── item_carrito.xml
+│       │       │   ├── item_categoria.xml
+│       │       │   ├── item_chat.xml
+│       │       │   ├── item_mensaje.xml
+│       │       │   ├── item_producto.xml
+│       │       │   └── item_vendedor.xml
+│       │       ├── menu
+│       │       │   ├── bottom_menu.xml
+│       │       │   └── menu_carrito.xml
+│       │       ├── mipmap-anydpi-v26
+│       │       │   ├── ic_launcher.xml
+│       │       │   └── ic_launcher_round.xml
+│       │       ├── mipmap-hdpi
+│       │       │   ├── ic_launcher.webp
+│       │       │   └── ic_launcher_round.webp
+│       │       ├── mipmap-mdpi
+│       │       │   ├── ic_launcher.webp
+│       │       │   └── ic_launcher_round.webp
+│       │       ├── mipmap-xhdpi
+│       │       │   ├── ic_launcher.webp
+│       │       │   └── ic_launcher_round.webp
+│       │       ├── mipmap-xxhdpi
+│       │       │   ├── ic_launcher.webp
+│       │       │   └── ic_launcher_round.webp
+│       │       ├── mipmap-xxxhdpi
+│       │       │   ├── ic_launcher.webp
+│       │       │   └── ic_launcher_round.webp
+│       │       ├── values
+│       │       │   ├── colors.xml
+│       │       │   ├── strings.xml
+│       │       │   ├── styles.xml
+│       │       │   └── themes.xml
+│       │       ├── values-night
+│       │       │   └── themes.xml
+│       │       └── xml
+│       │           ├── backup_rules.xml
+│       │           ├── data_extraction_rules.xml
+│       │           └── provider_paths.xml
+│       └── test
+│           └── java
+│               └── com
+│                   └── example
+│                       └── campusgo
+│                           └── ExampleUnitTest.kt
+├── build.gradle.kts
+├── estructura.txt
+├── gradle
+│   ├── libs.versions.toml
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── local.properties
+└── settings.gradle.kts
+
+53 directories, 113 files

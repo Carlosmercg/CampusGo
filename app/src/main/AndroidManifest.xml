@@ -97,6 +97,9 @@
             android:name=".mapas.MapaVendedorActivity"
             android:exported="false" />
         <activity
+            android:name=".compra.CalificarActivityVendedor"
+            android:exported="false" />
+        <activity
             android:name=".compra.NFCActivity"
             android:exported="false" />
         <activity
@@ -107,10 +110,10 @@
             android:exported="false" />
         <activity
             android:name=".Ingresar.HomeActivity"
-            android:exported="false" />
+            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
         <activity
             android:name=".Ingresar.LoginActivity"
-            android:exported="true" />
+            android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
         <activity
             android:name=".Ingresar.MainActivity"
             android:exported="true">
