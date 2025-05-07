@@ -29,7 +29,6 @@ class PerfilActivity : AppCompatActivity() {
                 val apellido = document.getString("apellido")
                 val fotoPerfil = document.getString("fotoPerfilURL")
                 binding.nombres.text = nombre + " " + apellido
-                binding.profilePicture.
             }
             .addOnFailureListener { exception ->
                 Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
