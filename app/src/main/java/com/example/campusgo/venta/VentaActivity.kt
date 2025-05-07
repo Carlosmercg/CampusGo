@@ -1,4 +1,4 @@
-package com.example.campusgo.compra
+package com.example.campusgo.venta
 
 import android.os.Bundle
 import android.widget.Toast
