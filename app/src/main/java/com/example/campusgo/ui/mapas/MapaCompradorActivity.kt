@@ -182,7 +182,6 @@ class MapaCompradorActivity : AppCompatActivity() {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
-        Toast.makeText(baseContext, "Distancia: %.2f km".format(distancia), Toast.LENGTH_LONG).show()
 
         if (addresses != null && addresses.isNotEmpty()) {
             addressText = addresses[0].getAddressLine(0) ?: "Ubicación desconocida"
@@ -202,7 +201,6 @@ class MapaCompradorActivity : AppCompatActivity() {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
-        Toast.makeText(baseContext, "Distancia: %.2f km".format(distancia), Toast.LENGTH_LONG).show()
 
         if (addresses != null && addresses.isNotEmpty()) {
             addressText = addresses[0].getAddressLine(0) ?: "Ubicación desconocida"
@@ -370,7 +368,9 @@ class MapaCompradorActivity : AppCompatActivity() {
             roadOverlay!!.getOutlinePaint().setColor(Color.RED)
             roadOverlay!!.getOutlinePaint().setStrokeWidth(10F)
             map.getOverlays().add(roadOverlay)
-        }
+            var tiempo= road.mDuration/60
+            binding.tiempo.text = String.format("Duration: %.2f minutos", tiempo)
+            }
     }
 
 }
