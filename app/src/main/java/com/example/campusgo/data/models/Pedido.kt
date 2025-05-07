@@ -1,5 +1,6 @@
 package com.example.campusgo.data.models
 
+import android.os.Parcel
 import com.google.firebase.Timestamp
 
 data class Pedido(
@@ -7,10 +8,12 @@ data class Pedido(
     val compradorId: String,
     val vendedorId: String,
     val productos: List<Producto>,
-    val estado: String,
+    val estado: String = "",
     val fecha: Timestamp,
     val direccion: String,
     val latVendedor: Double,
     val longVendedor: Double,
     val metodoPago: String
-)
+) {
+    constructor() : this("", "", "", emptyList(), "", Timestamp.now(), "", 0.0, 0.0, "")
+}

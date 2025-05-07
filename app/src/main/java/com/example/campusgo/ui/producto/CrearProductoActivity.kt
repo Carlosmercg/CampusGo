@@ -40,6 +40,7 @@ class CrearProductoActivity : AppCompatActivity() {
 
         }
 
+        inicializarSpinner()
 
     }
 
@@ -87,7 +88,7 @@ class CrearProductoActivity : AppCompatActivity() {
                 binding.categoria.adapter = adapter
             }
             .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al leer pedidos", exception)
+                Log.e("Firestore", "Error al leer productos", exception)
             }
     }
 }

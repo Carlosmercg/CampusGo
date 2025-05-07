@@ -48,7 +48,7 @@ class PerfilActivity : AppCompatActivity() {
         }
 
         binding.pedidos.setOnClickListener {
-            val intent = Intent(this, ListaComprasPasadasActivity::class.java)
+            val intent = Intent(this, ListaProductosVendidosActivity::class.java)
             startActivity(intent)
         }
 

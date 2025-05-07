@@ -11,4 +11,7 @@ data class Producto(
     val imagenUrl: String = "",
     val vendedorNombre: String = "",
     val descripcion: String = ""
-) : Serializable
+) : Serializable {
+
+    constructor() : this("", "", "", "", 0.0, "", "", "")
+}

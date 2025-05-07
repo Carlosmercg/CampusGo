@@ -1,85 +1,65 @@
 package com.example.campusgo.ui.compra
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.campusgo.R
+import com.example.campusgo.data.models.Pedido
 import com.example.campusgo.databinding.ActivityListaComprasPasadasBinding
-import com.example.campusgo.databinding.ItemCarritoBinding
-import com.example.campusgo.data.models.Producto
-import com.google.firebase.auth.FirebaseAuth
+import com.example.campusgo.databinding.ActivityListaProductosVendidosBinding
+import com.example.campusgo.ui.adapters.PedidoAdapter
+import com.example.campusgo.ui.mapas.MapaCompradorActivity
+import com.example.campusgo.ui.mapas.MapaVendedorActivity
+import com.example.campusgo.ui.producto.DetalleProductoActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ListaComprasPasadasActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityListaComprasPasadasBinding
-    private val productosComprados = mutableListOf<Producto>()
+    private lateinit var adapter: PedidoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListaComprasPasadasBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.recyclerCarrito.layoutManager = LinearLayoutManager(this)
-        binding.recyclerCarrito.adapter = ComprasAdapter()
+        binding.back.setOnClickListener {
+            finish()
+        }
+        // Set the layout manager here
+        binding.productos.layoutManager = LinearLayoutManager(this)
+        //Create the adapter
+        adapter = PedidoAdapter(mutableListOf()) { pedido ->
+            val intent = Intent(this, MapaCompradorActivity::class.java)
+            intent.putExtra("compradorID", pedido.vendedorId)
+            startActivity(intent)
+        }
+        //set the adapter to the recycler view
+        binding.productos.adapter = adapter
 
-        cargarComprasDelUsuario()
+        inicializarLista()
+
     }
 
-    private fun cargarComprasDelUsuario() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+    private fun inicializarLista() {
         val db = FirebaseFirestore.getInstance()
-
-        db.collection("usuarios").document(uid).get()
-            .addOnSuccessListener { doc ->
-                val comprasIds = doc.get("compras") as? List<String> ?: emptyList()
-                if (comprasIds.isEmpty()) return@addOnSuccessListener
-
-                db.collection("productos")
-                    .whereIn("id", comprasIds)
-                    .get()
-                    .addOnSuccessListener { result ->
-                        productosComprados.clear()
-                        for (productoDoc in result) {
-                            val producto = productoDoc.toObject(Producto::class.java)
-                            productosComprados.add(producto)
-                        }
-                        binding.recyclerCarrito.adapter?.notifyDataSetChanged()
-                    }
+        val usuario = Firebase.auth.currentUser
+        db.collection("Pedidos")
+            .whereEqualTo("compradorID", usuario?.uid)
+            .get()
+            .addOnSuccessListener { result ->
+                val pedidos = mutableListOf<Pedido>()
+                for (document in result) {
+                    pedidos.add(document.toObject(Pedido::class.java))
+                }
+                // Update the data in the adapter using the correct method
+                adapter.updateData(pedidos)
             }
-    }
-
-    inner class ComprasAdapter : RecyclerView.Adapter<ComprasAdapter.ProductoViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductoViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val itemBinding = ItemCarritoBinding.inflate(inflater, parent, false)
-            return ProductoViewHolder(itemBinding)
-        }
-
-        override fun getItemCount(): Int = productosComprados.size
-
-        override fun onBindViewHolder(holder: ProductoViewHolder, position: Int) {
-            holder.bind(productosComprados[position])
-        }
-
-        inner class ProductoViewHolder(private val binding: ItemCarritoBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-
-            fun bind(producto: Producto) {
-                binding.txtNombreProductoCarrito.text = producto.nombre
-                binding.txtPrecioProductoCarrito.text = "$${producto.precio}"
-
-                Glide.with(binding.imgProductoCarrito.context)
-                    .load(producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
-                    .into(binding.imgProductoCarrito)
-
-                binding.btnEliminarProducto.visibility = android.view.View.GONE
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error al leer productos", exception)
             }
-        }
     }
 }
