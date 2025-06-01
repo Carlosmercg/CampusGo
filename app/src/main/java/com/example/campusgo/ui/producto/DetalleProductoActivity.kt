@@ -8,6 +8,7 @@ import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityDetalleProductoBinding
 import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DetalleProductoActivity : AppCompatActivity() {
@@ -41,7 +42,8 @@ class DetalleProductoActivity : AppCompatActivity() {
         }
 
         binding.btnAgregarCarrito.setOnClickListener {
-            Toast.makeText(this, "${producto.nombre} agregado al carrito", Toast.LENGTH_SHORT).show()
+            agregarAlCarrito(producto)
+
         }
     }
 
@@ -75,6 +77,38 @@ class DetalleProductoActivity : AppCompatActivity() {
                 binding.txtNombreVendedor.text = "Error"
                 binding.txtUniversidad.text = "-"
                 Toast.makeText(this, "Error al cargar vendedor", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun agregarAlCarrito(producto: Producto) {
+        val auth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
+
+        val compradorId = auth.currentUser?.uid
+
+        if (compradorId == null) {
+            // Usuario no autenticado
+            println("Error: Usuario no autenticado")
+            return
+        }
+
+        val carritoData = hashMapOf(
+            "compradorId" to compradorId,
+            "imagenUrl" to producto.imagenUrl,
+            "nombre" to producto.nombre,
+            "precio" to producto.precio,
+            "productoId" to producto.id,
+            "vendedorId" to producto.vendedorId,
+            "estado" to "activo"
+        )
+
+        db.collection("Carrito")
+            .add(carritoData)
+            .addOnSuccessListener { documentReference ->
+                Toast.makeText(this, "${producto.nombre} agregado al carrito", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "${producto.nombre} Error al agregar al carrito", Toast.LENGTH_SHORT).show()
             }
     }
 }
