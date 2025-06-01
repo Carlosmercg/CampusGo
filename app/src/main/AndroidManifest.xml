@@ -29,8 +29,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
-        <activity android:name=".ui.compra.Codigo_NFC"
-            android:exported="false"/>
+        <activity
+            android:name=".ui.mapas.MapaDireccionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.compra.Codigo_NFC"
+            android:exported="false" />
         <activity
             android:name=".ui.venta.CalificarActivityComprador"
             android:exported="false" />
@@ -114,7 +118,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recorrer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.mapas.MapaDireccionActivity">
+
+    <!-- Mapa -->
+
+    <!-- Campo de texto encima del mapa -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/osmap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="40dp"
+        android:layout_gravity="top"
+        android:hint="Buscar lugar..."
+        android:backgroundTint="#bb0099cc"
+        android:padding="15dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="#eeeeee"
+        android:inputType="text"
+        android:imeOptions="actionSend"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#bb0099cc"
+        android:text="Guardar Direccion" />
+
+</FrameLayout>

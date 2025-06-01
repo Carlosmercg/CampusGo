@@ -253,7 +253,6 @@ class MapaVendedorActivity : AppCompatActivity() {
                             drawRoute(posicion,posicionEntrega)
                         }
                         val firestore = FirebaseFirestore.getInstance()
-                        val pedidoId = "fcFwgPfYyu9O6gAzftPD"
 
                         val nuevaUbicacion = mapOf(
                             "latvendedor" to newPosition.latitude,
