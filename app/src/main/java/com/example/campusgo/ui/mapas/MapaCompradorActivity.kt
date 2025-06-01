@@ -325,6 +325,12 @@ class MapaCompradorActivity : AppCompatActivity() {
                     val lng = document.getDouble("longvendedor")
                     val vendedorID = document.getString("vendedorID") ?: "Desconocido"
 
+                    if (vendedorID != null) {
+                        buscarNombrevendedor(vendedorID) { nombre ->
+                            binding.Vendedor.text = nombre
+                        }
+                    }
+
                     if (lat != null && lng != null) {
                         val location = LatLng(lat, lng)
                         val direccion = findAddress(location) ?: "Ubicación desconocida"
@@ -348,6 +354,21 @@ class MapaCompradorActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error al leer vendedores", exception)
+            }
+    }
+
+    fun buscarNombrevendedor(vendedorId: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(vendedorId)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val nombre = usuarioDoc.getString("nombre") ?: "Nombre desconocido"
+                callback(nombre)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener nombre del vendedor", e)
+                callback("Nombre desconocido")
             }
     }
 
