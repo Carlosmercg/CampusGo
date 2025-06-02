@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -13,7 +15,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 
-class SubidorImagenes(private val context: Context) {
+class ManejadorImagenesAPI(private val context: Context) {
 
     private val cliente = OkHttpClient()
     private val apiKey = obtenerApiKeyDesdeManifest()
@@ -85,6 +87,25 @@ class SubidorImagenes(private val context: Context) {
     private fun runOnUi(action: () -> Unit) {
         (context as? AppCompatActivity)?.runOnUiThread { action() }
     }
+
+    fun mostrarImagenDesdeUrl(
+        url: String,
+        imageView: ImageView,
+        context: Context,
+        placeholderRes: Int? = null,
+        errorRes: Int? = null
+    ) {
+        val glideRequest = Glide.with(context).load(url)
+
+        // Opcional: aplicar placeholder si se proporciona
+        placeholderRes?.let { glideRequest.placeholder(it) }
+
+        // Opcional: aplicar imagen de error si se proporciona
+        errorRes?.let { glideRequest.error(it) }
+
+        glideRequest.into(imageView)
+    }
+
 
     private fun obtenerApiKeyDesdeManifest(): String {
         return try {
