@@ -64,9 +64,6 @@
             android:name=".ui.producto.ListaProductosActivity"
             android:exported="false" />
         <activity
-            android:name=".Ingresar.SignUpActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.compra.ListaComprasPasadasActivity"
             android:exported="false" />
         <activity
@@ -76,7 +73,7 @@
             android:name=".ui.usuario.EditarPerfilActivity"
             android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
-            android:name=".ui.chat.ChatsActivity"
+            android:name=".ui.chat.ChatsListActivity"
             android:exported="false" /> <!-- Actividades de la aplicación -->
         <activity
             android:name=".ui.compra.SeguimientoActivity"

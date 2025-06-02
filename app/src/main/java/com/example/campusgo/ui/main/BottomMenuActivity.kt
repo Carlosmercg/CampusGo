@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.R
 import com.example.campusgo.ui.compra.CarritoActivity
-import com.example.campusgo.ui.chat.ChatsActivity
+import com.example.campusgo.ui.chat.ChatsListActivity
 import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -37,7 +37,7 @@ open class BottomMenuActivity : AppCompatActivity() {
                 }
                 R.id.nav_chats -> {
                     if (currentActivityId != R.id.nav_chats) {
-                        startActivity(Intent(this, ChatsActivity::class.java))
+                        startActivity(Intent(this, ChatsListActivity::class.java))
                         finish()
                     }
                     true
