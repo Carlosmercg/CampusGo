@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.compra.ComprarActivity">
+    tools:context=".ui.compra.ComprarActivity"
+    android:paddingTop="30dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -51,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvLabelHora" />
 
-        <EditText
+        <TextView
             android:id="@+id/etPuntoEntrega"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

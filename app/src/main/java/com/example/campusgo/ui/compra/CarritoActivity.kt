@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Producto
+import com.example.campusgo.data.models.ProductoCarrito
 import com.example.campusgo.databinding.ActivityCarritoBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.databinding.ItemVendedorBinding
@@ -22,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CarritoActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityCarritoBinding
-    private val productosCarrito = mutableListOf<Producto>()
+    private val productosCarrito = mutableListOf<ProductoCarrito>()
     private lateinit var adapter: RecyclerView.Adapter<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +44,7 @@ class CarritoActivity : BottomMenuActivity() {
 
     private fun cargarRecycler() {
         val items = mutableListOf<Any>()
-        productosCarrito.groupBy { it.vendedorNombre }.forEach { (vendedor, productos) ->
+        productosCarrito.groupBy { it.producto.vendedorNombre }.forEach { (vendedor, productos) ->
             items.add(vendedor)
             items.addAll(productos)
         }
@@ -66,7 +67,7 @@ class CarritoActivity : BottomMenuActivity() {
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                 if (holder is VendedorVH) holder.bind(items[position] as String)
-                else if (holder is ProductoVH) holder.bind(items[position] as Producto)
+                else if (holder is ProductoVH) holder.bind(items[position] as ProductoCarrito)
             }
 
             inner class VendedorVH(private val vb: ItemVendedorBinding) :
@@ -74,7 +75,10 @@ class CarritoActivity : BottomMenuActivity() {
                 fun bind(vendedorNombre: String) {
                     vb.txtVendedor.text = vendedorNombre
                     vb.btnConfirmar.setOnClickListener {
-                        val productosDelVendedor = productosCarrito.filter { it.vendedorNombre == vendedorNombre }
+                        val productosDelVendedor = productosCarrito
+                            .filter { it.producto.vendedorNombre == vendedorNombre }
+                            .map { it.producto }
+
                         val intent = Intent(this@CarritoActivity, ComprarActivity::class.java)
                         intent.putExtra("productos", ArrayList(productosDelVendedor))
                         startActivity(intent)
@@ -84,17 +88,18 @@ class CarritoActivity : BottomMenuActivity() {
 
             inner class ProductoVH(private val pb: ItemCarritoBinding) :
                 RecyclerView.ViewHolder(pb.root) {
-                fun bind(producto: Producto) {
-                    pb.txtNombreProductoCarrito.text = producto.nombre
-                    pb.txtPrecioProductoCarrito.text = "$${producto.precio}"
+                fun bind(producto: ProductoCarrito) {
+                    pb.txtNombreProductoCarrito.text = producto.producto.nombre
+                    pb.txtPrecioProductoCarrito.text = "$${producto.producto.precio}"
 
                     Glide.with(pb.imgProductoCarrito.context)
-                        .load(producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
+                        .load(producto.producto.imagenUrl.ifEmpty { R.drawable.ic_placeholder })
                         .into(pb.imgProductoCarrito)
 
                     pb.btnEliminarProducto.setOnClickListener {
                         productosCarrito.remove(producto)
                         cargarRecycler()
+                        eliminarProductoDelCarrito(producto)
                     }
                 }
             }
@@ -111,6 +116,7 @@ class CarritoActivity : BottomMenuActivity() {
 
         db.collection("Carrito")
             .whereEqualTo("compradorId", uid)
+            .whereEqualTo("estado", "activo")
             .get()
             .addOnSuccessListener { carritoDocs ->
                 if (carritoDocs.isEmpty) {
@@ -126,6 +132,7 @@ class CarritoActivity : BottomMenuActivity() {
 
                 for (doc in carritoDocs) {
                     val productoId = doc.getString("productoId") ?: continue
+                    val carritoDocId = doc.id
 
                     db.collection("Productos").document(productoId)
                         .get()
@@ -140,7 +147,7 @@ class CarritoActivity : BottomMenuActivity() {
                                     descripcion = it.getString("Descripcion") ?: "",
                                     vendedorNombre = it.getString("VendedorNombre") ?: ""
                                 )
-                                productosCarrito.add(producto)
+                                productosCarrito.add(ProductoCarrito(producto, carritoDocId))
                             }
                             productosCargados++
                             if (productosCargados == totalProductos) {
@@ -160,7 +167,19 @@ class CarritoActivity : BottomMenuActivity() {
             }
     }
 
-
+    private fun eliminarProductoDelCarrito(productoCarrito: ProductoCarrito) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("Carrito").document(productoCarrito.carritoDocId)
+            .delete()
+            .addOnSuccessListener {
+                productosCarrito.remove(productoCarrito)
+                cargarRecycler()
+                Toast.makeText(this, "Producto eliminado del carrito", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al eliminar producto", Toast.LENGTH_SHORT).show()
+            }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == android.R.id.home) {
