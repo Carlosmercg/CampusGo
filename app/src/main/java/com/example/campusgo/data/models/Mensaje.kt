@@ -4,6 +4,7 @@ data class Mensaje(
     val contenido: String = "",
     val emisor: String = "",
     val receptor: String = "",
-    val timestamp: Long = System.currentTimeMillis(),
-    val esEnviado: Boolean = false  // Solo se usa para UI
+    val timestamp: Long = 0,
+    @Transient var esEnviado: Boolean = false
 )
+

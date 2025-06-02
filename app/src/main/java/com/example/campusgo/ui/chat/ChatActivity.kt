@@ -1,16 +1,16 @@
 package com.example.campusgo.ui.chat
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Mensaje
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityChatBinding
 import com.example.campusgo.ui.adapters.MensajeAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.DatabaseReference
 
 class ChatActivity : AppCompatActivity() {
 
@@ -39,23 +39,30 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun configurarToolbar() {
-        val nombreUsuario = intent.getStringExtra("nombreUsuario") ?: "Usuario"
+        val nombre = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         val fotoPerfilUrl = intent.getStringExtra("fotoPerfilUrl")
 
         setSupportActionBar(binding.chatToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        binding.nombreUsuarioToolbar.text = nombreUsuario
-        binding.btnBack.setOnClickListener { finish() }
+        binding.nombreUsuarioToolbar.text = nombre
 
-        if (!fotoPerfilUrl.isNullOrEmpty()) {
-            Glide.with(this)
-                .load(fotoPerfilUrl)
-                .placeholder(R.drawable.ic_profile)
-                .into(binding.imgPerfilToolbar)
-        } else {
-            binding.imgPerfilToolbar.setImageResource(R.drawable.ic_profile)
+        // ✅ Volver a la lista de chats
+        binding.btnBack.setOnClickListener {
+            val intent = Intent(this, ChatsListActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            finish()
         }
+
+        // ✅ Cargar foto desde el Manejador de Imágenes
+        ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+            url = fotoPerfilUrl,
+            imageView = binding.imgPerfilToolbar,
+            context = this,
+            placeholderRes = R.drawable.ic_profile,
+            errorRes = R.drawable.ic_profile
+        )
     }
 
     private fun setupRecyclerView() {
@@ -77,13 +84,11 @@ class ChatActivity : AppCompatActivity() {
                     timestamp = System.currentTimeMillis()
                 )
 
-                // Enviar a Firebase
                 FirebaseDatabase.getInstance()
                     .getReference("chats/$chatId/messages")
                     .push()
                     .setValue(mensaje)
 
-                // Limpiar campo
                 binding.etMensaje.text.clear()
             }
         }
@@ -99,7 +104,6 @@ class ChatActivity : AppCompatActivity() {
                 for (msgSnap in snapshot.children) {
                     val msg = msgSnap.getValue(Mensaje::class.java)
                     if (msg != null) {
-                        // Marcar si es enviado o recibido para el adapter
                         val msgConTipo = msg.copy(esEnviado = msg.emisor == uidActual)
                         mensajes.add(msgConTipo)
                     }
@@ -109,7 +113,7 @@ class ChatActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Manejo de errores
+                // Manejo de errores (puedes usar Toast o Log)
             }
         })
     }

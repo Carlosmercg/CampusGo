@@ -78,6 +78,13 @@
         <item>Educación</item>
     </string-array>
 
+    <string-array name="filtros_busqueda">
+        <item>Nombre</item>
+        <item>Carrera</item>
+        <item>Universidad</item>
+    </string-array>
+
+
     <!-- ========== BOTONES GENERALES ========== -->
     <string name="btn_eliminar">Eliminar</string>
 

@@ -2,22 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.campusgo">
-    <!-- Permisos necesarios -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.NFC" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" /> <!-- Acceso a galería / almacenamiento -->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <!-- Permisos necesarios -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Requiere cámara obligatoriamente -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -29,24 +30,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
-        <activity android:name=".ui.compra.Codigo_NFC"
-            android:exported="false"/>
-        <activity
-            android:name=".ui.venta.CalificarActivityComprador"
-            android:exported="false" />
-        <activity
-            android:name=".ui.venta.VentaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.venta.Codigo_NFC_Comprador"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.CalificarActivityVendedor"
-            android:exported="false" />
 
-        <meta-data
-            android:name="IMGBB_API_KEY"
-            android:value="08f73b3fbe9b508ca8e5fe30838e0965" /> <!-- FileProvider para la cámara -->
+        <!-- File Provider para guardar imágenes -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -57,67 +42,37 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name=".ui.usuario.ListaProductosVendidosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.ListaProductosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.ListaComprasPasadasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usuario.PerfilActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usuario.EditarPerfilActivity"
-            android:exported="false" /> <!-- Actividades de la aplicación -->
-        <activity
-            android:name=".ui.chat.ChatsListActivity"
-            android:exported="false" /> <!-- Actividades de la aplicación -->
-        <activity
-            android:name=".ui.compra.SeguimientoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.CarritoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.chat.ChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.ComprarActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.mapas.MapaCompradorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.mapas.MapaVendedorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.NFCActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.DetalleProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.home.HomeActivity"
-            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
-        <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="true">
-
+        <!-- Actividades registradas -->
+        <activity android:name=".ui.main.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity android:name=".ui.auth.LoginActivity" android:exported="true" />
+        <activity android:name=".ui.auth.SignUpActivity" android:exported="false" />
+        <activity android:name=".ui.chat.BuscarUsuariosActivity" android:exported="false" />
+        <activity android:name=".ui.chat.ChatActivity" android:exported="false" />
+        <activity android:name=".ui.chat.ChatsListActivity" android:exported="true" />
+        <activity android:name=".ui.compra.CalificarActivityVendedor" android:exported="false" />
+        <activity android:name=".ui.compra.CarritoActivity" android:exported="false" />
+        <activity android:name=".ui.compra.Codigo_NFC" android:exported="false" />
+        <activity android:name=".ui.compra.ComprarActivity" android:exported="false" />
+        <activity android:name=".ui.compra.ListaComprasPasadasActivity" android:exported="false" />
+        <activity android:name=".ui.compra.NFCActivity" android:exported="false" />
+        <activity android:name=".ui.compra.SeguimientoActivity" android:exported="false" />
+        <activity android:name=".ui.home.HomeActivity" android:exported="false" />
+        <activity android:name=".ui.mapas.MapaCompradorActivity" android:exported="false" />
+        <activity android:name=".ui.mapas.MapaVendedorActivity" android:exported="false" />
+        <activity android:name=".ui.producto.CrearProductoActivity" android:exported="false" />
+        <activity android:name=".ui.producto.DetalleProductoActivity" android:exported="false" />
+        <activity android:name=".ui.producto.ListaProductosActivity" android:exported="false" />
+        <activity android:name=".ui.usuario.EditarPerfilActivity" android:exported="false" />
+        <activity android:name=".ui.usuario.ListaProductosVendidosActivity" android:exported="false" />
+        <activity android:name=".ui.usuario.PerfilActivity" android:exported="false" />
+        <activity android:name=".ui.venta.CalificarActivityComprador" android:exported="false" />
+        <activity android:name=".ui.venta.Codigo_NFC_Comprador" android:exported="false" />
+        <activity android:name=".ui.venta.VentaActivity" android:exported="false" />
 
+    </application>
 </manifest>

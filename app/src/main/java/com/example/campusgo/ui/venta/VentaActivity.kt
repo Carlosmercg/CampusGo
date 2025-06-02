@@ -125,9 +125,9 @@ class VentaActivity : AppCompatActivity() {
                 val usr = doc.toObject(Usuario::class.java)
                 if (usr != null) {
                     binding.tvCompradorNombre.text = "${usr.nombre} ${usr.apellido}"
-                    if (usr.fotoPerfilUrl.isNotBlank()) {
+                    if (usr.urlFotoPerfil.isNotBlank()) {
                         Glide.with(this)
-                            .load(usr.fotoPerfilUrl)
+                            .load(usr.urlFotoPerfil)
                             .placeholder(R.drawable.placeholder_usuario)
                             .error(R.drawable.placeholder_usuario)
                             .into(binding.imgComprador)

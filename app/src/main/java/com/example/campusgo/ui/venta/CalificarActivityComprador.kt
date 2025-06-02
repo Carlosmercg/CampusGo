@@ -37,9 +37,9 @@ class CalificarActivityComprador : AppCompatActivity() {
                     // Universidad
                     binding.textView9.text = usr.universidad
                     // Foto de perfil
-                    if (usr.fotoPerfilUrl.isNotBlank()) {
+                    if (usr.urlFotoPerfil.isNotBlank()) {
                         Glide.with(this)
-                            .load(usr.fotoPerfilUrl)
+                            .load(usr.urlFotoPerfil)
                             .placeholder(R.drawable.placeholder_usuario)
                             .error(R.drawable.placeholder_usuario)
                             .into(binding.imageView15)
