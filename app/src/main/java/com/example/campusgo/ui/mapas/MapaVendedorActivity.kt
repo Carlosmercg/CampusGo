@@ -43,8 +43,11 @@ import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
@@ -72,7 +75,7 @@ class MapaVendedorActivity : AppCompatActivity() {
     private lateinit var roadManager: RoadManager
 
     // Radio de la Tierra usado para cálculos de distancia
-    val RADIUS_OF_EARTH_KM = 6378
+    private val RADIUS_OF_EARTH_KM = 6378
 
     // Sensor de luz para cambiar el estilo del mapa
     private lateinit var sensorManager: SensorManager
@@ -94,7 +97,7 @@ class MapaVendedorActivity : AppCompatActivity() {
     /**
      * Callback para cuando se activa la ubicación del dispositivo (GPS).
      */
-    val locationSettings = registerForActivityResult(
+    private val locationSettings = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult(),
         ActivityResultCallback {
             if(it.resultCode == RESULT_OK){
@@ -106,7 +109,7 @@ class MapaVendedorActivity : AppCompatActivity() {
     /**
      * Callback para el permiso de ubicación.
      */
-    val locationPermission = registerForActivityResult(
+    private val locationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
         ActivityResultCallback {
             if(it){
@@ -164,11 +167,6 @@ class MapaVendedorActivity : AppCompatActivity() {
         geocoder = Geocoder(baseContext)
         roadManager = OSRMRoadManager(this, "ANDROID")
 
-        // Permite la ejecución de operaciones de red en el hilo principal
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        map.overlays.add(createOverlayEvents())
-
         // Inicializa sensores de luz
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
@@ -187,7 +185,7 @@ class MapaVendedorActivity : AppCompatActivity() {
     /**
      * Configura la verificación de servicios de ubicación (GPS).
      */
-    fun locationSettings(){
+    private fun locationSettings(){
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val client: SettingsClient = LocationServices.getSettingsClient(this)
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
@@ -272,14 +270,14 @@ class MapaVendedorActivity : AppCompatActivity() {
      * Actualiza la posición actual en la interfaz de usuario.
      * @param location Nueva ubicación
      */
-    fun updateUI(location : Location){
+    private fun updateUI(location : Location){
         Log.i("GPS_APP", "(lat: ${location.latitude}, long: ${location.longitude})")
         posicion = GeoPoint(location.latitude, location.longitude)
     }
     /**
      * Inicia la recepción de actualizaciones de ubicación.
      */
-    fun startLocationUpdates(){
+    private fun startLocationUpdates(){
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             locationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         }
@@ -287,10 +285,10 @@ class MapaVendedorActivity : AppCompatActivity() {
     /**
      * Detiene la recepción de actualizaciones de ubicación.
      */
-    fun stopLocationUpdates(){
+    private fun stopLocationUpdates(){
         locationClient.removeLocationUpdates(locationCallback)
     }
-    fun addLocationMarker() {
+    private fun addLocationMarker() {
         if (currentLocationMarker != null) {
             map.overlays.remove(currentLocationMarker)
         }
@@ -306,7 +304,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         marker.title = direccion
         marker.subDescription = "Latitud: ${posicion.latitude}\nLongitud: ${posicion.longitude}"
 
-        val myIcon = resources.getDrawable(R.drawable.baseline_arrow_circle_up_24, theme)
+        val myIcon = resources.getDrawable(R.drawable.baseline_arrow_circle_down_24, theme)
         marker.icon = myIcon
         marker.position = posicion
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -322,7 +320,7 @@ class MapaVendedorActivity : AppCompatActivity() {
      * @param long2 Longitud del segundo punto
      * @return Distancia en kilómetros
      */
-    fun distance(lat1 : Double, long1: Double, lat2:Double, long2:Double) : Double{
+    private fun distance(lat1 : Double, long1: Double, lat2:Double, long2:Double) : Double{
         val latDistance = Math.toRadians(lat1 - lat2)
         val lngDistance = Math.toRadians(long1 - long2)
         val a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)+ 	Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * 	Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2)
@@ -335,7 +333,7 @@ class MapaVendedorActivity : AppCompatActivity() {
      * Cambia el color del mapa dependiendo de la iluminación ambiental.
      * @return SensorEventListener
      */
-    fun createLightSensorListener() : SensorEventListener {
+    private fun createLightSensorListener() : SensorEventListener {
         val ret : SensorEventListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
                 if(::map.isInitialized){
@@ -356,7 +354,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         return ret
     }
 
-    fun createOrientationListener(): SensorEventListener {
+    private fun createOrientationListener(): SensorEventListener {
         return object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
                 when (event?.sensor?.type) {
@@ -391,7 +389,7 @@ class MapaVendedorActivity : AppCompatActivity() {
      * @param snippet Descripción corta
      * @param longPressed Indica si es de un long press
      */
-    fun addMarker(p: GeoPoint, snippet: String) {
+    private fun addMarker(p: GeoPoint, snippet: String) {
         var addressText = "Ubicación desconocida"
         val addresses = geocoder.getFromLocation(p.latitude, p.longitude, 1)
         val distancia = distance(posicion.latitude, posicion.longitude, p.latitude, p.longitude)
@@ -402,7 +400,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         }
 
         val marker = createMarker(
-            p, addressText, "",
+            p, addressText, snippet,
             R.drawable.baseline_add_location_alt_24
         )
         if (marker != null) {
@@ -419,7 +417,7 @@ class MapaVendedorActivity : AppCompatActivity() {
      * @param iconID ID del recurso del icono
      * @return Marker creado
      */
-    fun createMarker(p:GeoPoint, title: String, desc: String, iconID : Int) : Marker? {
+    private fun createMarker(p:GeoPoint, title: String, desc: String, iconID : Int) : Marker? {
         var marker : Marker? = null;
         if(map!=null) {
             marker = Marker(map);
@@ -438,23 +436,12 @@ class MapaVendedorActivity : AppCompatActivity() {
         return marker
     }
 
-    fun createOverlayEvents() : MapEventsOverlay {
-        val overlayEvents = MapEventsOverlay(object : MapEventsReceiver {
-            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                return false
-            }
-            override fun longPressHelper(p: GeoPoint?): Boolean {
-                return true
-            }
-        })
-        return overlayEvents
-    }
     /**
      * Busca una ubicación LatLng a partir de una dirección en texto.
      * @param address Dirección como texto
      * @return LatLng correspondiente
      */
-    fun findLocation(address : String): LatLng?{
+    private fun findLocation(address : String): LatLng?{
         val addresses = geocoder.getFromLocationName(address, 2)
         if(addresses != null && !addresses.isEmpty()){
             val addr = addresses.get(0)
@@ -470,7 +457,7 @@ class MapaVendedorActivity : AppCompatActivity() {
      * @param location LatLng de la posición
      * @return Dirección en formato String
      */
-    fun findAddress (location : LatLng):String?{
+    private fun findAddress (location : LatLng):String?{
         val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 2)
         if(addresses != null && !addresses.isEmpty()){
             val addr = addresses.get(0)
@@ -479,7 +466,7 @@ class MapaVendedorActivity : AppCompatActivity() {
         }
         return null
     }
-    fun direccionFirestore() {
+    private fun direccionFirestore() {
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
             .whereEqualTo("id", pedidoId)
@@ -498,7 +485,11 @@ class MapaVendedorActivity : AppCompatActivity() {
                         val latLng = findLocation(direccion)
                         if (latLng != null) {
                             posicionEntrega = GeoPoint(latLng.latitude, latLng.longitude)
-                            addMarker(posicionEntrega, "Pedido de $compradorId")
+                            if (compradorId != null) {
+                                buscarNombreComprador(compradorId) { nombre ->
+                                    addMarker(posicionEntrega, "Pedido de $nombre")
+                                }
+                            }
                             map.controller.setZoom(18.0)
                             map.controller.animateTo(posicionEntrega)
                             map.invalidate()
@@ -513,7 +504,7 @@ class MapaVendedorActivity : AppCompatActivity() {
             }
     }
 
-    fun buscarNombreComprador(compradorId: String, callback: (String) -> Unit) {
+    private fun buscarNombreComprador(compradorId: String, callback: (String) -> Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("usuarios")
             .document(compradorId)
@@ -533,22 +524,32 @@ class MapaVendedorActivity : AppCompatActivity() {
      * @param finish Punto final
      */
     private var roadOverlay: Polyline? = null
-    fun drawRoute(start : GeoPoint, finish : GeoPoint){
-        var routePoints = ArrayList<GeoPoint>()
-        routePoints.add(start)
-        routePoints.add(finish)
-        val road = roadManager.getRoad(routePoints)
-        Log.i("MapsApp", "Route length: "+road.mLength+" klm")
-        Log.i("MapsApp", "Duration: "+road.mDuration/60+" min")
-        if(map!=null){
-            if(roadOverlay != null){
-                map.getOverlays().remove(roadOverlay);
-            }
-            roadOverlay = RoadManager.buildRoadOverlay(road)
-            roadOverlay!!.getOutlinePaint().setColor(Color.RED)
-            roadOverlay!!.getOutlinePaint().setStrokeWidth(10F)
-            map.getOverlays().add(roadOverlay)
-        }
-    }
+   private fun drawRoute(start: GeoPoint, finish: GeoPoint) {
+           CoroutineScope(Dispatchers.IO).launch {
+               try {
+                   val routePoints = arrayListOf(start, finish)
+                   val road = roadManager.getRoad(routePoints)
 
+                   // Ahora volvemos al hilo principal para modificar la UI
+                   withContext(Dispatchers.Main) {
+                       Log.i("MapsApp", "Route length: ${road.mLength} km")
+                       Log.i("MapsApp", "Duration: ${road.mDuration / 60} min")
+
+                       if (map != null) {
+                           if (roadOverlay != null) {
+                               map.overlays.remove(roadOverlay)
+                           }
+                           roadOverlay = RoadManager.buildRoadOverlay(road).apply {
+                               outlinePaint.color = Color.RED
+                               outlinePaint.strokeWidth = 10F
+                           }
+                           map.overlays.add(roadOverlay)
+                           map.invalidate() // <- Para refrescar el mapa
+                       }
+                   }
+               } catch (e: Exception) {
+                   Log.e("MapsApp", "Error drawing route: ${e.message}")
+               }
+           }
+   }
 }
