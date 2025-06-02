@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.campusgo.data.models.Usuario
-import com.example.campusgo.data.repository.SubidorImagenes
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.data.repository.UsuarioRepository
 import com.example.campusgo.databinding.ActivitySingupBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -29,7 +29,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySingupBinding
     private lateinit var auth: FirebaseAuth
     private val usuarioRepository = UsuarioRepository()
-    private lateinit var subidorImagenes: SubidorImagenes
+    private lateinit var manejadorImagenesAPI: ManejadorImagenesAPI
 
     private lateinit var launcherGaleria: ActivityResultLauncher<String>
     private lateinit var launcherCamara: ActivityResultLauncher<Uri>
@@ -44,7 +44,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-        subidorImagenes = SubidorImagenes(this)
+        manejadorImagenesAPI = ManejadorImagenesAPI(this)
 
         // Política temporal para evitar fallos con cámara
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
@@ -144,7 +144,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.progressBar.visibility = View.VISIBLE
         mostrar("⏳ Subiendo imagen del carné...")
 
-        subidorImagenes.subirImagen(uriCarnet!!) { urlCarnet ->
+        manejadorImagenesAPI.subirImagen(uriCarnet!!) { urlCarnet ->
             if (urlCarnet.isNullOrEmpty()) {
                 mostrar("❌ No se pudo subir la imagen del carné")
                 binding.progressBar.visibility = View.GONE
