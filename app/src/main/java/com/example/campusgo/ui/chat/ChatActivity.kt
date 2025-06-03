@@ -13,6 +13,8 @@ import com.example.campusgo.databinding.ActivityChatBinding
 import com.example.campusgo.ui.adapters.MensajeAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class ChatActivity : AppCompatActivity() {
 
@@ -91,7 +93,6 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun enviarMensaje() {
         val texto = binding.etMensaje.text.toString().trim()
         if (texto.isNotEmpty()) {
@@ -102,10 +103,35 @@ class ChatActivity : AppCompatActivity() {
                 timestamp = System.currentTimeMillis()
             )
 
-            val ref = FirebaseDatabase.getInstance().getReference("chats/$chatId")
+            val chatRef = FirebaseDatabase.getInstance().getReference("chats/$chatId")
+            val userChatsRef = FirebaseDatabase.getInstance().getReference("usuariosChats")
 
-            ref.child("messages").push().setValue(mensaje)
-            ref.child("ultimoMensaje").setValue(texto)
+            // Realtime Database: guardar mensaje y último mensaje
+            chatRef.child("messages").push().setValue(mensaje)
+            chatRef.child("ultimoMensaje").setValue(texto)
+            userChatsRef.child(uidActual).child(chatId).setValue(true)
+            userChatsRef.child(uidReceptor).child(chatId).setValue(true)
+
+            // Firestore: ACTUALIZA listaChats para ambos usuarios
+            val firestore = FirebaseFirestore.getInstance()
+
+            val resumen = mapOf(
+                "chatId" to chatId,
+                "ultimoMensaje" to texto,
+                "timestamp" to mensaje.timestamp
+            )
+
+            firestore.collection("usuarios")
+                .document(uidActual)
+                .collection("listaChats")
+                .document(uidReceptor)
+                .set(resumen, SetOptions.merge())
+
+            firestore.collection("usuarios")
+                .document(uidReceptor)
+                .collection("listaChats")
+                .document(uidActual)
+                .set(resumen, SetOptions.merge())
 
             binding.etMensaje.text.clear()
         }

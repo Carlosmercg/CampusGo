@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.data.repository.ManejadorImagenesAPI
@@ -17,9 +17,8 @@ import com.example.campusgo.databinding.ItemUsuarioBinding
 import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+
 class BuscarUsuariosActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBuscarUsuariosBinding
@@ -62,7 +61,7 @@ class BuscarUsuariosActivity : AppCompatActivity() {
         binding.spinnerFiltro.adapter = spinnerAdapter
 
         binding.btnBuscar.setOnClickListener {
-            val texto = binding.etBuscarUsuario.text.toString().trim()
+            val texto = binding.etBuscarUsuario.query.toString().trim()
             val filtro = binding.spinnerFiltro.selectedItem.toString().lowercase()
 
             if (texto.length >= 2) {
@@ -132,28 +131,75 @@ class BuscarUsuariosActivity : AppCompatActivity() {
     }
 
     private fun iniciarChatCon(usuario: Usuario) {
-        val uidActual = FirebaseAuth.getInstance().uid ?: return
+        val uidActual = FirebaseAuth.getInstance().uid
+
+        if (uidActual == null) {
+            Toast.makeText(this, "Debes iniciar sesión para usar el chat", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (usuario.id.isEmpty()) {
+            Toast.makeText(this, "El usuario no tiene un ID válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (usuario.id == uidActual) {
             Toast.makeText(this, "No puedes chatear contigo mismo", Toast.LENGTH_SHORT).show()
             return
         }
 
         val chatId = if (uidActual < usuario.id) "$uidActual-${usuario.id}" else "${usuario.id}-$uidActual"
+        val db = FirebaseDatabase.getInstance()
 
-        FirebaseDatabase.getInstance().getReference("chats/$chatId/participantes")
+        db.getReference("chats/$chatId/participantes")
             .setValue(mapOf(uidActual to true, usuario.id to true))
+            .addOnSuccessListener {
+                db.getReference("usuariosChats/$uidActual/$chatId").setValue(true)
+                db.getReference("usuariosChats/${usuario.id}/$chatId").setValue(true)
 
-        FirebaseDatabase.getInstance().getReference("usuariosChats/$uidActual/$chatId").setValue(true)
-        FirebaseDatabase.getInstance().getReference("usuariosChats/${usuario.id}/$chatId").setValue(true)
+                // 🔽 AQUI PEGAS ESTA PARTE 🔽
+                val dbFirestore = FirebaseFirestore.getInstance()
 
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra("chatId", chatId)
-            putExtra("uidReceptor", usuario.id)
-            putExtra("nombreUsuario", usuario.nombre)
-            putExtra("fotoPerfilUrl", usuario.urlFotoPerfil)
-        }
-        startActivity(intent)
+                dbFirestore.collection("usuarios")
+                    .document(uidActual)
+                    .collection("listaChats")
+                    .document(usuario.id)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to usuario.nombre,
+                            "apellido" to usuario.apellido,
+                            "fotoPerfil" to usuario.urlFotoPerfil
+                        )
+                    )
+
+                dbFirestore.collection("usuarios")
+                    .document(usuario.id)
+                    .collection("listaChats")
+                    .document(uidActual)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to FirebaseAuth.getInstance().currentUser?.displayName,
+                            "fotoPerfil" to "" // Puedes completar si tienes la URL
+                        )
+                    )
+                // 🔼 FIN DE LA NUEVA PARTE 🔼
+
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtra("chatId", chatId)
+                    putExtra("uidReceptor", usuario.id)
+                    putExtra("nombreUsuario", usuario.nombre)
+                    putExtra("fotoPerfilUrl", usuario.urlFotoPerfil)
+                }
+                startActivity(intent)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al iniciar el chat: ${it.message}", Toast.LENGTH_LONG).show()
+                it.printStackTrace()
+            }
     }
+
 
     private fun irAlPerfil(usuario: Usuario) {
         val intent = Intent(this, PerfilActivity::class.java).apply {

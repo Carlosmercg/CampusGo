@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.SearchView
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Chat
@@ -14,17 +12,13 @@ import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityChatsListBinding
 import com.example.campusgo.ui.main.BottomMenuActivity
-import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
 
 class ChatsListActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityChatsListBinding
-    private val resultadosBusqueda = mutableListOf<Usuario>()
     private val listaChats = mutableListOf<Chat>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +29,7 @@ class ChatsListActivity : BottomMenuActivity() {
         configurarToolbar()
         setupBottomNavigation(binding.bottomNavigation, R.id.nav_chats)
         setupBuscador()
-        cargarChatsDesdeFirebase()
+        cargarChatsDesdeFirestore()
 
         binding.NewChat.setOnClickListener {
             startActivity(Intent(this, BuscarUsuariosActivity::class.java))
@@ -60,86 +54,117 @@ class ChatsListActivity : BottomMenuActivity() {
     }
 
     private fun setupBuscador() {
-        val filtros = resources.getStringArray(R.array.filtros_busqueda)
+        val filtros = arrayOf("nombre", "apellido", "carrera", "universidad")
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, filtros)
         binding.spinnerFiltro.adapter = spinnerAdapter
 
         binding.etBuscarUsuario.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                aplicarFiltro(query)
+                return true
+            }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val texto = newText.orEmpty().trim()
-                filtrarChatsPorNombre(texto)
+                aplicarFiltro(newText)
                 return true
             }
         })
     }
 
-    private fun filtrarChatsPorNombre(filtro: String) {
+    private fun aplicarFiltro(query: String?) {
+        val texto = query?.trim()?.lowercase() ?: ""
         binding.recyclerChats.removeAllViews()
-        if (filtro.isEmpty()) {
-            listaChats.forEach { agregarChatUI(it) }
+
+        val filtrados = if (texto.isEmpty()) {
+            listaChats
         } else {
-            val filtrados = listaChats.filter { it.nombreUsuario.contains(filtro, ignoreCase = true) }
+            listaChats.filter { it.nombreUsuario.lowercase().contains(texto) }
+        }
+
+        if (filtrados.isEmpty()) {
+            mostrarSinChats(true)
+        } else {
+            mostrarSinChats(false)
             filtrados.forEach { agregarChatUI(it) }
         }
-        mostrarSinChats(binding.recyclerChats.childCount == 0)
     }
 
-    private fun cargarChatsDesdeFirebase() {
+    private fun cargarChatsDesdeFirestore() {
         val uidActual = FirebaseAuth.getInstance().uid ?: return
-        val ref = FirebaseDatabase.getInstance().getReference("usuariosChats/$uidActual")
+        val db = FirebaseFirestore.getInstance()
 
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
+        db.collection("usuarios")
+            .document(uidActual)
+            .collection("listaChats")
+            .get()
+            .addOnSuccessListener { result ->
                 binding.recyclerChats.removeAllViews()
                 listaChats.clear()
 
-                if (!snapshot.exists()) {
+                if (result.isEmpty) {
                     mostrarSinChats(true)
-                    return
+                    return@addOnSuccessListener
                 }
 
-                val chatsRef = FirebaseDatabase.getInstance().getReference("chats")
-                val totalChats = snapshot.children.count()
-                var processedChats = 0
+                var processed = 0
+                val total = result.size()
 
-                snapshot.children.forEach { chatSnap ->
-                    val chatId = chatSnap.key ?: return@forEach
-                    chatsRef.child(chatId).child("ultimoMensaje").addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(msnap: DataSnapshot) {
-                            val ultimoMensaje = msnap.getValue(String::class.java) ?: ""
-                            val partes = chatId.split("-")
-                            val uidReceptor = if (partes[0] == uidActual) partes[1] else partes[0]
+                result.forEach { doc ->
+                    val uidReceptor = doc.id
+                    val chatId = doc.getString("chatId") ?: return@forEach
 
-                            FirebaseFirestore.getInstance().collection("usuarios").document(uidReceptor)
-                                .get().addOnSuccessListener { doc ->
-                                    val usuario = doc.toObject(Usuario::class.java)
-                                    if (usuario != null) {
+                    db.collection("usuarios").document(uidReceptor).get()
+                        .addOnSuccessListener { usuarioDoc ->
+                            val usuario = usuarioDoc.toObject(Usuario::class.java)
+                            if (usuario != null) {
+                                val realtimeRef = FirebaseDatabase.getInstance()
+                                    .getReference("chats/$chatId/ultimoMensaje")
+
+                                realtimeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        val ultimoMensaje = snapshot.getValue(String::class.java) ?: ""
+
                                         val chat = Chat(
                                             id = chatId,
                                             nombreUsuario = usuario.nombre,
-                                            ultimoMensaje = ultimoMensaje,
-                                            timestamp = System.currentTimeMillis(),
                                             uidReceptor = uidReceptor,
-                                            urlFotoPerfil = usuario.urlFotoPerfil
+                                            urlFotoPerfil = usuario.urlFotoPerfil,
+                                            ultimoMensaje = ultimoMensaje,
+                                            timestamp = System.currentTimeMillis()
                                         )
                                         listaChats.add(chat)
-                                    }
-                                    processedChats++
-                                    if (processedChats == totalChats) filtrarChatsPorNombre(binding.etBuscarUsuario.query.toString())
-                                }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {}
-                    })
+                                        processed++
+                                        if (processed == total) {
+                                            aplicarFiltro(binding.etBuscarUsuario.query.toString())
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        processed++
+                                        if (processed == total) {
+                                            aplicarFiltro(binding.etBuscarUsuario.query.toString())
+                                        }
+                                    }
+                                })
+                            } else {
+                                processed++
+                                if (processed == total) {
+                                    aplicarFiltro(binding.etBuscarUsuario.query.toString())
+                                }
+                            }
+                        }
+                        .addOnFailureListener {
+                            processed++
+                            if (processed == total) {
+                                aplicarFiltro(binding.etBuscarUsuario.query.toString())
+                            }
+                        }
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
+            .addOnFailureListener {
                 mostrarSinChats(true)
             }
-        })
     }
 
     private fun agregarChatUI(chat: Chat) {
@@ -148,11 +173,11 @@ class ChatsListActivity : BottomMenuActivity() {
         itemView.findViewById<TextView>(R.id.txtUltimoMensaje).text = chat.ultimoMensaje
 
         ManejadorImagenesAPI.mostrarImagenDesdeUrl(
-            url = chat.urlFotoPerfil,
-            imageView = itemView.findViewById(R.id.imgFotoPerfil),
-            context = this,
-            placeholderRes = R.drawable.ic_profile,
-            errorRes = R.drawable.ic_profile
+            chat.urlFotoPerfil,
+            itemView.findViewById(R.id.imgFotoPerfil),
+            this,
+            R.drawable.ic_profile,
+            R.drawable.ic_profile
         )
 
         itemView.setOnClickListener {
