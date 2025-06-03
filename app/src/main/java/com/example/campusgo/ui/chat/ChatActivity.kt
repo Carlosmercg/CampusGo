@@ -2,6 +2,8 @@ package com.example.campusgo.ui.chat
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusgo.R
@@ -36,6 +38,7 @@ class ChatActivity : AppCompatActivity() {
         setupRecyclerView()
         escucharMensajes()
         configurarBotonEnviar()
+        configurarEnterParaEnviar()
     }
 
     private fun configurarToolbar() {
@@ -47,7 +50,6 @@ class ChatActivity : AppCompatActivity() {
 
         binding.nombreUsuarioToolbar.text = nombre
 
-        // ✅ Volver a la lista de chats
         binding.btnBack.setOnClickListener {
             val intent = Intent(this, ChatsListActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -55,7 +57,6 @@ class ChatActivity : AppCompatActivity() {
             finish()
         }
 
-        // ✅ Cargar foto desde el Manejador de Imágenes
         ManejadorImagenesAPI.mostrarImagenDesdeUrl(
             url = fotoPerfilUrl,
             imageView = binding.imgPerfilToolbar,
@@ -75,28 +76,43 @@ class ChatActivity : AppCompatActivity() {
 
     private fun configurarBotonEnviar() {
         binding.btnEnviar.setOnClickListener {
-            val texto = binding.etMensaje.text.toString().trim()
-            if (texto.isNotEmpty()) {
-                val mensaje = Mensaje(
-                    contenido = texto,
-                    emisor = uidActual,
-                    receptor = uidReceptor,
-                    timestamp = System.currentTimeMillis()
-                )
+            enviarMensaje()
+        }
+    }
 
-                FirebaseDatabase.getInstance()
-                    .getReference("chats/$chatId/messages")
-                    .push()
-                    .setValue(mensaje)
-
-                binding.etMensaje.text.clear()
+    private fun configurarEnterParaEnviar() {
+        binding.etMensaje.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEND ||
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                enviarMensaje()
+                true
+            } else {
+                false
             }
         }
     }
 
+    private fun enviarMensaje() {
+        val texto = binding.etMensaje.text.toString().trim()
+        if (texto.isNotEmpty()) {
+            val mensaje = Mensaje(
+                contenido = texto,
+                emisor = uidActual,
+                receptor = uidReceptor,
+                timestamp = System.currentTimeMillis()
+            )
+
+            val ref = FirebaseDatabase.getInstance().getReference("chats/$chatId")
+
+            ref.child("messages").push().setValue(mensaje)
+            ref.child("ultimoMensaje").setValue(texto)
+
+            binding.etMensaje.text.clear()
+        }
+    }
+
     private fun escucharMensajes() {
-        dbRef = FirebaseDatabase.getInstance()
-            .getReference("chats/$chatId/messages")
+        dbRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/messages")
 
         dbRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -113,7 +129,7 @@ class ChatActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Manejo de errores (puedes usar Toast o Log)
+                // Manejo de error
             }
         })
     }

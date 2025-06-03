@@ -2,23 +2,27 @@ package com.example.campusgo.ui.chat
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityBuscarUsuariosBinding
-import com.example.campusgo.ui.adapters.UsuarioAdapter
+import com.example.campusgo.databinding.ItemUsuarioBinding
 import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-
+import com.google.firebase.firestore.SetOptions
 class BuscarUsuariosActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBuscarUsuariosBinding
-    private lateinit var usuarioAdapter: UsuarioAdapter
     private val resultadosBusqueda = mutableListOf<Usuario>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +31,8 @@ class BuscarUsuariosActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         configurarToolbar()
-        setupBuscador()
         setupRecycler()
+        setupBuscador()
     }
 
     private fun configurarToolbar() {
@@ -47,19 +51,9 @@ class BuscarUsuariosActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
-    }
-
     private fun setupRecycler() {
-        usuarioAdapter = UsuarioAdapter(
-            usuarios = resultadosBusqueda,
-            onChatearClick = { usuario -> iniciarChatCon(usuario) },
-            onPerfilClick = { usuario -> irAlPerfil(usuario) }
-        )
         binding.recyclerResultados.layoutManager = LinearLayoutManager(this)
-        binding.recyclerResultados.adapter = usuarioAdapter
+        binding.recyclerResultados.adapter = UsuarioViewAdapter()
     }
 
     private fun setupBuscador() {
@@ -75,7 +69,7 @@ class BuscarUsuariosActivity : AppCompatActivity() {
                 buscarUsuariosFirestore(filtro, texto)
             } else {
                 resultadosBusqueda.clear()
-                usuarioAdapter.notifyDataSetChanged()
+                binding.recyclerResultados.adapter?.notifyDataSetChanged()
                 Toast.makeText(this, "Escribe al menos 2 caracteres", Toast.LENGTH_SHORT).show()
             }
         }
@@ -83,10 +77,7 @@ class BuscarUsuariosActivity : AppCompatActivity() {
 
     private fun buscarUsuariosFirestore(filtro: String, valor: String) {
         val campo = when (filtro) {
-            "nombre" -> "nombre"
-            "apellido" -> "apellido"
-            "carrera" -> "carrera"
-            "universidad" -> "universidad"
+            "nombre", "apellido", "carrera", "universidad" -> filtro
             else -> "nombre"
         }
 
@@ -99,7 +90,7 @@ class BuscarUsuariosActivity : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 resultadosBusqueda.clear()
                 resultadosBusqueda.addAll(result.toObjects(Usuario::class.java))
-                usuarioAdapter.notifyDataSetChanged()
+                binding.recyclerResultados.adapter?.notifyDataSetChanged()
 
                 if (resultadosBusqueda.isEmpty()) {
                     Toast.makeText(this, "No se encontraron resultados", Toast.LENGTH_SHORT).show()
@@ -110,8 +101,43 @@ class BuscarUsuariosActivity : AppCompatActivity() {
             }
     }
 
+    inner class UsuarioViewAdapter : RecyclerView.Adapter<UsuarioViewAdapter.UsuarioViewHolder>() {
+
+        inner class UsuarioViewHolder(val item: ItemUsuarioBinding) : RecyclerView.ViewHolder(item.root)
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsuarioViewHolder {
+            val binding = ItemUsuarioBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return UsuarioViewHolder(binding)
+        }
+
+        override fun getItemCount(): Int = resultadosBusqueda.size
+
+        override fun onBindViewHolder(holder: UsuarioViewHolder, position: Int) {
+            val usuario = resultadosBusqueda[position]
+            holder.item.txtNombreUsuario.text = "${usuario.nombre} ${usuario.apellido}"
+            holder.item.txtCarreraUsuario.text = usuario.carrera
+            holder.item.txtUniversidadUsuario.text = usuario.universidad
+
+            ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                url = usuario.urlFotoPerfil,
+                imageView = holder.item.imgPerfilUsuario,
+                context = this@BuscarUsuariosActivity,
+                placeholderRes = R.drawable.ic_profile,
+                errorRes = R.drawable.ic_profile
+            )
+
+            holder.item.btnPerfil.setOnClickListener { irAlPerfil(usuario) }
+            holder.item.btnChatear.setOnClickListener { iniciarChatCon(usuario) }
+        }
+    }
+
     private fun iniciarChatCon(usuario: Usuario) {
         val uidActual = FirebaseAuth.getInstance().uid ?: return
+        if (usuario.id == uidActual) {
+            Toast.makeText(this, "No puedes chatear contigo mismo", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val chatId = if (uidActual < usuario.id) "$uidActual-${usuario.id}" else "${usuario.id}-$uidActual"
 
         FirebaseDatabase.getInstance().getReference("chats/$chatId/participantes")

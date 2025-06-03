@@ -2,32 +2,30 @@ package com.example.campusgo.ui.chat
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Chat
 import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityChatsListBinding
-import com.example.campusgo.ui.adapters.ChatListViewAdapter
-import com.example.campusgo.ui.adapters.UsuarioAdapter
 import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.SetOptions
 
 class ChatsListActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityChatsListBinding
-    private lateinit var chatListViewAdapter: ChatListViewAdapter
-    private lateinit var usuarioAdapter: UsuarioAdapter
-
-    private val listaChats = mutableListOf<Chat>()
     private val resultadosBusqueda = mutableListOf<Usuario>()
+    private val listaChats = mutableListOf<Chat>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +34,6 @@ class ChatsListActivity : BottomMenuActivity() {
 
         configurarToolbar()
         setupBottomNavigation(binding.bottomNavigation, R.id.nav_chats)
-        setupRecyclerViews()
         setupBuscador()
         cargarChatsDesdeFirebase()
 
@@ -55,31 +52,11 @@ class ChatsListActivity : BottomMenuActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.itemId == android.R.id.home.also { finish() } || super.onOptionsItemSelected(item)
-    }
-
-    private fun setupRecyclerViews() {
-        chatListViewAdapter = ChatListViewAdapter(listaChats) { chatSeleccionado ->
-            val intent = Intent(this, ChatActivity::class.java).apply {
-                putExtra("nombreUsuario", chatSeleccionado.nombreUsuario)
-                putExtra("chatId", chatSeleccionado.id)
-                putExtra("uidReceptor", chatSeleccionado.uidReceptor)
-                putExtra("fotoPerfilUrl", chatSeleccionado.urlFotoPerfil)
-            }
-            startActivity(intent)
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
         }
-
-        binding.recyclerChats.layoutManager = LinearLayoutManager(this)
-        binding.recyclerChats.adapter = chatListViewAdapter
-
-        usuarioAdapter = UsuarioAdapter(
-            usuarios = resultadosBusqueda,
-            onChatearClick = { usuario -> iniciarChatCon(usuario) },
-            onPerfilClick = { usuario -> irAlPerfil(usuario) }
-        )
-
-        binding.recyclerResultados.layoutManager = LinearLayoutManager(this)
-        binding.recyclerResultados.adapter = usuarioAdapter
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupBuscador() {
@@ -87,19 +64,26 @@ class ChatsListActivity : BottomMenuActivity() {
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, filtros)
         binding.spinnerFiltro.adapter = spinnerAdapter
 
-        binding.etBuscarUsuario.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+        binding.etBuscarUsuario.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 val texto = newText.orEmpty().trim()
-                if (texto.length >= 2) buscarUsuariosFirestore(texto)
-                else {
-                    resultadosBusqueda.clear()
-                    usuarioAdapter.notifyDataSetChanged()
-                }
+                filtrarChatsPorNombre(texto)
                 return true
             }
         })
+    }
+
+    private fun filtrarChatsPorNombre(filtro: String) {
+        binding.recyclerChats.removeAllViews()
+        if (filtro.isEmpty()) {
+            listaChats.forEach { agregarChatUI(it) }
+        } else {
+            val filtrados = listaChats.filter { it.nombreUsuario.contains(filtro, ignoreCase = true) }
+            filtrados.forEach { agregarChatUI(it) }
+        }
+        mostrarSinChats(binding.recyclerChats.childCount == 0)
     }
 
     private fun cargarChatsDesdeFirebase() {
@@ -108,7 +92,9 @@ class ChatsListActivity : BottomMenuActivity() {
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                binding.recyclerChats.removeAllViews()
                 listaChats.clear()
+
                 if (!snapshot.exists()) {
                     mostrarSinChats(true)
                     return
@@ -130,38 +116,22 @@ class ChatsListActivity : BottomMenuActivity() {
                                 .get().addOnSuccessListener { doc ->
                                     val usuario = doc.toObject(Usuario::class.java)
                                     if (usuario != null) {
-                                        listaChats.add(
-                                            Chat(
-                                                id = chatId,
-                                                nombreUsuario = usuario.nombre,
-                                                ultimoMensaje = ultimoMensaje,
-                                                timestamp = System.currentTimeMillis(),
-                                                uidReceptor = uidReceptor,
-                                                urlFotoPerfil = usuario.urlFotoPerfil
-                                            )
+                                        val chat = Chat(
+                                            id = chatId,
+                                            nombreUsuario = usuario.nombre,
+                                            ultimoMensaje = ultimoMensaje,
+                                            timestamp = System.currentTimeMillis(),
+                                            uidReceptor = uidReceptor,
+                                            urlFotoPerfil = usuario.urlFotoPerfil
                                         )
+                                        listaChats.add(chat)
                                     }
                                     processedChats++
-                                    if (processedChats == totalChats) {
-                                        chatListViewAdapter.notifyDataSetChanged()
-                                        mostrarSinChats(listaChats.isEmpty())
-                                    }
-                                }.addOnFailureListener {
-                                    processedChats++
-                                    if (processedChats == totalChats) {
-                                        chatListViewAdapter.notifyDataSetChanged()
-                                        mostrarSinChats(listaChats.isEmpty())
-                                    }
+                                    if (processedChats == totalChats) filtrarChatsPorNombre(binding.etBuscarUsuario.query.toString())
                                 }
                         }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            processedChats++
-                            if (processedChats == totalChats) {
-                                chatListViewAdapter.notifyDataSetChanged()
-                                mostrarSinChats(listaChats.isEmpty())
-                            }
-                        }
+                        override fun onCancelled(error: DatabaseError) {}
                     })
                 }
             }
@@ -172,56 +142,34 @@ class ChatsListActivity : BottomMenuActivity() {
         })
     }
 
+    private fun agregarChatUI(chat: Chat) {
+        val itemView = layoutInflater.inflate(R.layout.item_chat, binding.recyclerChats, false)
+        itemView.findViewById<TextView>(R.id.txtNombreUsuario).text = chat.nombreUsuario
+        itemView.findViewById<TextView>(R.id.txtUltimoMensaje).text = chat.ultimoMensaje
+
+        ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+            url = chat.urlFotoPerfil,
+            imageView = itemView.findViewById(R.id.imgFotoPerfil),
+            context = this,
+            placeholderRes = R.drawable.ic_profile,
+            errorRes = R.drawable.ic_profile
+        )
+
+        itemView.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java).apply {
+                putExtra("chatId", chat.id)
+                putExtra("uidReceptor", chat.uidReceptor)
+                putExtra("nombreUsuario", chat.nombreUsuario)
+                putExtra("fotoPerfilUrl", chat.urlFotoPerfil)
+            }
+            startActivity(intent)
+        }
+
+        binding.recyclerChats.addView(itemView)
+    }
+
     private fun mostrarSinChats(vacio: Boolean) {
         binding.tvSinChats.visibility = if (vacio) View.VISIBLE else View.GONE
         binding.recyclerChats.visibility = if (vacio) View.GONE else View.VISIBLE
-    }
-
-    private fun buscarUsuariosFirestore(valor: String) {
-        val campo = when (binding.spinnerFiltro.selectedItem.toString().lowercase()) {
-            "nombre" -> "nombre"
-            "carrera" -> "carrera"
-            "universidad" -> "universidad"
-            else -> "nombre"
-        }
-
-        FirebaseFirestore.getInstance()
-            .collection("usuarios")
-            .whereGreaterThanOrEqualTo(campo, valor)
-            .whereLessThanOrEqualTo(campo, valor + "\uf8ff")
-            .get()
-            .addOnSuccessListener { result ->
-                resultadosBusqueda.clear()
-                resultadosBusqueda.addAll(result.toObjects(Usuario::class.java))
-                usuarioAdapter.notifyDataSetChanged()
-            }
-    }
-
-    private fun iniciarChatCon(usuario: Usuario) {
-        val uidActual = FirebaseAuth.getInstance().uid ?: return
-        val chatId = if (uidActual < usuario.id) "$uidActual-${usuario.id}" else "${usuario.id}-$uidActual"
-
-        FirebaseDatabase.getInstance().getReference("chats/$chatId/participantes")
-            .setValue(mapOf(uidActual to true, usuario.id to true))
-
-        FirebaseDatabase.getInstance().getReference("usuariosChats/$uidActual/$chatId")
-            .setValue(true)
-        FirebaseDatabase.getInstance().getReference("usuariosChats/${usuario.id}/$chatId")
-            .setValue(true)
-
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra("chatId", chatId)
-            putExtra("uidReceptor", usuario.id)
-            putExtra("nombreUsuario", usuario.nombre)
-            putExtra("fotoPerfilUrl", usuario.urlFotoPerfil)
-        }
-        startActivity(intent)
-    }
-
-    private fun irAlPerfil(usuario: Usuario) {
-        val intent = Intent(this, PerfilActivity::class.java).apply {
-            putExtra("uid", usuario.id)
-        }
-        startActivity(intent)
     }
 }
