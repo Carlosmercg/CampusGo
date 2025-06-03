@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
 
-    <!-- Imagen del usuario a la izquierda -->
     <ImageView
         android:id="@+id/imgFotoPerfil"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile"
+        android:contentDescription="Foto perfil"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@drawable/circle_background"
+        android:padding="2dp" />
 
-    <!-- Nombre del usuario -->
     <TextView
         android:id="@+id/txtNombreUsuario"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Nombre del usuario"
-        android:textAppearance="?attr/textAppearanceBody1"
+        android:layout_marginStart="15dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Nombre Apellido"
         android:textColor="@color/black"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgFotoPerfil"
         app:layout_constraintTop_toTopOf="@id/imgFotoPerfil" />
 
-    <!-- Último mensaje -->
     <TextView
         android:id="@+id/txtUltimoMensaje"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:text="Último mensaje del chat"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="@color/textHint"
-        app:layout_constraintBottom_toBottomOf="@id/imgFotoPerfil"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Último mensaje"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/txtNombreUsuario"
         app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario" />
 </androidx.constraintlayout.widget.ConstraintLayout>

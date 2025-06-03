@@ -4,8 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Chat
 import com.example.campusgo.data.models.Usuario
@@ -20,6 +25,9 @@ class ChatsListActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityChatsListBinding
     private val listaChats = mutableListOf<Chat>()
+    private lateinit var adapter: RecyclerView.Adapter<*>
+
+    private var filtroActual = "nombre"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +37,7 @@ class ChatsListActivity : BottomMenuActivity() {
         configurarToolbar()
         setupBottomNavigation(binding.bottomNavigation, R.id.nav_chats)
         setupBuscador()
+        setupRecyclerView()
         cargarChatsDesdeFirestore()
 
         binding.NewChat.setOnClickListener {
@@ -54,57 +63,88 @@ class ChatsListActivity : BottomMenuActivity() {
     }
 
     private fun setupBuscador() {
-        val filtros = arrayOf("nombre", "apellido", "carrera", "universidad")
+        val filtros = arrayOf("nombre", "apellido")
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, filtros)
         binding.spinnerFiltro.adapter = spinnerAdapter
 
-        binding.etBuscarUsuario.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                aplicarFiltro(query)
-                return true
+        binding.spinnerFiltro.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                filtroActual = filtros[position]
+                aplicarFiltro(binding.etBuscarUsuario.query.toString())
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                aplicarFiltro(newText)
-                return true
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        binding.etBuscarUsuario.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?) = true.also { aplicarFiltro(query) }
+            override fun onQueryTextChange(newText: String?) = true.also { aplicarFiltro(newText) }
         })
+    }
+
+    private fun setupRecyclerView() {
+        binding.recyclerChats.layoutManager = LinearLayoutManager(this)
+        adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            override fun getItemCount() = listaChats.size
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val view = layoutInflater.inflate(R.layout.item_chat, parent, false)
+                return object : RecyclerView.ViewHolder(view) {}
+            }
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val chat = listaChats[position]
+                val view = holder.itemView
+                view.findViewById<TextView>(R.id.txtNombreUsuario).text = "${chat.nombreUsuario} ${chat.apellidoUsuario}"
+                view.findViewById<TextView>(R.id.txtUltimoMensaje).text = chat.ultimoMensaje
+
+                ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                    chat.urlFotoPerfil,
+                    view.findViewById(R.id.imgFotoPerfil),
+                    this@ChatsListActivity,
+                    R.drawable.ic_profile,
+                    R.drawable.ic_profile
+                )
+
+                view.setOnClickListener {
+                    val intent = Intent(this@ChatsListActivity, ChatActivity::class.java).apply {
+                        putExtra("chatId", chat.id)
+                        putExtra("uidReceptor", chat.uidReceptor)
+                        putExtra("nombreUsuario", "${chat.nombreUsuario} ${chat.apellidoUsuario}")
+                        putExtra("fotoPerfilUrl", chat.urlFotoPerfil)
+                    }
+                    startActivity(intent)
+                }
+            }
+        }
+        binding.recyclerChats.adapter = adapter
     }
 
     private fun aplicarFiltro(query: String?) {
         val texto = query?.trim()?.lowercase() ?: ""
-        binding.recyclerChats.removeAllViews()
-
         val filtrados = if (texto.isEmpty()) {
             listaChats
         } else {
-            listaChats.filter { it.nombreUsuario.lowercase().contains(texto) }
+            when (filtroActual) {
+                "apellido" -> listaChats.filter { it.apellidoUsuario.lowercase().contains(texto) }
+                else -> listaChats.filter { it.nombreUsuario.lowercase().contains(texto) }
+            }
         }
 
-        if (filtrados.isEmpty()) {
-            mostrarSinChats(true)
-        } else {
-            mostrarSinChats(false)
-            filtrados.forEach { agregarChatUI(it) }
-        }
+        mostrarSinChats(filtrados.isEmpty())
+        binding.recyclerChats.scrollToPosition(0)
+        listaChats.clear()
+        listaChats.addAll(filtrados)
+        adapter.notifyDataSetChanged()
     }
 
     private fun cargarChatsDesdeFirestore() {
         val uidActual = FirebaseAuth.getInstance().uid ?: return
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("usuarios")
-            .document(uidActual)
-            .collection("listaChats")
-            .get()
+        db.collection("usuarios").document(uidActual).collection("listaChats").get()
             .addOnSuccessListener { result ->
-                binding.recyclerChats.removeAllViews()
-                listaChats.clear()
-
-                if (result.isEmpty) {
-                    mostrarSinChats(true)
-                    return@addOnSuccessListener
-                }
+                if (result.isEmpty) return@addOnSuccessListener mostrarSinChats(true)
 
                 var processed = 0
                 val total = result.size()
@@ -113,53 +153,38 @@ class ChatsListActivity : BottomMenuActivity() {
                     val uidReceptor = doc.id
                     val chatId = doc.getString("chatId") ?: return@forEach
 
-                    db.collection("usuarios").document(uidReceptor).get()
-                        .addOnSuccessListener { usuarioDoc ->
-                            val usuario = usuarioDoc.toObject(Usuario::class.java)
-                            if (usuario != null) {
-                                val realtimeRef = FirebaseDatabase.getInstance()
-                                    .getReference("chats/$chatId/ultimoMensaje")
+                    db.collection("usuarios").document(uidReceptor).get().addOnSuccessListener { usuarioDoc ->
+                        val usuario = usuarioDoc.toObject(Usuario::class.java) ?: return@addOnSuccessListener
+                        val realtimeRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/ultimoMensaje")
 
-                                realtimeRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        val ultimoMensaje = snapshot.getValue(String::class.java) ?: ""
-
-                                        val chat = Chat(
-                                            id = chatId,
-                                            nombreUsuario = usuario.nombre,
-                                            uidReceptor = uidReceptor,
-                                            urlFotoPerfil = usuario.urlFotoPerfil,
-                                            ultimoMensaje = ultimoMensaje,
-                                            timestamp = System.currentTimeMillis()
-                                        )
-                                        listaChats.add(chat)
-
-                                        processed++
-                                        if (processed == total) {
-                                            aplicarFiltro(binding.etBuscarUsuario.query.toString())
-                                        }
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        processed++
-                                        if (processed == total) {
-                                            aplicarFiltro(binding.etBuscarUsuario.query.toString())
-                                        }
-                                    }
-                                })
-                            } else {
+                        realtimeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val ultimoMensaje = snapshot.getValue(String::class.java) ?: ""
+                                listaChats.add(
+                                    Chat(
+                                        id = chatId,
+                                        uidReceptor = uidReceptor,
+                                        nombreUsuario = usuario.nombre,
+                                        apellidoUsuario = usuario.apellido,
+                                        urlFotoPerfil = usuario.urlFotoPerfil,
+                                        ultimoMensaje = ultimoMensaje,
+                                        timestamp = System.currentTimeMillis()
+                                    )
+                                )
                                 processed++
                                 if (processed == total) {
                                     aplicarFiltro(binding.etBuscarUsuario.query.toString())
                                 }
                             }
-                        }
-                        .addOnFailureListener {
-                            processed++
-                            if (processed == total) {
-                                aplicarFiltro(binding.etBuscarUsuario.query.toString())
+
+                            override fun onCancelled(error: DatabaseError) {
+                                processed++
+                                if (processed == total) {
+                                    aplicarFiltro(binding.etBuscarUsuario.query.toString())
+                                }
                             }
-                        }
+                        })
+                    }
                 }
             }
             .addOnFailureListener {
@@ -167,34 +192,8 @@ class ChatsListActivity : BottomMenuActivity() {
             }
     }
 
-    private fun agregarChatUI(chat: Chat) {
-        val itemView = layoutInflater.inflate(R.layout.item_chat, binding.recyclerChats, false)
-        itemView.findViewById<TextView>(R.id.txtNombreUsuario).text = chat.nombreUsuario
-        itemView.findViewById<TextView>(R.id.txtUltimoMensaje).text = chat.ultimoMensaje
-
-        ManejadorImagenesAPI.mostrarImagenDesdeUrl(
-            chat.urlFotoPerfil,
-            itemView.findViewById(R.id.imgFotoPerfil),
-            this,
-            R.drawable.ic_profile,
-            R.drawable.ic_profile
-        )
-
-        itemView.setOnClickListener {
-            val intent = Intent(this, ChatActivity::class.java).apply {
-                putExtra("chatId", chat.id)
-                putExtra("uidReceptor", chat.uidReceptor)
-                putExtra("nombreUsuario", chat.nombreUsuario)
-                putExtra("fotoPerfilUrl", chat.urlFotoPerfil)
-            }
-            startActivity(intent)
-        }
-
-        binding.recyclerChats.addView(itemView)
-    }
-
     private fun mostrarSinChats(vacio: Boolean) {
         binding.tvSinChats.visibility = if (vacio) View.VISIBLE else View.GONE
-        binding.recyclerChats.visibility = if (vacio) View.GONE else View.VISIBLE
+        binding.scrollChats.visibility = if (vacio) View.GONE else View.VISIBLE
     }
 }
