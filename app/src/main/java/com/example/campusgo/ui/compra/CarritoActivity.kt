@@ -140,12 +140,12 @@ class CarritoActivity : BottomMenuActivity() {
                             productoDoc?.let {
                                 val producto = Producto(
                                     id = it.id,
-                                    nombre = it.getString("Nombre") ?: "",
-                                    vendedorId = it.getString("VendedorID") ?: "",
-                                    imagenUrl = it.getString("ImagenURL") ?: "",
-                                    precio = it.getDouble("Precio") ?: 0.0,
-                                    descripcion = it.getString("Descripcion") ?: "",
-                                    vendedorNombre = it.getString("VendedorNombre") ?: ""
+                                    nombre = it.getString("nombre") ?: "",
+                                    vendedorId = it.getString("vendedorId") ?: "",
+                                    imagenUrl = it.getString("imagenUrl") ?: "",
+                                    precio = it.getDouble("precio") ?: 0.0,
+                                    descripcion = it.getString("descripcion") ?: "",
+                                    vendedorNombre = it.getString("vendedorNombre") ?: ""
                                 )
                                 productosCarrito.add(ProductoCarrito(producto, carritoDocId))
                             }

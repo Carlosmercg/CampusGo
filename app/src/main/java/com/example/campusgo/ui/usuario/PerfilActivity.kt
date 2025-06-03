@@ -4,16 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.campusgo.R
 
 import com.example.campusgo.databinding.ActivityPerfilBinding
 import com.example.campusgo.ui.compra.ListaComprasPasadasActivity
 import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.ui.producto.CrearProductoActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class PerfilActivity : AppCompatActivity() {
+class PerfilActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityPerfilBinding
 
@@ -22,6 +24,7 @@ class PerfilActivity : AppCompatActivity() {
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupBottomNavigation(binding.bottomNavigation, R.id.nav_cuenta)
         val usuario = Firebase.auth.currentUser
         val db = FirebaseFirestore.getInstance()
         db.collection("usuarios").document(usuario?.uid ?: "").get()
