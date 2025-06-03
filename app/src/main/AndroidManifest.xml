@@ -34,25 +34,6 @@
         android:theme="@style/Theme.CampusGo"
         tools:targetApi="31">
 
-        <activity
-            android:name=".ui.mapas.MapaDireccionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.Codigo_NFC"
-            android:exported="false" />
-        <activity
-            android:name=".ui.venta.CalificarActivityComprador"
-            android:exported="false" />
-        <activity
-            android:name=".ui.venta.VentaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.venta.Codigo_NFC_Comprador"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.CalificarActivityVendedor"
-            android:exported="false" />
-
         <!-- File Provider para guardar imágenes -->
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -65,58 +46,6 @@
         </provider>
 
 
-
-        <activity
-            android:name=".ui.usuario.ListaProductosVendidosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.ListaProductosActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.ListaComprasPasadasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usuario.PerfilActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.usuario.EditarPerfilActivity"
-            android:exported="false" /> <!-- Actividades de la aplicación -->
-        <activity
-            android:name=".ui.chat.ChatsActivity"
-            android:exported="false" /> <!-- Actividades de la aplicación -->
-        <activity
-            android:name=".ui.compra.SeguimientoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.CarritoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.chat.ChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.ComprarActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.mapas.MapaCompradorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.mapas.MapaVendedorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.compra.NFCActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.DetalleProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.producto.CrearProductoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.home.HomeActivity"
-            android:exported="false" /> <!-- LoginActivity accesible externamente si se usa autenticación -->
-        <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="true" /> <!-- MainActivity configurada como pantalla de inicio -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
@@ -150,6 +79,7 @@
         <activity android:name=".ui.venta.CalificarActivityComprador" android:exported="false" />
         <activity android:name=".ui.venta.Codigo_NFC_Comprador" android:exported="false" />
         <activity android:name=".ui.venta.VentaActivity" android:exported="false" />
+        <activity android:name=".ui.mapas.MapaDireccionActivity" android:exported="false" />
 
     </application>
 </manifest>

@@ -17,6 +17,7 @@ import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.ui.usuario.PerfilActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ChatsListActivity : BottomMenuActivity() {
