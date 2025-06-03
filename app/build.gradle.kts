@@ -16,7 +16,7 @@ android {
             load(file.inputStream())
         }
     }
-    val imgApiKey = localProperties["IMGBB_API_KEY"] as String? ?: "\"MISSING_KEY\""
+    val imgApiKey = localProperties["IMGBB_API_KEY"] as String? ?: "MISSING_KEY"
 
     defaultConfig {
         applicationId = "com.example.campusgo"

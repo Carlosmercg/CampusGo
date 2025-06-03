@@ -119,7 +119,8 @@
                     android:id="@+id/ivVendedorFoto"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
                     android:contentDescription="@string/vendedor_foto_desc" />
 
                 <LinearLayout

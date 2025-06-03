@@ -23,7 +23,7 @@ class MensajeAdapter(private val mensajes: List<Mensaje>) :
     override fun getItemCount(): Int = mensajes.size
 
     class MensajeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val txtMensaje: TextView = itemView.findViewById(R.id.txtMensaje)
+        private val txtMensaje: TextView = itemView.findViewById(R.id.txtMensajeEnviado)
 
         fun bind(mensaje: Mensaje) {
             txtMensaje.text = mensaje.contenido

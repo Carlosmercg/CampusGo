@@ -8,19 +8,29 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Patterns
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
+import com.example.campusgo.data.models.Categoria
+import com.example.campusgo.data.models.Producto
+import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityCrearProductoBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import org.osmdroid.util.GeoPoint
 
 class CrearProductoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCrearProductoBinding
     private var imageUri: Uri? = null
     private var imageChanged = false
+    private val TAG = "CrearProductoActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,31 +55,62 @@ class CrearProductoActivity : AppCompatActivity() {
     }
 
     private fun guardarProducto() {
-        if(binding.nombre.text.isNotEmpty() && binding.descripcion.text.isNotEmpty() && binding.precio.text.isNotEmpty() && binding.categoria.isNotEmpty() && imageChanged){
-            val db = FirebaseFirestore.getInstance()
-            val producto = hashMapOf(
-                "nombre" to binding.nombre.text.toString(),
-                "descripcion" to binding.descripcion.text.toString(),
-                "precio" to binding.precio.text.toString().toDouble(),
-                "categoria" to binding.categoria.selectedItem.toString(),
-                "imagen" to imageUri.toString()
-            )
-            db.collection("Productos")
-                .add(producto)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("Firestore", "Producto agregado con ID: ${documentReference.id}")
-                    Toast.makeText(baseContext, "Producto agregado con ID: ${documentReference.id}", Toast.LENGTH_SHORT).show()
-                    finish()
+        val nombre = binding.nombre.text.toString()
+        val descripcion = binding.descripcion.text.toString()
+        val precioTexto = binding.precio.text.toString()
+        val nombreCategoria = binding.categoria.selectedItem.toString()
+
+        if (!validarProducto(nombre, descripcion, precioTexto, nombreCategoria, imageChanged)) return
+
+        val precio = precioTexto.toDouble()
+        val vendedorId = Firebase.auth.currentUser?.uid ?: return
+
+        obtenerIdCategoriaPorNombre(nombreCategoria) { categoriaId ->
+            if (categoriaId == null) {
+                Toast.makeText(this, "No se encontró la categoría seleccionada", Toast.LENGTH_SHORT).show()
+                return@obtenerIdCategoriaPorNombre
+            }
+
+            val manejadorImagenes = ManejadorImagenesAPI(this)
+            imageUri?.let { uri ->
+                manejadorImagenes.subirImagen(uri) { urlImagen ->
+                    if (urlImagen == null) {
+                        Toast.makeText(this, "❌ Error al subir imagen", Toast.LENGTH_SHORT).show()
+                        return@subirImagen
+                    }
+
+                    buscarNombre(vendedorId) { vendedorNombre ->
+                        val db = FirebaseFirestore.getInstance()
+                        val productoRef = db.collection("Productos").document()
+
+                        // Crear el producto como objeto
+                        val producto = Producto(
+                            id = productoRef.id,
+                            nombre = nombre,
+                            descripcion = descripcion,
+                            precio = precio,
+                            categoriaId = categoriaId,
+                            imagenUrl = urlImagen,
+                            vendedorId = vendedorId,
+                            vendedorNombre = vendedorNombre
+                        )
+
+                        productoRef.set(producto)
+                            .addOnSuccessListener {
+                                Log.d("Firestore", "✅ Producto agregado con ID: ${producto.id}")
+                                Toast.makeText(this, "Producto agregado con éxito", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "❌ Error al guardar producto", e)
+                                Toast.makeText(this, "Error al guardar en Firestore", Toast.LENGTH_SHORT).show()
+                            }
+                    }
                 }
-                .addOnFailureListener { e ->
-                    Log.w("Firestore", "Error al agregar producto", e)
-                    Toast.makeText(baseContext, "Error al agregar producto", Toast.LENGTH_SHORT).show()
-                }
-        }
-        else {
-            Toast.makeText(baseContext, "Debe llenar todos los campos", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 
 
     private val seleccionarImagenLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -107,6 +148,75 @@ class CrearProductoActivity : AppCompatActivity() {
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error al leer productos", exception)
+
             }
+    }
+
+    private fun validarProducto(
+        nombre: String,
+        descripcion: String,
+        precioTexto: String,
+        categoria: String,
+        imageChanged: Boolean
+    ): Boolean {
+        return when {
+            nombre.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty() || categoria.isEmpty() -> {
+                mostrar("Completa todos los campos")
+                false
+            }
+            precioTexto.toDoubleOrNull() == null -> {
+                mostrar("Precio Invalido")
+                false
+            }
+            !imageChanged -> {
+                mostrar("Debes Subir una imagen de producto")
+                false
+            }
+            else -> true
+        }
+    }
+
+
+    fun buscarNombre(Id: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(Id)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val nombre = usuarioDoc.getString("nombre") ?: "Nombre desconocido"
+                callback(nombre)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener nombre", e)
+                callback("Nombre desconocido")
+
+            }
+    }
+
+    private fun obtenerIdCategoriaPorNombre(nombreCategoria: String, callback: (String?) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("Categorías")
+            .whereEqualTo("nombre", nombreCategoria)
+            .get()
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    val categoriaId = result.documents[0].id
+                    callback(categoriaId)
+                } else {
+                    Log.w("Firestore", "❗ Categoría no encontrada: $nombreCategoria")
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "❌ Error al buscar ID de categoría", exception)
+                callback(null)
+            }
+    }
+
+
+
+    private fun mostrar(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        Log.d(TAG, msg)
     }
 }

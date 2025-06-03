@@ -46,20 +46,20 @@ class ListaProductosActivity : AppCompatActivity() {
     private fun cargarProductosDesdeFirebase(categoriaId: String) {
         FirebaseFirestore.getInstance()
             .collection("Productos")
-            .whereEqualTo("CategoriaID", categoriaId)
+            .whereEqualTo("categoriaId", categoriaId)
             .get()
             .addOnSuccessListener { resultado ->
                 productos.clear()
                 for (document in resultado) {
                     val producto = Producto(
-                        id = document.getString("ID") ?: "",
-                        categoriaId = document.getString("CategoriaID") ?: "",
-                        descripcion = document.getString("Descripcion") ?: "",
-                        imagenUrl = document.getString("ImagenURL") ?: "",
-                        nombre = document.getString("Nombre") ?: "",
-                        precio = document.getDouble("Precio") ?: 0.0,
-                        vendedorId = document.getString("VendedorID") ?: "",
-                        vendedorNombre = document.getString("VendedorNombre") ?: ""
+                        id = document.getString("id") ?: "",
+                        categoriaId = document.getString("categoriaId") ?: "",
+                        descripcion = document.getString("descripcion") ?: "",
+                        imagenUrl = document.getString("imagenUrl") ?: "",
+                        nombre = document.getString("nombre") ?: "",
+                        precio = document.getDouble("precio") ?: 0.0,
+                        vendedorId = document.getString("vendedorId") ?: "",
+                        vendedorNombre = document.getString("vendedorNombre") ?: ""
                     )
                     productos.add(producto)
                 }
