@@ -29,16 +29,15 @@
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/etBuscarUsuario"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:hint="Buscar..."
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Buscar en chats"
             android:backgroundTint="@color/gray"
             android:elevation="2dp"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:paddingEnd="8dp"/>
+
 
         <Spinner
             android:id="@+id/spinnerFiltro"
