@@ -7,9 +7,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityEditarPerfilBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 class EditarPerfilActivity : AppCompatActivity() {
 
@@ -26,6 +32,7 @@ class EditarPerfilActivity : AppCompatActivity() {
         }
 
         binding.guardar.setOnClickListener {
+            Actualizarperfil()
             finish()
         }
 
@@ -55,4 +62,36 @@ class EditarPerfilActivity : AppCompatActivity() {
         }
         binding.profilePicture.setImageBitmap(bitmap)
     }
+
+    private fun Actualizarperfil() {
+        val userId = Firebase.auth.currentUser?.uid
+        val uri = imageUri
+
+        if (uri != null && userId != null) {
+            val manejadorImagenes = ManejadorImagenesAPI(this)
+
+            manejadorImagenes.subirImagen(uri) { urlImagen ->
+                if (urlImagen != null) {
+                    val db = FirebaseFirestore.getInstance()
+                    val usuarioRef = db.collection("usuarios").document(userId)
+
+                    usuarioRef.update("fotoPerfilUrl", urlImagen)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "✅ Foto de perfil actualizada", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("EditarPerfil", "❌ Error al actualizar Firestore", e)
+                            Toast.makeText(this, "❌ Error al guardar los cambios", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "❌ No se pudo subir la imagen", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+
+            finish()
+        }
+    }
+
 }
