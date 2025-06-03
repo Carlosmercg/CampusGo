@@ -156,14 +156,15 @@ class SignUpActivity : AppCompatActivity() {
             val pass = binding.etPassword.text.toString().trim()
             val confirm = binding.etConfirmPassword.text.toString().trim()
             val nombre = binding.etNombre.text.toString().trim()
+            val apellido = binding.etApellido.text.toString().trim()
             val universidad = binding.etUni.text.toString().trim()
 
-            if (!validarCampos(correo, pass, confirm, nombre, universidad, urlCarnet)) {
+            if (!validarCampos(correo, pass, confirm, nombre, apellido, universidad, urlCarnet)) {
                 binding.progressBar.visibility = View.GONE
                 return@subirImagen
             }
 
-            crearUsuario(correo, pass, nombre, universidad, urlCarnet)
+            crearUsuario(correo, pass, nombre, apellido, universidad, urlCarnet)
         }
     }
 
@@ -171,6 +172,7 @@ class SignUpActivity : AppCompatActivity() {
         correo: String,
         pass: String,
         nombre: String,
+        apellido: String,
         universidad: String,
         urlCarnet: String
     ) {
@@ -182,9 +184,10 @@ class SignUpActivity : AppCompatActivity() {
                 val usuario = Usuario(
                     id = uid,
                     nombre = nombre,
+                    apellido = apellido,
                     correo = correo,
                     universidad = universidad,
-                    urlFotoPerfil = urlCarnet // ✅ Asignar URL subida al campo de foto
+                    urlCarnet = urlCarnet // ✅ Asignar URL subida al campo de foto
                 )
 
                 usuarioRepository.registrarUsuario(
@@ -212,11 +215,12 @@ class SignUpActivity : AppCompatActivity() {
         pass: String,
         confirm: String,
         nombre: String,
+        apellido: String,
         universidad: String,
         urlCarnet: String
     ): Boolean {
         return when {
-            correo.isEmpty() || pass.isEmpty() || confirm.isEmpty() || nombre.isEmpty() || universidad.isEmpty() || urlCarnet.isEmpty() -> {
+            correo.isEmpty() || pass.isEmpty() || confirm.isEmpty() || nombre.isEmpty() || universidad.isEmpty() || apellido.isEmpty() || urlCarnet.isEmpty() -> {
                 mostrar("Completa todos los campos y sube tu carné")
                 false
             }

@@ -41,7 +41,6 @@ class EditarPerfilActivity : AppCompatActivity() {
             seleccionarImagenLauncher.launch(intent)
         }
 
-
     }
 
     private val seleccionarImagenLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

@@ -3,10 +3,10 @@ package com.example.campusgo.ui.usuario
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.R
 
 import com.example.campusgo.databinding.ActivityPerfilBinding
+import com.example.campusgo.ui.auth.LoginActivity
 import com.example.campusgo.ui.compra.ListaComprasPasadasActivity
 import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.ui.main.BottomMenuActivity
@@ -14,10 +14,13 @@ import com.example.campusgo.ui.producto.CrearProductoActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
+
 
 class PerfilActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityPerfilBinding
+    private var fotoPerfil: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,13 +34,18 @@ class PerfilActivity : BottomMenuActivity() {
             .addOnSuccessListener { document ->
                 val nombre = document.getString("nombre")
                 val apellido = document.getString("apellido")
-                val fotoPerfil = document.getString("fotoPerfilURL")
+                fotoPerfil = document.getString("fotoPerfilUrl")
                 binding.nombres.text = nombre + " " + apellido
+                ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                    fotoPerfil,
+                    binding.profilePicture,
+                    this,
+                    R.drawable.ic_profile,
+                )
             }
             .addOnFailureListener { exception ->
                 Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
             }
-
 
 
         binding.back.setOnClickListener {
@@ -64,6 +72,23 @@ class PerfilActivity : BottomMenuActivity() {
             val intent = Intent(this, ListaComprasPasadasActivity::class.java)
             startActivity(intent)
         }
+
+        binding.cerrarSesion.setOnClickListener {
+            Firebase.auth.signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+            fotoPerfil,
+            binding.profilePicture,
+            this,
+            R.drawable.ic_profile,
+        )
     }
 
 }
