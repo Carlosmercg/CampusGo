@@ -12,12 +12,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationRequest
 import android.os.Bundle
 import android.os.Looper
-import android.os.StrictMode
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,11 +25,23 @@ import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.example.campusgo.ui.compra.Codigo_NFC
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
@@ -44,7 +53,6 @@ import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.TilesOverlay
-import java.util.Date
 
 class MapaCompradorActivity : AppCompatActivity() {
 
@@ -52,13 +60,26 @@ class MapaCompradorActivity : AppCompatActivity() {
     lateinit var map: MapView
 
     private lateinit var posicion: GeoPoint
+    private lateinit var posicionActual: GeoPoint
     private lateinit var posicionVendedor: GeoPoint
     private var ultimaPosicionVendedor: GeoPoint? = null
     private var marcadorVendedor: Marker? = null
     lateinit var pedidoId : String
 
+    private var currentLocationMarker: Marker? = null
+    private var direccionMarker: Marker? = null
+    private var lastSavedLocation: GeoPoint? = null
+    private var firstLocationUpdate = true
+
     private lateinit var geocoder: Geocoder
     private lateinit var roadManager: RoadManager
+
+    private lateinit var accelerometer: Sensor
+    private lateinit var magnetometer: Sensor
+    private lateinit var orientationListener: SensorEventListener
+
+    private var gravity: FloatArray? = null
+    private var geomagnetic: FloatArray? = null
 
     // Radio de la Tierra usado para cálculos de distancia
     val RADIUS_OF_EARTH_KM = 6378
@@ -68,9 +89,38 @@ class MapaCompradorActivity : AppCompatActivity() {
     private lateinit var lightSensor: Sensor
     private lateinit var lightEventListener: SensorEventListener
 
+    // Cliente de ubicación y configuraciones
+    private lateinit var locationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: com.google.android.gms.location.LocationRequest
+    private lateinit var locationCallback: LocationCallback
+
+    /**
+     * Callback para cuando se activa la ubicación del dispositivo (GPS).
+     */
+    private val locationSettings = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+        ActivityResultCallback {
+            if(it.resultCode == RESULT_OK){
+                startLocationUpdates()
+            }
+        }
+    )
+
+    /**
+     * Callback para el permiso de ubicación.
+     */
+    private val locationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+        ActivityResultCallback {
+            if(it){
+                locationSettings()
+            }
+        }
+    )
     override fun onResume() {
         super.onResume()
         map.onResume()
+        locationPermission.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         pedidoId = intent.getStringExtra("pedidoID").toString()
         lifecycleScope.launch {
             direccionFirestore()
@@ -78,12 +128,6 @@ class MapaCompradorActivity : AppCompatActivity() {
             while (true) {
                 posicionVendedoresFirestore()
                 delay(10000)
-                if (::posicion.isInitialized && ::posicionVendedor.isInitialized) {
-                        drawRoute(posicion, posicionVendedor)
-                        map.controller.setZoom(15.0)
-                        map.invalidate()
-                }
-                delay(50000)
             }
         }
         val uims = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -97,6 +141,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     }
     override fun onPause() {
         super.onPause()
+        stopLocationUpdates()
         map.onPause()
         // Detiene el sensor de luz
         sensorManager.unregisterListener(lightEventListener)
@@ -106,6 +151,11 @@ class MapaCompradorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityMapaCompradorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Inicializa servicios de ubicación
+        locationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationRequest = createLocationRequest()
+        locationCallback = createLocationCallback()
 
         // Carga configuración del mapa
         Configuration.getInstance().load(this,
@@ -118,9 +168,6 @@ class MapaCompradorActivity : AppCompatActivity() {
         geocoder = Geocoder(baseContext)
         roadManager = OSRMRoadManager(this, "ANDROID")
 
-        // Permite la ejecución de operaciones de red en el hilo principal
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
         map.overlays.add(createOverlayEvents())
 
         // Inicializa sensores de luz
@@ -133,6 +180,134 @@ class MapaCompradorActivity : AppCompatActivity() {
         }
 
     }
+
+    /**
+     * Configura la verificación de servicios de ubicación (GPS).
+     */
+    private fun locationSettings(){
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // All location settings are satisfied. The client can initialize
+            // location requests here. // ...
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException){
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    val isr : IntentSenderRequest = IntentSenderRequest.Builder(exception.resolution).build()
+                    locationSettings.launch(isr)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.i("error","There is no GPS hardware")
+                }
+            }
+        }
+    }
+    /**
+     * Crea el objeto de solicitud de actualizaciones de ubicación.
+     * @return LocationRequest configurado
+     */
+    private fun createLocationRequest(): com.google.android.gms.location.LocationRequest {
+        val request = com.google.android.gms.location.LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+            .setWaitForAccurateLocation(true)
+            .setMinUpdateIntervalMillis(5000)
+            .build()
+        return request
+    }
+
+    /**
+     * Crea el objeto callback que recibe actualizaciones de ubicación.
+     * Guarda ubicaciones periódicamente en un archivo JSON.
+     * @return LocationCallback configurado
+     */
+    private fun createLocationCallback(): LocationCallback {
+        val callback = object : LocationCallback(){
+            override fun onLocationResult(result: LocationResult) {
+                super.onLocationResult(result)
+                val loc = result.lastLocation
+                if(loc != null){
+                    val newPosition = GeoPoint(loc.latitude, loc.longitude)
+
+                    if (firstLocationUpdate){
+                        posicionActual = newPosition
+                        addLocationMarker()
+                        map.controller.setZoom(18.0)
+                        map.controller.animateTo(posicionActual)
+                        firstLocationUpdate = false
+                    }
+
+                    else {
+                        if(!newPosition.equals(posicionActual)){
+                            posicionActual = newPosition
+                            addLocationMarker()
+                            map.controller.setZoom(18.0)
+                            map.controller.animateTo(posicionActual)
+                        }
+
+                    }
+                    updateUI(loc)
+
+                    if (lastSavedLocation == null ||
+                        distance(lastSavedLocation!!.latitude, lastSavedLocation!!.longitude,
+                            newPosition.latitude, newPosition.longitude) > 0.03
+                    ) {
+                        drawRoute(posicionActual,posicion)
+                        lastSavedLocation = newPosition
+                    }
+                }
+            }
+        }
+        return callback
+    }
+
+    private fun updateUI(location : Location){
+        Log.i("GPS_APP", "(lat: ${location.latitude}, long: ${location.longitude})")
+        posicionActual = GeoPoint(location.latitude, location.longitude)
+    }
+    /**
+     * Inicia la recepción de actualizaciones de ubicación.
+     */
+    private fun startLocationUpdates(){
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            locationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        }
+    }
+    /**
+     * Detiene la recepción de actualizaciones de ubicación.
+     */
+    private fun stopLocationUpdates(){
+        locationClient.removeLocationUpdates(locationCallback)
+    }
+    private fun addLocationMarker() {
+        if (currentLocationMarker != null) {
+            map.overlays.remove(currentLocationMarker)
+        }
+
+        var direccion = "Dirección desconocida"
+
+        val addresses = geocoder.getFromLocation(posicionActual.latitude, posicionActual.longitude, 1)
+        if (addresses != null && addresses.isNotEmpty()) {
+            direccion = addresses[0].getAddressLine(0) ?: "Dirección desconocida"
+        }
+
+        val marker = Marker(map)
+        marker.title = direccion
+        marker.subDescription = "Latitud: ${posicionActual.latitude}\nLongitud: ${posicionActual.longitude}"
+
+        val myIcon = resources.getDrawable(R.drawable.baseline_man_3_24, theme)
+        marker.icon = myIcon
+        marker.position = posicionActual
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+        map.overlays.add(marker)
+        currentLocationMarker = marker
+    }
+
     /**
      * Calcula la distancia entre dos coordenadas geográficas en kilómetros.
      * @param lat1 Latitud del primer punto
@@ -190,7 +365,7 @@ class MapaCompradorActivity : AppCompatActivity() {
         }
 
         val marker = createMarker(
-            p, addressText, "",
+            p, addressText, snippet,
             R.drawable.baseline_add_location_alt_24
         )
         if (marker != null) {
@@ -209,8 +384,8 @@ class MapaCompradorActivity : AppCompatActivity() {
         }
 
          marcadorVendedor = createMarker(
-            p, addressText, "",
-            R.drawable.baseline_arrow_circle_up_24
+            p, addressText, snippet,
+            R.drawable.baseline_arrow_circle_down_24
         )
         if (marcadorVendedor != null) {
             map.overlays.add(marcadorVendedor)
@@ -287,6 +462,7 @@ class MapaCompradorActivity : AppCompatActivity() {
     }
 
     fun direccionFirestore() {
+        val auth = FirebaseAuth.getInstance()
         val db = FirebaseFirestore.getInstance()
         db.collection("Pedidos")
             .whereEqualTo("id", pedidoId)
@@ -294,12 +470,15 @@ class MapaCompradorActivity : AppCompatActivity() {
             .addOnSuccessListener { result ->
                 for (document in result) {
                     val direccion = document.getString("direccion")
-                    val compradorId = document.getString("compradorID")
                     if (direccion != null) {
                         val latLng = findLocation(direccion)
                         if (latLng != null) {
                             posicion = GeoPoint(latLng.latitude, latLng.longitude)
-                            addMarker(posicion, "Pedido de $compradorId")
+                            auth.currentUser?.let {
+                                buscarNombre(it.uid) { nombre ->
+                                    addMarker(posicion, "Pedido de $nombre")
+                                }
+                            }
                             map.controller.setZoom(18.0)
                             map.controller.animateTo(posicion)
                             map.invalidate()
@@ -325,6 +504,12 @@ class MapaCompradorActivity : AppCompatActivity() {
                     val lng = document.getDouble("longvendedor")
                     val vendedorID = document.getString("vendedorID") ?: "Desconocido"
 
+                    if (vendedorID != null) {
+                        buscarNombre(vendedorID) { nombre ->
+                            binding.Vendedor.text = nombre
+                        }
+                    }
+
                     if (lat != null && lng != null) {
                         val location = LatLng(lat, lng)
                         val direccion = findAddress(location) ?: "Ubicación desconocida"
@@ -335,9 +520,11 @@ class MapaCompradorActivity : AppCompatActivity() {
                             marcadorVendedor?.let {
                                 map.overlays.remove(it)
                             }
-                            markerVendedor(posicionVendedor, "Vendedor $vendedorID: $direccion")
-                            map.controller.setZoom(18.0)
-                            map.controller.animateTo(posicionVendedor)
+                            if (vendedorID != null) {
+                                buscarNombre(vendedorID) { nombre ->
+                                    markerVendedor(posicionVendedor, "Vendedor $nombre")
+                                }
+                            }
                             map.invalidate()
                             ultimaPosicionVendedor=posicionVendedor
                         }
@@ -351,30 +538,57 @@ class MapaCompradorActivity : AppCompatActivity() {
             }
     }
 
+    fun buscarNombre(Id: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(Id)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val nombre = usuarioDoc.getString("nombre") ?: "Nombre desconocido"
+                callback(nombre)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener nombre d", e)
+                callback("Nombre desconocido")
+            }
+    }
+
     /**
      * Dibuja una ruta en rojo desde un punto inicial hasta un final.
      * @param start Punto inicial
      * @param finish Punto final
      */
     private var roadOverlay: Polyline? = null
-    fun drawRoute(start : GeoPoint, finish : GeoPoint){
-        var routePoints = ArrayList<GeoPoint>()
-        routePoints.add(start)
-        routePoints.add(finish)
-        val road = roadManager.getRoad(routePoints)
-        Log.i("MapsApp", "Route length: "+road.mLength+" klm")
-        Log.i("MapsApp", "Duration: "+road.mDuration/60+" min")
-        if(map!=null){
-            if(roadOverlay != null){
-                map.getOverlays().remove(roadOverlay);
-            }
-            roadOverlay = RoadManager.buildRoadOverlay(road)
-            roadOverlay!!.getOutlinePaint().setColor(Color.RED)
-            roadOverlay!!.getOutlinePaint().setStrokeWidth(10F)
-            map.getOverlays().add(roadOverlay)
-            var tiempo= road.mDuration/60
-            binding.tiempo.text = String.format("Duration: %.2f minutos", tiempo)
-            }
-    }
+   fun drawRoute(start: GeoPoint, finish: GeoPoint) {
+
+           CoroutineScope(Dispatchers.IO).launch {
+               try {
+                   val routePoints = arrayListOf(start, finish)
+                   val road = roadManager.getRoad(routePoints)
+
+                   // Ahora volvemos al hilo principal para modificar la UI
+                   withContext(Dispatchers.Main) {
+                       Log.i("MapsApp", "Route length: ${road.mLength} km")
+                       Log.i("MapsApp", "Duration: ${road.mDuration / 60} min")
+
+                       if (map != null) {
+                           if (roadOverlay != null) {
+                               map.overlays.remove(roadOverlay)
+                           }
+                           roadOverlay = RoadManager.buildRoadOverlay(road).apply {
+                               outlinePaint.color = Color.RED
+                               outlinePaint.strokeWidth = 10F
+                           }
+                           map.overlays.add(roadOverlay)
+                           var tiempo= road.mDuration/60
+                           binding.tiempo.text = String.format("Duration: %.2f minutos", tiempo)
+                           map.invalidate() // <- Para refrescar el mapa
+                       }
+                   }
+               } catch (e: Exception) {
+                   Log.e("MapsApp", "Error drawing route: ${e.message}")
+               }
+           }
+       }
 
 }

@@ -13,6 +13,9 @@ import com.example.campusgo.data.models.Producto
 import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.mapas.MapaDireccionActivity
+import com.example.campusgo.ui.mapas.MapaVendedorActivity
 import com.example.campusgo.ui.venta.VentaActivity
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -20,11 +23,17 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import org.osmdroid.util.GeoPoint
 
 class ComprarActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityComprarBinding
     private var productosSeleccionados: List<Producto> = emptyList()
+    private var direccionSeleccionada: String? = null
+
+
+
+    private lateinit var mapaLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +68,20 @@ class ComprarActivity : AppCompatActivity() {
             override fun getItemCount(): Int = productosSeleccionados.size
         }
 
+        mapaLauncher = registerForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                val direccion = data?.getStringExtra("direccion")
+                if (!direccion.isNullOrBlank()) {
+                    direccionSeleccionada = direccion
+                    binding.etPuntoEntrega.setText(direccion)
+                    binding.btnComprar.isEnabled = true
+                }
+            }
+        }
+
         // Calcular totales
         val subtotal = productosSeleccionados.sumOf { it.precio }
         val envio = 5000.0
@@ -68,13 +91,26 @@ class ComprarActivity : AppCompatActivity() {
         binding.tvEnvio.text = "Envío: $${envio}"
         binding.tvTotal.text = "TOTAL: $${total}"
 
+        binding.ivBack.setOnClickListener{
+            val intent = Intent(this, CarritoActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnComprar.isEnabled = false
+
+        binding.etPuntoEntrega.setOnClickListener {
+            val intent = Intent(this, MapaDireccionActivity::class.java)
+            mapaLauncher.launch(intent)
+        }
+
         binding.btnComprar.setOnClickListener {
+
+            val direccion = direccionSeleccionada ?: return@setOnClickListener
             val db = FirebaseFirestore.getInstance()
             val uid = Firebase.auth.currentUser?.uid ?: return@setOnClickListener
             val pedidoId = db.collection("Pedidos").document().id
             val fecha = Timestamp.now()
 
-            val direccion = binding.etPuntoEntrega.text.toString()
             val estado = "activo"
             lateinit var metodoPago: String
             if(binding.spinnerMetodoPago.selectedItemId.toString()=="1"){
