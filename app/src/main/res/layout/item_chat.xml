@@ -8,7 +8,7 @@
 
     <!-- Imagen del usuario a la izquierda -->
     <ImageView
-        android:id="@+id/imgPerfilChat"
+        android:id="@+id/imgFotoPerfil"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="12dp"
@@ -29,8 +29,8 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imgPerfilChat"
-        app:layout_constraintTop_toTopOf="@id/imgPerfilChat" />
+        app:layout_constraintStart_toEndOf="@id/imgFotoPerfil"
+        app:layout_constraintTop_toTopOf="@id/imgFotoPerfil" />
 
     <!-- Último mensaje -->
     <TextView
@@ -41,7 +41,7 @@
         android:text="Último mensaje del chat"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="@color/textHint"
-        app:layout_constraintBottom_toBottomOf="@id/imgPerfilChat"
+        app:layout_constraintBottom_toBottomOf="@id/imgFotoPerfil"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/txtNombreUsuario"
         app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario" />

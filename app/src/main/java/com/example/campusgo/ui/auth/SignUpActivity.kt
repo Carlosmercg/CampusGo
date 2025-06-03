@@ -46,7 +46,6 @@ class SignUpActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         manejadorImagenesAPI = ManejadorImagenesAPI(this)
 
-        // Política temporal para evitar fallos con cámara
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().permitAll().build())
 
         val universidades = listOf(
@@ -58,8 +57,7 @@ class SignUpActivity : AppCompatActivity() {
             "Universidad ECCI"
         )
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades)
-        binding.etUni.setAdapter(adapter)
+        binding.etUni.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades))
 
         configurarGaleria()
         configurarCamara()
@@ -186,13 +184,13 @@ class SignUpActivity : AppCompatActivity() {
                     nombre = nombre,
                     correo = correo,
                     universidad = universidad,
-                    urlCarnet = urlCarnet
+                    urlFotoPerfil = urlCarnet // ✅ Asignar URL subida al campo de foto
                 )
 
                 usuarioRepository.registrarUsuario(
                     usuario,
                     onSuccess = {
-                        mostrar("Usuario registrado correctamente en firestore✅")
+                        mostrar("Usuario registrado correctamente en Firestore ✅")
                         finish()
                     },
                     onError = {
@@ -243,9 +241,7 @@ class SignUpActivity : AppCompatActivity() {
         Log.d(TAG, msg)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             100 -> if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {

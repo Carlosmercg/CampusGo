@@ -1,6 +1,10 @@
 package com.example.campusgo.data.models
 
 data class Mensaje(
-    val contenido: String,
-    val esEnviado: Boolean // true si el usuario lo envió, false si lo recibió
+    val contenido: String = "",
+    val emisor: String = "",
+    val receptor: String = "",
+    val timestamp: Long = 0,
+    @Transient var esEnviado: Boolean = false
 )
+

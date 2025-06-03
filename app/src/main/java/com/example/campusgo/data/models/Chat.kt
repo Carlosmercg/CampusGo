@@ -4,5 +4,7 @@ data class Chat(
     val id: String,
     val nombreUsuario: String,
     val ultimoMensaje: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val uidReceptor: String = "",
+    val urlFotoPerfil: String = ""
 )

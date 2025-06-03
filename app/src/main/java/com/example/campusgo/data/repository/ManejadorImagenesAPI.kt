@@ -1,13 +1,14 @@
 package com.example.campusgo.data.repository
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.campusgo.BuildConfig
+import com.example.campusgo.R
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -18,11 +19,22 @@ import java.io.IOException
 class ManejadorImagenesAPI(private val context: Context) {
 
     private val cliente = OkHttpClient()
-    private val apiKey = obtenerApiKeyDesdeManifest()
+    private val apiKey = BuildConfig.IMGBB_API_KEY
 
     fun subirImagen(uri: Uri, callback: (String?) -> Unit) {
+        Log.d("SubidorImagenes", "🔑 Usando API KEY: $apiKey")
+
+        // 🔒 Validación temprana de API Key
+        if (apiKey.isBlank() || apiKey == "MISSING_KEY") {
+            Log.e("SubidorImagenes", "❌ API Key no configurada")
+            runOnUi {
+                Toast.makeText(context, "❌ Error: API Key no válida. Revisa local.properties", Toast.LENGTH_LONG).show()
+                callback(null)
+            }
+            return
+        }
+
         try {
-            // Copiar el archivo del uri a un archivo temporal en cache
             val inputStream = context.contentResolver.openInputStream(uri)
             val file = File.createTempFile("upload", ".jpg", context.cacheDir)
             file.outputStream().use { inputStream?.copyTo(it) }
@@ -88,33 +100,19 @@ class ManejadorImagenesAPI(private val context: Context) {
         (context as? AppCompatActivity)?.runOnUiThread { action() }
     }
 
-    fun mostrarImagenDesdeUrl(
-        url: String,
-        imageView: ImageView,
-        context: Context,
-        placeholderRes: Int? = null,
-        errorRes: Int? = null
-    ) {
-        val glideRequest = Glide.with(context).load(url)
-
-        // Opcional: aplicar placeholder si se proporciona
-        placeholderRes?.let { glideRequest.placeholder(it) }
-
-        // Opcional: aplicar imagen de error si se proporciona
-        errorRes?.let { glideRequest.error(it) }
-
-        glideRequest.into(imageView)
-    }
-
-
-    private fun obtenerApiKeyDesdeManifest(): String {
-        return try {
-            val appInfo = context.packageManager
-                .getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
-            appInfo.metaData.getString("IMGBB_API_KEY") ?: ""
-        } catch (e: Exception) {
-            Log.e("SubidorImagenes", "❌ No se pudo obtener la API key: ${e.message}")
-            ""
+    companion object {
+        fun mostrarImagenDesdeUrl(
+            url: String?,
+            imageView: ImageView,
+            context: Context,
+            placeholderRes: Int = R.drawable.ic_profile,
+            errorRes: Int = R.drawable.ic_profile
+        ) {
+            Glide.with(context)
+                .load(url)
+                .placeholder(placeholderRes)
+                .error(errorRes)
+                .into(imageView)
         }
     }
 }

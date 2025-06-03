@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,6 +10,14 @@ android {
     namespace = "com.example.campusgo"
     compileSdk = 35
 
+    val localProperties = Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) {
+            load(file.inputStream())
+        }
+    }
+    val imgApiKey = localProperties["IMGBB_API_KEY"] as String? ?: "\"MISSING_KEY\""
+
     defaultConfig {
         applicationId = "com.example.campusgo"
         minSdk = 24
@@ -16,9 +26,7 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // 🔒 Usar la API Key solo desde código (BuildConfig.IMGBB_API_KEY)
-        val imgbbKey = project.findProperty("IMGBB_API_KEY") as? String ?: ""
-        buildConfigField("String", "IMGBB_API_KEY", "\"$imgbbKey\"")
+        buildConfigField("String", "IMGBB_API_KEY", "\"$imgApiKey\"")
 
     }
 
@@ -64,6 +72,7 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.inappmessaging)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.firebase.database.ktx)
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Firebase BoM y servicios
