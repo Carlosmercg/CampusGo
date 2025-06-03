@@ -108,6 +108,13 @@ class ManejadorImagenesAPI(private val context: Context) {
             placeholderRes: Int = R.drawable.ic_profile,
             errorRes: Int = R.drawable.ic_profile
         ) {
+            if (url.isNullOrBlank()) {
+                imageView.setImageResource(placeholderRes)
+                Log.w("ManejadorImagenesAPI", "⚠️ URL de imagen vacía o nula.")
+                return
+            }
+
+            Log.d("ManejadorImagenesAPI", "🔗 Cargando imagen desde: $url")
             Glide.with(context)
                 .load(url)
                 .placeholder(placeholderRes)
