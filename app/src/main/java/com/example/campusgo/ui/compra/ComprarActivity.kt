@@ -2,6 +2,7 @@ package com.example.campusgo.ui.compra
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.example.campusgo.data.models.Producto
 import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.ui.mapas.MapaDireccionActivity
@@ -54,6 +56,16 @@ class ComprarActivity : AppCompatActivity()  {
         }
 
         val vendedorId = productosSeleccionados[0].vendedorId
+
+        buscarImagen(vendedorId) { fotoPerfil ->
+            ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                fotoPerfil,
+                binding.ivVendedorFoto,
+                baseContext,
+                R.drawable.ic_profile,
+            )
+        }
+
         obtenerDatosVendedor(vendedorId)
 
         // Configurar RecyclerView
@@ -176,6 +188,20 @@ class ComprarActivity : AppCompatActivity()  {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
+    }
+    private fun buscarImagen(Id: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(Id)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val imagen = usuarioDoc.getString("urlFotoPerfil") ?: "imagen desconocida"
+                callback(imagen)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener imagen", e)
+                callback("Nombre desconocido")
+            }
     }
     private fun obtenerUltimoPedidoId(callback: (String) -> Unit) {
         FirebaseFirestore.getInstance()

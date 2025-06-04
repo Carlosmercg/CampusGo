@@ -46,7 +46,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun configurarToolbar() {
         val nombreCompleto = intent.getStringExtra("nombreUsuario") ?: "Usuario"
-        val fotoPerfilUrl = intent.getStringExtra("fotoPerfilUrl")
+        val fotoPerfilUrl = intent.getStringExtra("urlFotoPerfil")
 
         // Configura el toolbar como ActionBar
         setSupportActionBar(binding.chatToolbar)

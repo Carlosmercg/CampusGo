@@ -9,7 +9,7 @@
         android:id="@+id/txtMensajeEnviado"
         android:background="@drawable/bg_message_sent"
         android:padding="10dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:text="Mensaje enviado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
