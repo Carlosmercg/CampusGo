@@ -104,7 +104,7 @@ class FcmService : FirebaseMessagingService() {
     }
 
     // ------------------------------------------------------------
-    // 1) Notificación de chat (sin cambios salvo permiso)
+    // 1) Notificación de chat (se agregan líneas para mostrar descripción completa)
     // ------------------------------------------------------------
     private fun mostrarNotificacionChat(
         title: String,
@@ -206,7 +206,7 @@ class FcmService : FirebaseMessagingService() {
 
     // ------------------------------------------------------------
     // 5) Función genérica que crea canal y publica notificación,
-    //    con CHEQUEO DE PERMISO en Android 13+ antes de notify(...)
+    //    con CHEQUEO DE PERMISO y estilo para mostrar descripción
     // ------------------------------------------------------------
     private fun publicar(
         title: String,
@@ -236,6 +236,13 @@ class FcmService : FirebaseMessagingService() {
             .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+        // NUEVO: Utilizar BigTextStyle para que la "descripción" (body completo) se vea al expandir la notificación
+        builder.setStyle(
+            NotificationCompat.BigTextStyle()
+                .bigText(body)
+        )
+        // FIN DE NUEVO
 
         // 5.3) CHEQUEO DE PERMISO POST_NOTIFICATIONS en Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
