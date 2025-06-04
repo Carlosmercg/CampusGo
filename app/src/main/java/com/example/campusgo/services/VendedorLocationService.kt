@@ -32,7 +32,7 @@ class VendedorLocationService : Service() {
                 // Buscar pedidos activos donde vendedorID == UID
                 db.collection("Pedidos")
                     .whereEqualTo("vendedorId", uid)
-                    .whereEqualTo("estado", "activo")
+                    .whereEqualTo("estado", "aceptado")
                     .get()
                     .addOnSuccessListener { documentos ->
                         for (doc in documentos) {
