@@ -14,6 +14,7 @@ import com.example.campusgo.databinding.ActivityComprarBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.main.BottomMenuActivity
 import com.example.campusgo.ui.mapas.MapaDireccionActivity
 import com.example.campusgo.ui.mapas.MapaVendedorActivity
 import com.example.campusgo.ui.venta.VentaActivity
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import org.osmdroid.util.GeoPoint
 
-class ComprarActivity : AppCompatActivity() {
+class ComprarActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityComprarBinding
     private var productosSeleccionados: List<Producto> = emptyList()
@@ -153,8 +154,6 @@ class ComprarActivity : AppCompatActivity() {
                 .set(pedido)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Pedido creado correctamente", Toast.LENGTH_SHORT).show()
-                    // Ir a siguiente pantalla si quieres
-                    startActivity(Intent(this, VentaActivity::class.java).putExtra("pedidoId", pedidoId))
                     finish()
                 }
                 .addOnFailureListener {
@@ -174,10 +173,8 @@ class ComprarActivity : AppCompatActivity() {
                         Toast.makeText(this, "Error al actualizar carrito $carritoId: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
             }
-            Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
     private fun obtenerUltimoPedidoId(callback: (String) -> Unit) {
