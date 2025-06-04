@@ -148,7 +148,7 @@ class FcmService : FirebaseMessagingService() {
             // Le cambiamos la clave para que VentaActivity consiga el "pedidoID"
             putExtra("pedidoID", chatId)     // NUEVO: enviamos pedidoID correctamente
             putExtra("uidComprador", uidComprador)
-            putExtra("productoId", productoId)
+            putExtra("productoID", productoId)
             putExtra("nombreUsuario", nombreComprador)
         }
         // FIN DE NUEVO
@@ -173,8 +173,9 @@ class FcmService : FirebaseMessagingService() {
     ) {
         val intent = Intent(this, MapaCompradorActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("pedidoID", chatId)
             putExtra("chatId", chatId)
-            putExtra("productoId", productoId)
+            putExtra("productoID", productoId)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
