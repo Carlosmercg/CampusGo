@@ -80,8 +80,7 @@ class VentaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityVentaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val pedidoId = intent.getStringExtra("pedidoID")
-            ?: "-"
+        val pedidoId = intent.getStringExtra("pedidoID") ?: "-"
         val db = FirebaseFirestore.getInstance()
 
         map = binding.osmap

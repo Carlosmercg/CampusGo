@@ -104,7 +104,7 @@ class FcmService : FirebaseMessagingService() {
     }
 
     // ------------------------------------------------------------
-    // 1) Notificación de chat (se agregan líneas para mostrar descripción completa)
+    // 1) Notificación de chat (sin cambios)
     // ------------------------------------------------------------
     private fun mostrarNotificacionChat(
         title: String,
@@ -139,13 +139,20 @@ class FcmService : FirebaseMessagingService() {
         nombreComprador: String,
         productoId: String
     ) {
+        // =========================
+        //     SECCIÓN MODIFICADA
+        // =========================
         val intent = Intent(this, VentaActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra("chatId", chatId)
+
+            // Le cambiamos la clave para que VentaActivity consiga el "pedidoID"
+            putExtra("pedidoID", chatId)     // NUEVO: enviamos pedidoID correctamente
             putExtra("uidComprador", uidComprador)
             putExtra("productoId", productoId)
             putExtra("nombreUsuario", nombreComprador)
         }
+        // FIN DE NUEVO
+
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -205,8 +212,7 @@ class FcmService : FirebaseMessagingService() {
     }
 
     // ------------------------------------------------------------
-    // 5) Función genérica que crea canal y publica notificación,
-    //    con CHEQUEO DE PERMISO y estilo para mostrar descripción
+    // 5) Función genérica que crea canal y publica notificación (sin cambios excepto BigTextStyle)
     // ------------------------------------------------------------
     private fun publicar(
         title: String,
@@ -237,7 +243,7 @@ class FcmService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        // NUEVO: Utilizar BigTextStyle para que la "descripción" (body completo) se vea al expandir la notificación
+        // NUEVO: Utilizar BigTextStyle para la descripción completa
         builder.setStyle(
             NotificationCompat.BigTextStyle()
                 .bigText(body)
@@ -251,13 +257,12 @@ class FcmService : FirebaseMessagingService() {
                 Manifest.permission.POST_NOTIFICATIONS
             )
             if (permiso != PackageManager.PERMISSION_GRANTED) {
-                // Si el permiso NO está concedido, NO mostramos la notificación.
                 Log.w(TAG, "No se tiene permiso POST_NOTIFICATIONS; omitiendo notify()")
                 return
             }
         }
 
-        // 5.4) Si llegamos aquí, tenemos permiso (o Android versión <13), entonces publicamos
+        // 5.4) Si llegamos aquí, tenemos permiso (o Android < 13), entonces publicamos
         val notifId = chatId.hashCode().and(0x00FFFFFF)
         NotificationManagerCompat.from(this).notify(notifId, builder.build())
     }
