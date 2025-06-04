@@ -1,19 +1,23 @@
 package com.example.campusgo.services
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.example.campusgo.R
 import com.example.campusgo.ui.chat.ChatActivity
+import com.example.campusgo.ui.mapas.MapaCompradorActivity
+import com.example.campusgo.ui.venta.VentaActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -36,7 +40,7 @@ class FcmService : FirebaseMessagingService() {
             val data = mapOf("fcmToken" to token)
             db.collection("usuarios")
                 .document(user.uid)
-                .set(data, SetOptions.merge())
+                .set(data)
                 .addOnSuccessListener { Log.d(TAG, "Token actualizado en Firestore") }
                 .addOnFailureListener { e -> Log.e(TAG, "Error guardando token FCM", e) }
         }
@@ -47,31 +51,73 @@ class FcmService : FirebaseMessagingService() {
 
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Data Message recibido: ${remoteMessage.data}")
-            val data = remoteMessage.data
+            val dataMap = remoteMessage.data
+            val tipo         = dataMap["tipo"] ?: ""
+            val titulo       = dataMap["titulo"] ?: ""
+            val cuerpo       = dataMap["body"]   ?: ""
+            val chatId       = dataMap["chatId"] ?: ""
+            val productoId   = dataMap["productoId"] ?: ""
+            val uidEmisor    = dataMap["uidEmisor"] ?: ""
+            val uidComprador = dataMap["uidComprador"] ?: ""
+            val uidVendedor  = dataMap["uidVendedor"] ?: ""
+            val nombreEmisor = dataMap["nombreEmisor"] ?: ""
+            val nombreCompr  = dataMap["nombreComprador"] ?: ""
+            val nombreVend   = dataMap["nombreVendedor"] ?: ""
 
-            val titulo       = data["titulo"]       ?: "Nuevo mensaje"
-            val cuerpo       = data["cuerpo"]       ?: ""
-            val nombreEmisor = data["nombreEmisor"] ?: ""
-            val chatId       = data["chatId"]       ?: ""
-            val uidEmisor    = data["uidEmisor"]    ?: ""
-
-            mostrarNotificacion(titulo, cuerpo, chatId, uidEmisor, nombreEmisor)
+            when (tipo) {
+                "chat" -> {
+                    mostrarNotificacionChat(titulo, cuerpo, chatId, uidEmisor, nombreEmisor)
+                }
+                "nuevaCompra" -> {
+                    mostrarNotificacionNuevaCompra(
+                        titulo,
+                        cuerpo,
+                        chatId,
+                        uidComprador,
+                        nombreCompr,
+                        productoId
+                    )
+                }
+                "compraAceptada" -> {
+                    mostrarNotificacionCompraAceptada(
+                        titulo,
+                        cuerpo,
+                        chatId,
+                        productoId
+                    )
+                }
+                "compraRechazada" -> {
+                    mostrarNotificacionCompraRechazada(
+                        titulo,
+                        cuerpo,
+                        chatId,
+                        productoId,
+                        uidVendedor,
+                        nombreVend
+                    )
+                }
+                else -> {
+                    mostrarNotificacionChat(titulo, cuerpo, chatId, uidEmisor, nombreEmisor)
+                }
+            }
         }
     }
 
-    private fun mostrarNotificacion(
+    // ------------------------------------------------------------
+    // 1) Notificación de chat (sin cambios salvo permiso)
+    // ------------------------------------------------------------
+    private fun mostrarNotificacionChat(
         title: String,
         body: String,
         chatId: String,
         uidEmisor: String,
         nombreEmisor: String
     ) {
-        // 1) Intent para abrir ChatActivity con los extras esperados
         val intent = Intent(this, ChatActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("chatId", chatId)
-            putExtra("uidReceptor", uidEmisor)       // Aquí pasamos “uidReceptor” = quien nos envió el mensaje
-            putExtra("nombreUsuario", nombreEmisor)  // Para mostrar el nombre en el Toolbar de ChatActivity
+            putExtra("uidReceptor", uidEmisor)
+            putExtra("nombreUsuario", nombreEmisor)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,
@@ -79,22 +125,109 @@ class FcmService : FirebaseMessagingService() {
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+        publicar(title, body, pendingIntent, chatId)
+    }
 
-        // 2) Crear (si hace falta) el canal de notificación en Android 8+
+    // ------------------------------------------------------------
+    // 2) Notificación "nuevaCompra" para vendedor
+    // ------------------------------------------------------------
+    private fun mostrarNotificacionNuevaCompra(
+        title: String,
+        body: String,
+        chatId: String,
+        uidComprador: String,
+        nombreComprador: String,
+        productoId: String
+    ) {
+        val intent = Intent(this, VentaActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("chatId", chatId)
+            putExtra("uidComprador", uidComprador)
+            putExtra("productoId", productoId)
+            putExtra("nombreUsuario", nombreComprador)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        publicar(title, body, pendingIntent, chatId)
+    }
 
+    // ------------------------------------------------------------
+    // 3) Notificación "compraAceptada" para comprador (abre MapaComprador)
+    // ------------------------------------------------------------
+    private fun mostrarNotificacionCompraAceptada(
+        title: String,
+        body: String,
+        chatId: String,
+        productoId: String
+    ) {
+        val intent = Intent(this, MapaCompradorActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("chatId", chatId)
+            putExtra("productoId", productoId)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        publicar(title, body, pendingIntent, chatId)
+    }
+
+    // ------------------------------------------------------------
+    // 4) Notificación "compraRechazada" para comprador (abre ChatActivity)
+    // ------------------------------------------------------------
+    private fun mostrarNotificacionCompraRechazada(
+        title: String,
+        body: String,
+        chatId: String,
+        productoId: String,
+        uidVendedor: String,
+        nombreVendedor: String
+    ) {
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("chatId", chatId)
+            putExtra("uidReceptor", uidVendedor)
+            putExtra("nombreUsuario", nombreVendedor)
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        publicar(title, body, pendingIntent, chatId)
+    }
+
+    // ------------------------------------------------------------
+    // 5) Función genérica que crea canal y publica notificación,
+    //    con CHEQUEO DE PERMISO en Android 13+ antes de notify(...)
+    // ------------------------------------------------------------
+    private fun publicar(
+        title: String,
+        body: String,
+        pendingIntent: PendingIntent,
+        chatId: String
+    ) {
+        // 5.1) Crear canal si hace falta (Android 8+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val nombreCanal = "Chat Messages"
-            val descripcion = "Notificaciones de nuevos mensajes de chat"
+            val nombreCanal = "Chat & Compras"
+            val descripcion = "Notificaciones de chat y compras"
             val importancia = NotificationManager.IMPORTANCE_HIGH
             val canal = NotificationChannel(CHANNEL_ID, nombreCanal, importancia).apply {
-                description = descripcion
+                this.description = descripcion
             }
             val manager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(canal)
         }
 
-        // 3) Construir la notificación
+        // 5.2) Construir el builder
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_mensaje)
             .setContentTitle(title)
@@ -104,7 +237,21 @@ class FcmService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        val notifId = chatId.hashCode().let { id -> id and 0x00FFFFFF }
+        // 5.3) CHEQUEO DE PERMISO POST_NOTIFICATIONS en Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permiso = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (permiso != PackageManager.PERMISSION_GRANTED) {
+                // Si el permiso NO está concedido, NO mostramos la notificación.
+                Log.w(TAG, "No se tiene permiso POST_NOTIFICATIONS; omitiendo notify()")
+                return
+            }
+        }
+
+        // 5.4) Si llegamos aquí, tenemos permiso (o Android versión <13), entonces publicamos
+        val notifId = chatId.hashCode().and(0x00FFFFFF)
         NotificationManagerCompat.from(this).notify(notifId, builder.build())
     }
 }

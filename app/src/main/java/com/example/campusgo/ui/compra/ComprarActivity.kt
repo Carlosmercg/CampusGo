@@ -21,6 +21,7 @@ import com.example.campusgo.ui.venta.VentaActivity
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -154,6 +155,19 @@ class ComprarActivity : AppCompatActivity()  {
                 .set(pedido)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Pedido creado correctamente", Toast.LENGTH_SHORT).show()
+                    val uidVendedor = productosSeleccionados[0].vendedorId
+                    val notisCompraRef = FirebaseDatabase.getInstance()
+                        .getReference("notificacionesCompra")
+                        .child(uidVendedor)
+                    val noti = hashMapOf<String, Any>(
+                        "uidComprador" to uid,
+                        "productoId"   to productosSeleccionados[0].id,
+                        "chatId"       to pedidoId,  // usamos el mismo pedidoId como chatId temporal
+                        "titulo"       to "¡Alguien quiere comprar tu producto!",
+                        "body"         to "Toca para revisarlo"
+                    )
+                    notisCompraRef.push().setValue(noti)
+
                     finish()
                 }
                 .addOnFailureListener {

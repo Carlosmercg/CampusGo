@@ -26,6 +26,8 @@ import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.ui.mapas.MapaVendedorActivity
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -98,18 +100,40 @@ class VentaActivity : AppCompatActivity() {
             false
         }
 
+        // Botón Aceptar
         binding.btnAceptar.setOnClickListener {
             db.collection("Pedidos").document(pedidoId)
                 .update("estado", "aceptado")
                 .addOnSuccessListener {
                     Toast.makeText(this, "Pedido aceptado", Toast.LENGTH_SHORT).show()
+
+                    val uidVendedor = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                    db.collection("Pedidos").document(pedidoId)
+                        .get()
+                        .addOnSuccessListener { doc ->
+                            val uidComprador = doc.getString("compradorId") ?: ""
+                            val notisCompraRef = FirebaseDatabase.getInstance()
+                                .getReference("notificacionesCompra")
+                                .child(uidComprador)
+                            val noti = hashMapOf<String, Any>(
+                                "uidVendedor" to uidVendedor,
+                                "productoId"  to doc.getString("productoId").orEmpty(),
+                                "chatId"      to pedidoId,
+                                "resultado"   to "aceptada",
+                                "titulo"      to "¡Tu compra fue aceptada!",
+                                "body"        to "Toca para ver tu producto en el mapa"
+                            )
+                            notisCompraRef.push().setValue(noti)
+                        }
+                        .addOnFailureListener {
+                        }
                     val intent = Intent(this, MapaVendedorActivity::class.java)
                     intent.putExtra("pedidoID", pedidoId)
                     startActivity(intent)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Error al aceptar pedido", Toast.LENGTH_SHORT).show()
-                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al aceptar pedido", Toast.LENGTH_SHORT).show()
+                }
         }
 
         binding.btnRechazar.setOnClickListener {
@@ -117,6 +141,26 @@ class VentaActivity : AppCompatActivity() {
                 .update("estado", "rechazado")
                 .addOnSuccessListener {
                     Toast.makeText(this, "Pedido rechazado", Toast.LENGTH_SHORT).show()
+                    val uidVendedor = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                    db.collection("Pedidos").document(pedidoId)
+                        .get()
+                        .addOnSuccessListener { doc ->
+                            val uidComprador = doc.getString("compradorId") ?: ""
+                            val notisCompraRef = FirebaseDatabase.getInstance()
+                                .getReference("notificacionesCompra")
+                                .child(uidComprador)
+                            val noti = hashMapOf<String, Any>(
+                                "uidVendedor" to uidVendedor,
+                                "productoId"  to doc.getString("productoId").orEmpty(),
+                                "chatId"      to pedidoId,
+                                "resultado"   to "rechazada",
+                                "titulo"      to "Lo sentimos, tu compra fue rechazada",
+                                "body"        to "Toca para iniciar chat con el vendedor"
+                            )
+                            notisCompraRef.push().setValue(noti)
+                        }
+                        .addOnFailureListener {
+                        }
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 }
