@@ -80,7 +80,6 @@ class CalificarActivityComprador : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
                 startActivity(Intent(this, HomeActivity::class.java))
-                finish()
             }
         }
     }

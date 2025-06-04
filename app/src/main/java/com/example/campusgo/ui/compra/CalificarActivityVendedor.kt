@@ -80,7 +80,6 @@ class CalificarActivityVendedor : AppCompatActivity() {
                 ).show()
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
-                finish()
             }
         }
     }

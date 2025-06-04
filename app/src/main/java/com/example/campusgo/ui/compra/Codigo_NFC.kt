@@ -41,7 +41,6 @@ class Codigo_NFC : AppCompatActivity() {
                     val intent = Intent(this, CalificarActivityVendedor::class.java)
                     intent.putExtra("pedidoID", pedidoId)
                     startActivity(intent)
-                    finish()
                 }
                 else{
                     Toast.makeText(this, "codigo no valido", Toast.LENGTH_LONG).show()

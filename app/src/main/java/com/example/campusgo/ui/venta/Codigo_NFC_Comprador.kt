@@ -65,7 +65,6 @@ class Codigo_NFC_Comprador : AppCompatActivity() {
                         .show()
                     db.collection("Pedidos").document(pedidoId).update("estado", "terminado")
                     startActivity(Intent(this, CalificarActivityComprador::class.java))
-                    finish()
                 }
             }.addOnFailureListener { exception ->
                 Log.e("Codigo_NFC_Comprador", "Error al obtener los datos del pedido", exception)
