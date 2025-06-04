@@ -3,6 +3,7 @@ package com.example.campusgo.ui.venta
 import android.annotation.SuppressLint
 import android.app.UiModeManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.hardware.Sensor
@@ -21,6 +22,9 @@ import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityVentaBinding
 import com.example.campusgo.ui.adapters.ProductoAdapter
+import com.example.campusgo.ui.home.HomeActivity
+import com.example.campusgo.ui.mapas.MapaVendedorActivity
+
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -74,6 +78,58 @@ class VentaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityVentaBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val pedidoId = intent.getStringExtra("pedidoID")
+            ?: "-"
+        val db = FirebaseFirestore.getInstance()
+
+        map = binding.osmap
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        binding.osmap.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(false)
+                    view.performClick()
+                }
+            }
+            false
+        }
+
+        binding.btnAceptar.setOnClickListener {
+            db.collection("Pedidos").document(pedidoId)
+                .update("estado", "aceptado")
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Pedido aceptado", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MapaVendedorActivity::class.java)
+                    intent.putExtra("pedidoID", pedidoId)
+                    startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al aceptar pedido", Toast.LENGTH_SHORT).show()
+                    }
+        }
+
+        binding.btnRechazar.setOnClickListener {
+            db.collection("Pedidos").document(pedidoId)
+                .update("estado", "rechazado")
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Pedido rechazado", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al rechazar pedido", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        geocoder = Geocoder(baseContext)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
+        lightEventListener = createLightSensorListener()
 
         map = binding.osmap
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -101,10 +157,6 @@ class VentaActivity : AppCompatActivity() {
 
         // Flecha atrás
         binding.ivBack.setOnClickListener { onBackPressed() }
-
-        // ID del pedido (o uno de prueba si no llega)
-        val pedidoId = intent.getStringExtra("pedidoId")
-            ?: "JrIr6Klhx2s6O6jInDYn"
 
         // RecyclerView
         productoAdapter = ProductoAdapter(productosVenta) { /* click opcional */ }
@@ -190,7 +242,7 @@ class VentaActivity : AppCompatActivity() {
                 binding.tvTotal.text     = "Total: $${df.format(total)}"
 
                 // 5) Cargar datos del comprador
-                val compradorId = doc.getString("compradorID") ?: ""
+                val compradorId = doc.getString("compradorId") ?: ""
                 if (compradorId.isNotBlank()) cargarComprador(compradorId)
             }
             .addOnFailureListener { e ->
