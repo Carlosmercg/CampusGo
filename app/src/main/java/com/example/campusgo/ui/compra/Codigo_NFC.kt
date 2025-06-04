@@ -39,10 +39,9 @@ class Codigo_NFC : AppCompatActivity() {
                 if (document.getString("estado") == "terminado") {
                     Toast.makeText(this, "gracias por compartir el codigo!", Toast.LENGTH_LONG)
                         .show()
-                    val intent = Intent(this, CalificarActivityVendedor::class.java)
+                    val intent = Intent(this, HomeActivity::class.java)
                     intent.putExtra("pedidoID", pedidoId)
                     startActivity(intent)
-                    finish()
                 }
                 else{
                     Toast.makeText(this, "codigo no valido", Toast.LENGTH_LONG).show()

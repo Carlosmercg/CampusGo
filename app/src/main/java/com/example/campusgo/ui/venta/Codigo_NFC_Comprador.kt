@@ -64,9 +64,8 @@ class Codigo_NFC_Comprador : AppCompatActivity() {
                     Toast.makeText(this, "entrega confirmada! muchas gracias", Toast.LENGTH_LONG)
                         .show()
                     db.collection("Pedidos").document(pedidoId).update("estado", "terminado")
-                    val intent = Intent(this, CalificarActivityComprador::class.java)
-                    intent.putExtra("pedidoID", pedidoId)
-                    startActivity(intent)
+                    startActivity(Intent(this, CalificarActivityComprador::class.java))
+
                     finish()
                 }
             }.addOnFailureListener { exception ->
