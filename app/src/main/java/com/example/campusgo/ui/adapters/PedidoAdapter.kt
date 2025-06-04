@@ -3,7 +3,9 @@ package com.example.campusgo.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.campusgo.R
 import com.example.campusgo.data.models.Pedido
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ItemPedidoBinding
 
 class PedidoAdapter(
@@ -18,6 +20,12 @@ class PedidoAdapter(
             binding.txtNombreProducto.text = pedido.productos.first().nombre // set the product name
             binding.txtPrecioProducto.text = pedido.productos.sumOf { it.precio }.toString() //set the sum of the prices
             binding.root.setOnClickListener { onClickListener(pedido) } // set the onclick listener for each item
+            ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                pedido.productos.first().imagenUrl,
+                binding.imgProducto,
+                binding.root.context,
+                R.drawable.ic_placeholder,
+            )
         }
     }
     //methods to create and set the data
