@@ -4,6 +4,7 @@ import android.R.attr.title
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings.Global.getString
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.campusgo.R
 import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.ProductoCarrito
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityCarritoBinding
 import com.example.campusgo.databinding.ItemCarritoBinding
 import com.example.campusgo.databinding.ItemVendedorBinding
@@ -25,6 +27,7 @@ class CarritoActivity : BottomMenuActivity() {
     private lateinit var binding: ActivityCarritoBinding
     private val productosCarrito = mutableListOf<ProductoCarrito>()
     private lateinit var adapter: RecyclerView.Adapter<*>
+    lateinit var vendeID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +79,16 @@ class CarritoActivity : BottomMenuActivity() {
                 RecyclerView.ViewHolder(vb.root) {
                 fun bind(vendedorNombre: String) {
                     vb.txtVendedor.text = vendedorNombre
+
+                    buscarImagen(vendeID) { fotoPerfil ->
+                        ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                            fotoPerfil,
+                            vb.imgVendedor,
+                            baseContext,
+                            R.drawable.ic_profile,
+                        )
+                    }
+
                     vb.btnConfirmar.setOnClickListener {
                         val productosDelVendedor = productosCarrito
                             .filter { it.producto.vendedorNombre == vendedorNombre }
@@ -116,6 +129,21 @@ class CarritoActivity : BottomMenuActivity() {
         binding.recyclerCarrito.adapter = adapter
     }
 
+    private fun buscarImagen(Id: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(Id)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val imagen = usuarioDoc.getString("urlFotoPerfil") ?: "imagen desconocida"
+                callback(imagen)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener imagen", e)
+                callback("Nombre desconocido")
+            }
+    }
+
     private fun cargarCarritoDesdeFirestore() {
 
         val uid = Firebase.auth.currentUser?.uid ?: return
@@ -152,8 +180,9 @@ class CarritoActivity : BottomMenuActivity() {
                                     imagenUrl = it.getString("imagenUrl") ?: "",
                                     precio = it.getDouble("precio") ?: 0.0,
                                     descripcion = it.getString("descripcion") ?: "",
-                                    vendedorNombre = it.getString("vendedorNombre") ?: ""
+                                    vendedorNombre = it.getString("vendedorNombre") ?: "",
                                 )
+                                vendeID=it.getString("vendedorId") ?: ""
                                 productosCarrito.add(ProductoCarrito(producto, carritoDocId))
                             }
                             productosCargados++
