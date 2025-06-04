@@ -5,16 +5,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityCodigoNfcCompradorBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class Codigo_NFC_Comprador : AppCompatActivity() {
 
     private lateinit var binding: ActivityCodigoNfcCompradorBinding
     private lateinit var digitos: List<EditText>
+    private lateinit var pedidoId : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +29,8 @@ class Codigo_NFC_Comprador : AppCompatActivity() {
             binding.et1, binding.et2, binding.et3,
             binding.et4, binding.et5, binding.et6
         )
+
+        pedidoId = intent.getStringExtra("pedidoID").toString()
 
         // 2) Cada casilla acepta un solo dígito y pasa foco al siguiente
         digitos.forEachIndexed { idx, et ->
@@ -44,15 +49,27 @@ class Codigo_NFC_Comprador : AppCompatActivity() {
         digitos[0].requestFocus()
 
         // 3) Al pulsar el icono, aceptamos cualquier código y vamos al Home
-        binding.imgSync.setOnClickListener {
+        binding.confirmacion.setOnClickListener {
             val ingresado = digitos.joinToString("") { it.text.toString() }
             if (ingresado.length < 6) {
                 Toast.makeText(this, "Completa los 6 dígitos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            Toast.makeText(this, "entrega confirmada! muchas gracias", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, CalificarActivityComprador::class.java))
-            finish()
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Pedidos").document(pedidoId).get().addOnSuccessListener { document ->
+                if (document.getString("codigo") != ingresado) {
+                    Toast.makeText(this, "codigo no valido", Toast.LENGTH_LONG).show()
+                }
+                else {
+                    Toast.makeText(this, "entrega confirmada! muchas gracias", Toast.LENGTH_LONG)
+                        .show()
+                    db.collection("Pedidos").document(pedidoId).update("estado", "terminado")
+                    startActivity(Intent(this, CalificarActivityComprador::class.java))
+                    finish()
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("Codigo_NFC_Comprador", "Error al obtener los datos del pedido", exception)
+            }
         }
     }
 }
