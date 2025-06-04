@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
     android:background="@color/background">
 
@@ -272,6 +272,19 @@
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/errorColor"/>
         </LinearLayout>
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/osmap"
+            android:layout_width="match_parent"
+            android:layout_height="409dp"
+            android:paddingHorizontal="5dp"
+            android:paddingLeft="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llBottom">
+
+        </org.osmdroid.views.MapView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
