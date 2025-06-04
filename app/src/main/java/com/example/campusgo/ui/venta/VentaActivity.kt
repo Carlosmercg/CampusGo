@@ -1,6 +1,17 @@
 package com.example.campusgo.ui.venta
 
+import android.annotation.SuppressLint
+import android.app.UiModeManager
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.location.Geocoder
 import android.os.Bundle
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +21,13 @@ import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
 import com.example.campusgo.databinding.ActivityVentaBinding
 import com.example.campusgo.ui.adapters.ProductoAdapter
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.TilesOverlay
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,18 +37,74 @@ class VentaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVentaBinding
     private lateinit var productoAdapter: ProductoAdapter
     private val productosVenta = mutableListOf<Producto>()
+    lateinit var map: MapView
+    private lateinit var posicion: GeoPoint
+    private lateinit var direccion: String
+    val bogota = GeoPoint(4.62, -74.07)
 
+
+    private lateinit var geocoder: Geocoder
+    private lateinit var sensorManager: SensorManager
+    private lateinit var lightSensor: Sensor
+    private lateinit var lightEventListener: SensorEventListener
+
+    override fun onResume() {
+        super.onResume()
+        map.onResume()
+        map.controller.setZoom(18.0)
+        map.controller.animateTo(bogota)
+
+        val uims = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        if (uims.nightMode == UiModeManager.MODE_NIGHT_YES) {
+
+            map.overlayManager.tilesOverlay.setColorFilter(TilesOverlay.INVERT_COLORS)
+        }
+
+        sensorManager.registerListener(lightEventListener, lightSensor, SensorManager.SENSOR_DELAY_FASTEST)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map.onPause()
+        sensorManager.unregisterListener(lightEventListener)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVentaBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        map = binding.osmap
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        binding.osmap.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(false)
+                    view.performClick()
+                }
+            }
+            false
+        }
+
+
+
+        geocoder = Geocoder(baseContext)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
+        lightEventListener = createLightSensorListener()
 
         // Flecha atrás
         binding.ivBack.setOnClickListener { onBackPressed() }
 
         // ID del pedido (o uno de prueba si no llega)
         val pedidoId = intent.getStringExtra("pedidoId")
-            ?: "fcFwgPfYyu9O6gAzftPD"
+            ?: "JrIr6Klhx2s6O6jInDYn"
 
         // RecyclerView
         productoAdapter = ProductoAdapter(productosVenta) { /* click opcional */ }
@@ -53,6 +126,15 @@ class VentaActivity : AppCompatActivity() {
 
                 // 1) Dirección
                 binding.tvDireccion.text = doc.getString("direccion") ?: "-"
+                direccion= doc.getString("direccion") ?: "-"
+                val location = findLocation(direccion)
+                if (location != null) {
+                    posicion = location
+                    addMarker(posicion, direccion)
+                    map.controller.animateTo(posicion)
+                } else {
+                    Toast.makeText(this, "No se encontró la dirección", Toast.LENGTH_SHORT).show()
+                }
 
                 // 2) Hora
                 doc.getTimestamp("fecha")?.toDate()?.let { date ->
@@ -116,6 +198,23 @@ class VentaActivity : AppCompatActivity() {
             }
     }
 
+    fun createLightSensorListener(): SensorEventListener {
+        return object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                if (::map.isInitialized && event != null) {
+                    if (event.values[0] < 5000) {
+                        map.overlayManager.tilesOverlay.setColorFilter(TilesOverlay.INVERT_COLORS)
+                    } else {
+                        map.overlayManager.tilesOverlay.setColorFilter(null)
+                    }
+                    map.invalidate()
+                }
+            }
+
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+    }
+
     private fun cargarComprador(uid: String) {
         FirebaseFirestore.getInstance()
             .collection("usuarios")
@@ -137,5 +236,64 @@ class VentaActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Error cargando comprador", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    /**
+     * Agrega un marcador al mapa.
+     * @param p GeoPoint de la posición
+     * @param snippet Descripción corta
+     * @param longPressed Indica si es de un long press
+     */
+    private fun addMarker(p: GeoPoint, snippet: String) {
+        var addressText = direccion
+
+        val marker = createMarker(
+            p, addressText, snippet,
+            R.drawable.baseline_add_location_alt_24
+        )
+        if (marker != null) {
+            map.overlays.add(marker)
+            map.invalidate()
+        }
+    }
+    /**
+     * Crea un objeto Marker personalizado.
+     * @param p GeoPoint de la posición
+     * @param title Título del marcador
+     * @param desc Descripción del marcador
+     * @param iconID ID del recurso del icono
+     * @return Marker creado
+     */
+    private fun createMarker(p:GeoPoint, title: String, desc: String, iconID : Int) : Marker? {
+        var marker : Marker? = null;
+        if(map!=null) {
+            marker = Marker(map);
+            if (title != null) marker.setTitle(title);
+            if (desc != null) marker.setSubDescription(desc);
+            if (iconID != 0) {
+                val myIcon = getResources().getDrawable(iconID, this.getTheme());
+                marker.setIcon(myIcon);
+            }
+            marker.setPosition(p);
+            marker.setAnchor(
+                Marker.
+                ANCHOR_CENTER, Marker.
+                ANCHOR_BOTTOM);
+        }
+        return marker
+    }
+
+    /**
+     * Busca una ubicación LatLng a partir de una dirección en texto.
+     * @param address Dirección como texto
+     * @return GeoPoint correspondiente
+     */
+    fun findLocation(address: String): GeoPoint? {
+        val addresses = geocoder.getFromLocationName(address, 2)
+        if (!addresses.isNullOrEmpty()) {
+            val addr = addresses[0]
+            return GeoPoint(addr.latitude, addr.longitude)
+        }
+        return null
     }
 }

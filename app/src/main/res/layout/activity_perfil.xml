@@ -11,12 +11,45 @@
     tools:context=".ui.usuario.PerfilActivity">
 
 
+    <LinearLayout
+        android:id="@+id/cerrarSesion"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:background="#FBFBFB"
+        android:backgroundTint="#FDFDFD"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pedidos"
+        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="9"
+            app:srcCompat="@drawable/ic_cerrar_sesion" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:text="Cerrar Sesión"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:text="&lt; Cuenta"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Tooltip"
         android:textColor="@color/black"
@@ -65,7 +98,7 @@
         android:background="#FBFBFB"
         android:backgroundTint="#FDFDFD"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cerrarSesion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
 
