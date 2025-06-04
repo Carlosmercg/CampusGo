@@ -50,7 +50,7 @@ class ListaComprasPasadasActivity : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val usuario = Firebase.auth.currentUser
         db.collection("Pedidos")
-            .whereEqualTo("compradorID", usuario?.uid)
+            .whereEqualTo("compradorId", usuario?.uid)
             .get()
             .addOnSuccessListener { result ->
                 val pedidos = mutableListOf<Pedido>()
