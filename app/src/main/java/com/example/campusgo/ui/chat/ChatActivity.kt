@@ -41,6 +41,7 @@ class ChatActivity : AppCompatActivity() {
         chatId = intent.getStringExtra("chatId") ?: return
         uidReceptor = intent.getStringExtra("uidReceptor") ?: return
 
+
         configurarToolbar()
         setupRecyclerView()
         escucharMensajes()
@@ -49,18 +50,18 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun configurarToolbar() {
-        val nombre = intent.getStringExtra("nombreUsuario") ?: "Usuario"
+        val nombreCompleto = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         val fotoPerfilUrl = intent.getStringExtra("fotoPerfilUrl")
 
         setSupportActionBar(binding.chatToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        binding.nombreUsuarioToolbar.text = nombre
+        // Asigna el nombre
+        binding.nombreUsuarioToolbar.text = nombreCompleto
 
-        binding.btnBack.setOnClickListener {
-            val intent = Intent(this, ChatsListActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+        // Manejador del botón de retroceso del toolbar
+        binding.chatToolbar.setNavigationOnClickListener {
+            startActivity(Intent(this, ChatsListActivity::class.java))
             finish()
         }
 
@@ -122,6 +123,10 @@ class ChatActivity : AppCompatActivity() {
         chatRef.child("ultimoMensaje").setValue(texto)
         userChatsRef.child(uidActual).child(chatId).setValue(true)
         userChatsRef.child(uidReceptor).child(chatId).setValue(true)
+            chatRef.child("messages").push().setValue(mensaje)
+            chatRef.child("ultimoMensaje").setValue(texto)
+            userChatsRef.child(uidActual).child(chatId).setValue(true)
+            userChatsRef.child(uidReceptor).child(chatId).setValue(true)
 
         // 4) Actualizar listaChats en Firestore (sin cambios)
         val firestore = FirebaseFirestore.getInstance()
@@ -140,6 +145,24 @@ class ChatActivity : AppCompatActivity() {
             .collection("listaChats")
             .document(uidActual)
             .set(resumen, SetOptions.merge())
+            val firestore = FirebaseFirestore.getInstance()
+            val resumen = mapOf(
+                "chatId" to chatId,
+                "ultimoMensaje" to texto,
+                "timestamp" to mensaje.timestamp
+            )
+
+            firestore.collection("usuarios")
+                .document(uidActual)
+                .collection("listaChats")
+                .document(uidReceptor)
+                .set(resumen, SetOptions.merge())
+
+            firestore.collection("usuarios")
+                .document(uidReceptor)
+                .collection("listaChats")
+                .document(uidActual)
+                .set(resumen, SetOptions.merge())
 
         // 5) Limpiar el EditText
         binding.etMensaje.text.clear()
@@ -181,7 +204,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun escucharMensajes() {
-        // 1) Cambiamos “mensajes” a “messages” para que coincida con Cloud Function
         dbRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/messages")
 
         dbRef.addValueEventListener(object : ValueEventListener {

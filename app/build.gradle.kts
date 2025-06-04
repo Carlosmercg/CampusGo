@@ -83,7 +83,11 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.firebase:firebase-messaging-ktx")
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.inappmessaging)
 
+    // Biometric login
+    implementation("androidx.biometric:biometric:1.1.0")
 
     // Jetpack Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
@@ -91,24 +95,24 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     // Corrutinas
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     // Networking & JSON
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Seguridad - para guardar credenciales cifradas (opcional pero recomendado)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Open Streets Maps
+    // OpenStreetMap
     implementation("org.osmdroid:osmdroid-android:6.1.18")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation ("com.github.MKergall:osmbonuspack:6.8.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-
+    implementation("com.github.MKergall:osmbonuspack:6.8.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
 }
-apply(plugin = "com.google.gms.google-services")

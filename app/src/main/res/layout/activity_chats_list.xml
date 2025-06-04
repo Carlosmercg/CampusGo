@@ -3,25 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/white"
     tools:context=".ui.chat.ChatsListActivity">
 
-    <!-- Toolbar -->
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarMensajeria"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
         app:title="Chats"
         app:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/ic_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Spinner para filtro -->
     <Spinner
         android:id="@+id/spinnerFiltro"
         android:layout_width="wrap_content"
@@ -30,7 +29,6 @@
         app:layout_constraintTop_toBottomOf="@id/toolbarMensajeria"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Línea horizontal: Buscador + nuevo chat -->
     <LinearLayout
         android:id="@+id/linearBusqueda"
         android:layout_width="0dp"
@@ -42,20 +40,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Buscador -->
         <androidx.appcompat.widget.SearchView
             android:id="@+id/etBuscarUsuario"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:iconifiedByDefault="false"
-            android:queryHint="Buscar en chats"
-            android:backgroundTint="@color/gray"
-            android:elevation="2dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:queryHint="Buscar en chats" />
 
-        <!-- Botón de nuevo chat -->
         <ImageButton
             android:id="@+id/NewChat"
             android:layout_width="40dp"
@@ -66,36 +58,18 @@
             android:src="@drawable/ic_new_chat" />
     </LinearLayout>
 
-    <!-- Lista de chats activos -->
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerChats"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="8dp"
         android:clipToPadding="false"
-        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/linearBusqueda"
         app:layout_constraintBottom_toTopOf="@id/tvSinChats"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_chat"
+        android:overScrollMode="never" />
 
-    <!-- Lista de resultados de búsqueda -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerResultados"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="8dp"
-        android:clipToPadding="false"
-        android:visibility="gone"
-        tools:listitem="@layout/item_usuario"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/linearBusqueda"
-        app:layout_constraintBottom_toTopOf="@id/tvSinChats"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Texto cuando no hay chats -->
     <TextView
         android:id="@+id/tvSinChats"
         android:layout_width="wrap_content"
@@ -108,7 +82,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Menú inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
