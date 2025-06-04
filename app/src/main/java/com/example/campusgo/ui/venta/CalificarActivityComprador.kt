@@ -2,6 +2,7 @@ package com.example.campusgo.ui.venta
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +20,24 @@ class CalificarActivityComprador : AppCompatActivity() {
     private lateinit var stars: List<ImageButton>
     private var rating = 0
 
-    private val vendedorId = "jY6VoRW0pLhM1Yq4MSECkeoSs3r2"
+    private lateinit var pedidoId: String
+    private lateinit var compradorId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCalificarCompradorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        FirebaseFirestore.getInstance()
-            .collection("usuarios")
-            .document(vendedorId)
+        pedidoId = intent.getStringExtra("pedidoID").toString()
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("Pedidos").document(pedidoId).get().addOnSuccessListener { document ->
+            compradorId = document.getString("compradorId").toString()
+        }.addOnFailureListener{
+            Log.e("CalificarActivityComprador", "Error al obtener los datos del pedido")
+        }
+            db.collection("usuarios")
+            .document(compradorId)
             .get()
             .addOnSuccessListener { doc ->
                 doc.toObject(Usuario::class.java)?.let { usr ->
@@ -40,14 +49,14 @@ class CalificarActivityComprador : AppCompatActivity() {
                     if (usr.urlFotoPerfil.isNotBlank()) {
                         Glide.with(this)
                             .load(usr.urlFotoPerfil)
-                            .placeholder(R.drawable.placeholder_usuario)
-                            .error(R.drawable.placeholder_usuario)
+                            .placeholder(R.drawable.ic_profile)
+                            .error(R.drawable.ic_profile)
                             .into(binding.imageView15)
                     }
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Error cargando datos del vendedor", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error cargando datos del comprador", Toast.LENGTH_SHORT).show()
             }
 
         stars = listOf(
@@ -71,7 +80,6 @@ class CalificarActivityComprador : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
                 startActivity(Intent(this, HomeActivity::class.java))
-                finish()
             }
         }
     }

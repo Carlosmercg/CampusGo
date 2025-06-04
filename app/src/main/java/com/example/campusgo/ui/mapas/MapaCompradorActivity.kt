@@ -181,7 +181,9 @@ class MapaCompradorActivity : AppCompatActivity() {
         lightEventListener = createLightSensorListener()
 
         binding.btnnfc.setOnClickListener{
-            startActivity(Intent(this, Codigo_NFC::class.java))
+            val intent = Intent(this, Codigo_NFC::class.java)
+            intent.putExtra("pedidoID", pedidoId)
+            startActivity(intent)
         }
 
         binding.btnchat.setOnClickListener{

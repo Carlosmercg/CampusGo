@@ -143,7 +143,7 @@ class PerfilActivity : BottomMenuActivity() {
             val pedido = document.toObject(Pedido::class.java)
             db.collection("usuarios").document(pedido?.vendedorId ?: "").get()
                 .addOnSuccessListener { document ->
-                    binding.comprasRecientesName.text = document.getString("nombre")
+                    binding.comprasRecientesName.text = document.getString("nombre") + " " + document.getString("apellido")
                     pedido?.fecha?.let { timestamp ->
                         val date = Date(timestamp.seconds * 1000) // Convert Timestamp to Date
                         val sdf = SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))

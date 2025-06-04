@@ -184,7 +184,9 @@ class MapaVendedorActivity : AppCompatActivity() {
         orientationListener = createOrientationListener()
 
         binding.btnNFC.setOnClickListener{
-            startActivity(Intent(this, Codigo_NFC_Comprador::class.java))
+            val intent = Intent(this, Codigo_NFC_Comprador::class.java)
+            intent.putExtra("pedidoID", pedidoId)
+            startActivity(intent)
         }
 
         binding.imageButton2.setOnClickListener{
