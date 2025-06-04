@@ -24,6 +24,7 @@ import com.example.campusgo.databinding.ActivityVentaBinding
 import com.example.campusgo.ui.adapters.ProductoAdapter
 import com.example.campusgo.ui.home.HomeActivity
 import com.example.campusgo.ui.mapas.MapaVendedorActivity
+
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -130,9 +131,32 @@ class VentaActivity : AppCompatActivity() {
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
         lightEventListener = createLightSensorListener()
 
+        map = binding.osmap
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        binding.osmap.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP -> {
+                    binding.osmap.parent?.requestDisallowInterceptTouchEvent(false)
+                    view.performClick()
+                }
+            }
+            false
+        }
+
+
+
+        geocoder = Geocoder(baseContext)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
+        lightEventListener = createLightSensorListener()
+
         // Flecha atrás
         binding.ivBack.setOnClickListener { onBackPressed() }
-
 
         // RecyclerView
         productoAdapter = ProductoAdapter(productosVenta) { /* click opcional */ }
