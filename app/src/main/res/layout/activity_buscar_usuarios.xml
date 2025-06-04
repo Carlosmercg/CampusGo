@@ -3,20 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.Toolbar
+    <!-- Toolbar única y funcional -->
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarBuscar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
-        android:title="Buscar usuarios"
-        android:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/ic_back"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:title="Buscar usuarios"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <!-- Layout de búsqueda -->
     <LinearLayout
         android:id="@+id/layoutBusqueda"
         android:layout_width="0dp"
@@ -38,7 +42,6 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"/>
 
-
         <Spinner
             android:id="@+id/spinnerFiltro"
             android:layout_width="match_parent"
@@ -51,10 +54,9 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="Buscar" />
-
-
     </LinearLayout>
 
+    <!-- Resultados en lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerResultados"
         android:layout_width="0dp"

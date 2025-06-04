@@ -36,6 +36,7 @@ class ChatActivity : AppCompatActivity() {
         chatId = intent.getStringExtra("chatId") ?: return
         uidReceptor = intent.getStringExtra("uidReceptor") ?: return
 
+
         configurarToolbar()
         setupRecyclerView()
         escucharMensajes()
@@ -44,21 +45,23 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun configurarToolbar() {
-        val nombre = intent.getStringExtra("nombreUsuario") ?: "Usuario"
+        val nombreCompleto = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         val fotoPerfilUrl = intent.getStringExtra("fotoPerfilUrl")
 
+        // Configura el toolbar como ActionBar
         setSupportActionBar(binding.chatToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        binding.nombreUsuarioToolbar.text = nombre
+        // Asigna el nombre
+        binding.nombreUsuarioToolbar.text = nombreCompleto
 
-        binding.btnBack.setOnClickListener {
-            val intent = Intent(this, ChatsListActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+        // Manejador del botón de retroceso del toolbar
+        binding.chatToolbar.setNavigationOnClickListener {
+            startActivity(Intent(this, ChatsListActivity::class.java))
             finish()
         }
 
+        // Carga la imagen de perfil
         ManejadorImagenesAPI.mostrarImagenDesdeUrl(
             url = fotoPerfilUrl,
             imageView = binding.imgPerfilToolbar,
@@ -67,6 +70,7 @@ class ChatActivity : AppCompatActivity() {
             errorRes = R.drawable.ic_profile
         )
     }
+
 
     private fun setupRecyclerView() {
         mensajeAdapter = MensajeAdapter(mensajes)
@@ -93,6 +97,7 @@ class ChatActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun enviarMensaje() {
         val texto = binding.etMensaje.text.toString().trim()
         if (texto.isNotEmpty()) {
@@ -106,15 +111,12 @@ class ChatActivity : AppCompatActivity() {
             val chatRef = FirebaseDatabase.getInstance().getReference("chats/$chatId")
             val userChatsRef = FirebaseDatabase.getInstance().getReference("usuariosChats")
 
-            // Realtime Database: guardar mensaje y último mensaje
             chatRef.child("messages").push().setValue(mensaje)
             chatRef.child("ultimoMensaje").setValue(texto)
             userChatsRef.child(uidActual).child(chatId).setValue(true)
             userChatsRef.child(uidReceptor).child(chatId).setValue(true)
 
-            // Firestore: ACTUALIZA listaChats para ambos usuarios
             val firestore = FirebaseFirestore.getInstance()
-
             val resumen = mapOf(
                 "chatId" to chatId,
                 "ultimoMensaje" to texto,

@@ -37,18 +37,21 @@ class BuscarUsuariosActivity : AppCompatActivity() {
     private fun configurarToolbar() {
         setSupportActionBar(binding.toolbarBuscar)
         supportActionBar?.apply {
-            title = "Buscar usuarios"
+            title = "Buscar usuarios" // opcional, puedes omitir si ya está en XML
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_back)
         }
 
+        // Listener para el botón de navegación de la toolbar
         binding.toolbarBuscar.setNavigationOnClickListener {
-            val intent = Intent(this, ChatsListActivity::class.java)
+            val intent = Intent(this@BuscarUsuariosActivity, ChatsListActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
         }
     }
+
+
 
     private fun setupRecycler() {
         binding.recyclerResultados.layoutManager = LinearLayoutManager(this)
@@ -124,6 +127,8 @@ class BuscarUsuariosActivity : AppCompatActivity() {
                 placeholderRes = R.drawable.ic_profile,
                 errorRes = R.drawable.ic_profile
             )
+
+
 
             holder.item.btnPerfil.setOnClickListener { irAlPerfil(usuario) }
             holder.item.btnChatear.setOnClickListener { iniciarChatCon(usuario) }
