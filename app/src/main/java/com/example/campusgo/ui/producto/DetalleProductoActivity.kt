@@ -92,6 +92,12 @@ class DetalleProductoActivity : AppCompatActivity() {
             return
         }
 
+        // ❗ Verificar que el comprador no sea el mismo que el vendedor
+        if (compradorId == producto.vendedorId) {
+            Toast.makeText(this, "No puedes comprar tu propio producto", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val carritoData = hashMapOf(
             "compradorId" to compradorId,
             "imagenUrl" to producto.imagenUrl,
@@ -111,4 +117,5 @@ class DetalleProductoActivity : AppCompatActivity() {
                 Toast.makeText(this, "${producto.nombre} Error al agregar al carrito", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

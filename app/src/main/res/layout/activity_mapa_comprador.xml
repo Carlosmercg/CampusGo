@@ -31,33 +31,37 @@
 
         <ImageButton
             android:id="@+id/btnnfc"
-            android:layout_width="79dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="fitCenter"
+            android:background="@drawable/bg_entrega"
+            android:padding="16dp"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnchat"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tiempo"
-            app:srcCompat="@drawable/icononfc" />
+            app:layout_constraintHorizontal_bias="0.852"
+            app:layout_constraintStart_toEndOf="@+id/imageView12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.868"
+            app:srcCompat="@drawable/baseline_library_add_check_24" />
+
+
 
         <ImageButton
             android:id="@+id/btnchat"
-            android:layout_width="79dp"
-            android:layout_height="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="fitCenter"
+            android:background="@drawable/bg_message_received"
+            android:padding="16dp"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/tiempo"
+            app:layout_constraintHorizontal_bias="0.837"
+            app:layout_constraintStart_toEndOf="@+id/imageView12"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/ic_chats" />
+            app:layout_constraintVertical_bias="0.868"
+            app:srcCompat="@drawable/baseline_message_24" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"

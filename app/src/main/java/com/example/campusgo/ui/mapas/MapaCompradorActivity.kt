@@ -502,7 +502,7 @@ class MapaCompradorActivity : AppCompatActivity() {
                 for (document in result) {
                     val lat = document.getDouble("latvendedor")
                     val lng = document.getDouble("longvendedor")
-                    val vendedorID = document.getString("vendedorID") ?: "Desconocido"
+                    val vendedorID = document.getString("vendedorId") ?: "Desconocido"
 
                     if (vendedorID != null) {
                         buscarNombre(vendedorID) { nombre ->
