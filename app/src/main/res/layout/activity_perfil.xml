@@ -222,11 +222,11 @@
                     android:layout_marginBottom="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView"
                     app:srcCompat="@drawable/ic_profile" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/comprasRecientestextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -244,7 +244,7 @@
                     android:text="Nombre del vendedor"
                     android:textSize="12sp"
                     app:layout_constraintStart_toEndOf="@+id/comprasRecientesProfilePicture"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView" />
 
                 <TextView
                     android:id="@+id/comprasRecientesDate"
@@ -266,7 +266,7 @@
                     android:textSize="30sp"
                     app:layout_constraintBottom_toBottomOf="@+id/comprasRecientesProfilePicture"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -89,10 +89,15 @@ class PerfilActivity : BottomMenuActivity() {
                     R.drawable.ic_profile,
                 )
                 val compras = document.get("compras") as List<*>
-                val compra = compras.last()
-                Log.d("PerfilActivity", "Compra: $compra")
+                if(!compras.isEmpty()) {
+                    val compra = compras.last()
+                    Log.d("PerfilActivity", "Compra: $compra")
+                    inicializarCompra(compra.toString(), db)
+                }
+                else{
+                    desactivarCompra()
+                }
 
-                inicializarCompra(compra.toString(), db)
             }
             .addOnFailureListener { exception ->
                 Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
@@ -120,16 +125,24 @@ class PerfilActivity : BottomMenuActivity() {
                         )
                     }.addOnFailureListener { exception ->
                         Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
-                        binding.comprasRecientesName.visibility = View.GONE
+                        desactivarCompra()
                     }
             }.addOnFailureListener { exception ->
                 Log.e("PerfilActivity", "Error al obtener los datos del usuario", exception)
-                binding.comprasRecientesName.visibility = View.GONE
+                desactivarCompra()
             }
         }
         else {
-            binding.comprasRecientesName.visibility = View.GONE
+            desactivarCompra()
         }
+    }
+
+    private fun desactivarCompra(){
+        binding.comprasRecientesName.visibility = View.GONE
+        binding.comprasRecientesDate.visibility = View.GONE
+        binding.comprasRecientesProfilePicture.visibility = View.GONE
+        binding.comprasRecientestextView.visibility = View.GONE
+        binding.tiempo.visibility = View.GONE
     }
 
 
