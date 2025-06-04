@@ -79,8 +79,13 @@ class CarritoActivity : BottomMenuActivity() {
                             .filter { it.producto.vendedorNombre == vendedorNombre }
                             .map { it.producto }
 
+                        val productosIdCarrito = productosCarrito
+                            .filter { it.producto.vendedorNombre == vendedorNombre }
+                            .map { it.carritoDocId }
+
                         val intent = Intent(this@CarritoActivity, ComprarActivity::class.java)
                         intent.putExtra("productos", ArrayList(productosDelVendedor))
+                        intent.putExtra("carritos", ArrayList(productosIdCarrito))
                         startActivity(intent)
                     }
                 }

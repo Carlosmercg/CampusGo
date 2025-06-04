@@ -475,7 +475,7 @@ class MapaVendedorActivity : AppCompatActivity() {
                 for (document in result) {
                     val direccion = document.getString("direccion")
                     binding.destino.text=direccion
-                    val compradorId = document.getString("compradorID")
+                    val compradorId = document.getString("compradorId")
                     if (compradorId != null) {
                         buscarNombreComprador(compradorId) { nombre ->
                             binding.Comprador.text = nombre

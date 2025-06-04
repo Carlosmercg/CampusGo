@@ -30,6 +30,7 @@ class ComprarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityComprarBinding
     private var productosSeleccionados: List<Producto> = emptyList()
     private var direccionSeleccionada: String? = null
+    private var productosIdCarrito: List<String> = emptyList()
 
 
 
@@ -43,6 +44,7 @@ class ComprarActivity : AppCompatActivity() {
         // ✅ Usar Serializable en lugar de Parcelable
         @Suppress("UNCHECKED_CAST")
         productosSeleccionados = intent.getSerializableExtra("productos") as? ArrayList<Producto> ?: emptyList()
+        productosIdCarrito = intent.getSerializableExtra("carritos") as? ArrayList<String> ?: emptyList()
 
         if (productosSeleccionados.isEmpty()) {
             Toast.makeText(this, "No hay productos para comprar", Toast.LENGTH_SHORT).show()
@@ -136,14 +138,14 @@ class ComprarActivity : AppCompatActivity() {
 
             val pedido = mapOf(
                 "id" to pedidoId,
-                "compradorID" to uid,
+                "compradorId" to uid,
                 "direccion" to direccion,
                 "estado" to estado,
                 "fecha" to fecha,
                 "metodoPago" to metodoPago,
                 "latvendedor" to latVendedor,
                 "longvendedor" to longVendedor,
-                "vendedorID" to productosSeleccionados[0].vendedorId,
+                "vendedorId" to productosSeleccionados[0].vendedorId,
                 "productos" to productosMapeados
             )
 
@@ -165,13 +167,16 @@ class ComprarActivity : AppCompatActivity() {
             db.collection("usuarios").document(productosSeleccionados[0].vendedorId)
                 .update("ventas", FieldValue.arrayUnion(pedidoId))
 
-            Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
-            obtenerUltimoPedidoId { pedidoId ->
-                // Lanzamos VentaActivity con el ID
-                Intent(this, VentaActivity::class.java).apply {
-                    putExtra("pedidoId", pedidoId)
-                }.also { startActivity(it) }
+            productosIdCarrito.forEach { carritoId ->
+                db.collection("Carrito").document(carritoId)
+                    .update("estado", "comprado")
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al actualizar carrito $carritoId: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
+            Toast.makeText(this, "Compra confirmada para vendedor", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
             finish()
         }
     }

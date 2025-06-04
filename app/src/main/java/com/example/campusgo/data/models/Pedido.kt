@@ -11,8 +11,8 @@ data class Pedido(
     val estado: String = "",
     val fecha: Timestamp,
     val direccion: String,
-    val latVendedor: Double,
-    val longVendedor: Double,
+    val latvendedor: Double,
+    val longvendedor: Double,
     val metodoPago: String
 ) {
     constructor() : this("", "", "", emptyList(), "", Timestamp.now(), "", 0.0, 0.0, "")
