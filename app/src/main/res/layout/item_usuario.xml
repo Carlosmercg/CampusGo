@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <!-- Foto del usuario -->
+    <ImageView
+        android:id="@+id/imgPerfilUsuario"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Nombre -->
+    <TextView
+        android:id="@+id/txtNombreUsuario"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nombre Apellido"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/imgPerfilUsuario"
+        app:layout_constraintTop_toTopOf="@id/imgPerfilUsuario"
+        app:layout_constraintEnd_toStartOf="@id/btnChatear"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <!-- Carrera -->
+    <TextView
+        android:id="@+id/txtCarreraUsuario"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Carrera"
+        android:textColor="@color/textHint"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/txtNombreUsuario"
+        app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario"
+        app:layout_constraintEnd_toEndOf="@id/txtNombreUsuario" />
+
+    <!-- Universidad -->
+    <TextView
+        android:id="@+id/txtUniversidadUsuario"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Universidad"
+        android:textColor="@color/textHint"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/txtNombreUsuario"
+        app:layout_constraintTop_toBottomOf="@id/txtCarreraUsuario"
+        app:layout_constraintEnd_toEndOf="@id/txtNombreUsuario" />
+
+    <!-- Botón "Chatear" reducido -->
+    <Button
+        android:id="@+id/btnChatear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chatear"
+        android:textSize="10sp"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txtNombreUsuario" />
+
+    <!-- Botón "Ver perfil" reducido -->
+    <Button
+        android:id="@+id/btnPerfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="2dp"
+        android:text="Ver perfil"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnChatear"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,15 +8,48 @@
     android:layout_height="match_parent"
     android:background="#DADADA"
     android:backgroundTint="#DADADA"
-    tools:context=".PerfilActivity">
+    tools:context=".ui.usuario.PerfilActivity">
 
+
+    <LinearLayout
+        android:id="@+id/cerrarSesion"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:background="#FBFBFB"
+        android:backgroundTint="#FDFDFD"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pedidos"
+        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="9"
+            app:srcCompat="@drawable/ic_cerrar_sesion" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:text="Cerrar Sesión"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="30dp"
         android:text="&lt; Cuenta"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Tooltip"
         android:textColor="@color/black"
@@ -33,13 +66,13 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back"
-        app:srcCompat="@drawable/profile_picture_default" />
+        app:srcCompat="@drawable/ic_profile" />
 
     <TextView
         android:id="@+id/nombres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Antonio Sanchez Montoya"
+        android:text="Nombre del Usuario"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -65,7 +98,7 @@
         android:background="#FBFBFB"
         android:backgroundTint="#FDFDFD"
         android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/ayuda"
+        app:layout_constraintEnd_toStartOf="@+id/cerrarSesion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
 
@@ -84,78 +117,10 @@
             android:layout_margin="5dp"
             android:layout_weight="3"
             android:gravity="center_horizontal"
-            android:text="Pedidos"
+            android:text="Ventas Recientes"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ayuda"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:background="#FBFBFB"
-        android:backgroundTint="#FDFDFD"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@+id/mediosDePago"
-        app:layout_constraintStart_toEndOf="@+id/pedidos"
-        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="9"
-            app:srcCompat="@drawable/headset" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:text="Ayuda"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/mediosDePago"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:background="#DADADA"
-        android:backgroundTint="#FDFDFD"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ayuda"
-        app:layout_constraintTop_toBottomOf="@+id/editarPerfil">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="9"
-            app:srcCompat="@drawable/credit_card" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:text="Medios de Pago"
-            android:textColor="@color/black"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-
     </LinearLayout>
 
     <android.widget.ScrollView
@@ -164,7 +129,7 @@
         android:layout_marginTop="10dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ayuda">
+        app:layout_constraintTop_toBottomOf="@+id/pedidos">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -203,7 +168,7 @@
                 app:layout_constraintVertical_bias="0.497">
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/empiezaAhoraTextView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="5dp"
@@ -223,7 +188,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                    app:layout_constraintTop_toBottomOf="@+id/empiezaAhoraTextView" />
 
                 <TextView
                     android:id="@+id/subirProducto"
@@ -236,13 +201,24 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/textView12"
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productos"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/empiezaAhoraTextView" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/comprasMasRecientes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent">
@@ -256,11 +232,11 @@
                     android:layout_marginBottom="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
-                    app:srcCompat="@drawable/profile_picture_default" />
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView"
+                    app:srcCompat="@drawable/ic_profile" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/comprasRecientestextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -275,24 +251,25 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="12dp"
-                    android:text="Antonio Sanchez Montoya"
+                    android:text="Nombre del vendedor"
                     android:textSize="12sp"
                     app:layout_constraintStart_toEndOf="@+id/comprasRecientesProfilePicture"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView" />
 
                 <TextView
                     android:id="@+id/comprasRecientesDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="3dp"
-                    android:text="25 de Febrero de 2025"
+                    android:text="Fecha de la venta"
                     android:textSize="9sp"
                     app:layout_constraintEnd_toEndOf="@+id/comprasRecientesName"
                     app:layout_constraintStart_toStartOf="@+id/comprasRecientesName"
                     app:layout_constraintTop_toBottomOf="@+id/comprasRecientesName" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/tiempo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
@@ -300,8 +277,30 @@
                     android:textSize="30sp"
                     app:layout_constraintBottom_toBottomOf="@+id/comprasRecientesProfilePicture"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/comprasRecientestextView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/white"
+                app:labelVisibilityMode="labeled"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:menu="@menu/bottom_menu"
+                tools:layout_editor_absoluteX="9dp" />
+
+            <Button
+                android:id="@+id/agregarProducto2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar Producto"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/comprasMasRecientes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </android.widget.ScrollView>

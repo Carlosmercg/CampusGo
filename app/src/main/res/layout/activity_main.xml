@@ -5,15 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_background"
-    tools:context=".MainActivity">
+    android:background="@drawable/bg_campus"
+    tools:context=".ui.main.MainActivity">
+
+
 
     <!-- Imagen de fondo -->
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/splash_background"
+        android:src="@drawable/bg_campus"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true" />
 
@@ -33,7 +35,7 @@
         android:fontFeatureSettings="@string/app_name"
         android:textFontWeight="@integer/material_motion_duration_medium_2"
         android:fontFamily=""
-        android:textColor="@color/navTextColor"
+        android:textColor="@color/white"
         android:textSize="64sp"
         android:gravity="center_vertical"
         android:lineSpacingMultiplier="1.3"
@@ -41,6 +43,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-/>
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

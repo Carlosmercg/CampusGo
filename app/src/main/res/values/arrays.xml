@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="metodos_de_pago">
+        <item>Tarjeta</item>
+        <item>Efectivo</item>
+    </string-array>
+</resources>
