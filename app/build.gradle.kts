@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.firebase.inappmessaging)
     implementation(libs.androidx.recyclerview)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.messaging)
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Firebase BoM y servicios
@@ -80,6 +81,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.google.firebase:firebase-messaging-ktx")
 
 
     // Jetpack Lifecycle
@@ -108,3 +111,4 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
 }
+apply(plugin = "com.google.gms.google-services")

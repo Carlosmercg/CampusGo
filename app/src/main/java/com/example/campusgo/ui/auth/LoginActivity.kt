@@ -13,8 +13,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private val db by lazy { FirebaseFirestore.getInstance() }
@@ -50,10 +53,42 @@ class LoginActivity : AppCompatActivity() {
                     db.collection("usuarios").document(uid).get()
                         .addOnSuccessListener { doc ->
                             if (doc.exists()) {
-                                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this, HomeActivity::class.java).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                })
+                                // Aquí añadimos la obtención y guardado del token FCM
+                                FirebaseMessaging.getInstance().token
+                                    .addOnSuccessListener { token ->
+                                        // Guardamos el token en el documento del usuario
+                                        val data = mapOf("fcmToken" to token)
+                                        db.collection("usuarios")
+                                            .document(uid)
+                                            .set(data, SetOptions.merge())
+                                            .addOnSuccessListener {
+                                                // Una vez guardado, continua con la navegación
+                                                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                                                startActivity(
+                                                    Intent(this, HomeActivity::class.java).apply {
+                                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                    }
+                                                )
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Si hubo un error guardando el token, igual continuar
+                                                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                                                startActivity(
+                                                    Intent(this, HomeActivity::class.java).apply {
+                                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                    }
+                                                )
+                                            }
+                                    }
+                                    .addOnFailureListener {
+                                        // Si no se pudo obtener el token, igualmente seguimos a HomeActivity
+                                        Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                                        startActivity(
+                                            Intent(this, HomeActivity::class.java).apply {
+                                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                            }
+                                        )
+                                    }
                             } else {
                                 Toast.makeText(this, "Usuario autenticado pero no encontrado en Firestore", Toast.LENGTH_LONG).show()
                             }

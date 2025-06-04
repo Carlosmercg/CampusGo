@@ -22,12 +22,16 @@ import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.data.repository.UsuarioRepository
 import com.example.campusgo.databinding.ActivitySingupBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import java.io.File
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySingupBinding
     private lateinit var auth: FirebaseAuth
+    private val db by lazy { FirebaseFirestore.getInstance() }
     private val usuarioRepository = UsuarioRepository()
     private lateinit var manejadorImagenesAPI: ManejadorImagenesAPI
 
@@ -57,7 +61,9 @@ class SignUpActivity : AppCompatActivity() {
             "Universidad ECCI"
         )
 
-        binding.etUni.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades))
+        binding.etUni.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, universidades)
+        )
 
         configurarGaleria()
         configurarCamara()
@@ -101,7 +107,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun configurarGaleria() {
-        launcherGaleria = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        launcherGaleria = registerForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri ->
             uri?.let {
                 uriCarnet = it
                 mostrarImagen(it)
@@ -110,7 +118,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun configurarCamara() {
-        launcherCamara = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        launcherCamara = registerForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success ->
             if (success) {
                 uriCarnet = uriCamara
                 mostrarImagen(uriCamara)
@@ -122,7 +132,11 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun abrirCamara() {
         val archivo = File(getExternalFilesDir(null), "carnet_temp.jpg")
-        uriCamara = FileProvider.getUriForFile(this, "$packageName.fileprovider", archivo)
+        uriCamara = FileProvider.getUriForFile(
+            this,
+            "$packageName.fileprovider",
+            archivo
+        )
         launcherCamara.launch(uriCamara)
     }
 
@@ -194,7 +208,30 @@ class SignUpActivity : AppCompatActivity() {
                     usuario,
                     onSuccess = {
                         mostrar("Usuario registrado correctamente en Firestore ✅")
-                        finish()
+
+                        // ————— AÑADIDO: OBTENER Y GUARDAR TOKEN FCM —————
+                        FirebaseMessaging.getInstance().token
+                            .addOnSuccessListener { token ->
+                                // Guardar en Firestore: usuarios/{uid}.fcmToken = token
+                                val dataToken = mapOf("fcmToken" to token)
+                                db.collection("usuarios")
+                                    .document(uid)
+                                    .set(dataToken, SetOptions.merge())
+                                    .addOnSuccessListener {
+                                        // Una vez guardado el token, cerramos SignUpActivity
+                                        finish()
+                                    }
+                                    .addOnFailureListener {
+                                        // Si falla el guardado de token, igual cerramos Activity
+                                        finish()
+                                    }
+                            }
+                            .addOnFailureListener {
+                                // Si no se pudo obtener el token, igual cerramos Activity
+                                finish()
+                            }
+                        // ————————————————————————————————————————————
+
                     },
                     onError = {
                         mostrar("Error al guardar usuario: $it")
@@ -220,7 +257,8 @@ class SignUpActivity : AppCompatActivity() {
         urlCarnet: String
     ): Boolean {
         return when {
-            correo.isEmpty() || pass.isEmpty() || confirm.isEmpty() || nombre.isEmpty() || universidad.isEmpty() || apellido.isEmpty() || urlCarnet.isEmpty() -> {
+            correo.isEmpty() || pass.isEmpty() || confirm.isEmpty() || nombre.isEmpty() ||
+                    universidad.isEmpty() || apellido.isEmpty() || urlCarnet.isEmpty() -> {
                 mostrar("Completa todos los campos y sube tu carné")
                 false
             }
@@ -245,7 +283,11 @@ class SignUpActivity : AppCompatActivity() {
         Log.d(TAG, msg)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             100 -> if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
