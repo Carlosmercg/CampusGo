@@ -36,6 +36,7 @@ class ChatActivity : AppCompatActivity() {
         chatId = intent.getStringExtra("chatId") ?: return
         uidReceptor = intent.getStringExtra("uidReceptor") ?: return
 
+
         configurarToolbar()
         setupRecyclerView()
         escucharMensajes()
@@ -47,15 +48,20 @@ class ChatActivity : AppCompatActivity() {
         val nombreCompleto = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         val fotoPerfilUrl = intent.getStringExtra("fotoPerfilUrl")
 
+        // Configura el toolbar como ActionBar
         setSupportActionBar(binding.chatToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // Asigna el nombre
         binding.nombreUsuarioToolbar.text = nombreCompleto
 
-        binding.btnBack.setOnClickListener {
-            finish() // Simplemente finaliza, no recrea toda la lista
+        // Manejador del botón de retroceso del toolbar
+        binding.chatToolbar.setNavigationOnClickListener {
+            startActivity(Intent(this, ChatsListActivity::class.java))
+            finish()
         }
 
+        // Carga la imagen de perfil
         ManejadorImagenesAPI.mostrarImagenDesdeUrl(
             url = fotoPerfilUrl,
             imageView = binding.imgPerfilToolbar,
@@ -64,6 +70,7 @@ class ChatActivity : AppCompatActivity() {
             errorRes = R.drawable.ic_profile
         )
     }
+
 
     private fun setupRecyclerView() {
         mensajeAdapter = MensajeAdapter(mensajes)
