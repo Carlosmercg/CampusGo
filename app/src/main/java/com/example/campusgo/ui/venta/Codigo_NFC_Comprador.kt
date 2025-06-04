@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.campusgo.databinding.ActivityCodigoNfcCompradorBinding
+import com.example.campusgo.ui.home.HomeActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -64,7 +65,7 @@ class Codigo_NFC_Comprador : AppCompatActivity() {
                     Toast.makeText(this, "entrega confirmada! muchas gracias", Toast.LENGTH_LONG)
                         .show()
                     db.collection("Pedidos").document(pedidoId).update("estado", "terminado")
-                    startActivity(Intent(this, CalificarActivityComprador::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
 
                     finish()
                 }
