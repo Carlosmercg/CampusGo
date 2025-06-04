@@ -34,7 +34,7 @@ class PerfilActivity : BottomMenuActivity() {
             .addOnSuccessListener { document ->
                 val nombre = document.getString("nombre")
                 val apellido = document.getString("apellido")
-                fotoPerfil = document.getString("fotoPerfilUrl")
+                fotoPerfil = document.getString("urlFotoPerfil")
                 binding.nombres.text = nombre + " " + apellido
                 ManejadorImagenesAPI.mostrarImagenDesdeUrl(
                     fotoPerfil,
