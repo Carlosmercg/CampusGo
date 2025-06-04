@@ -11,6 +11,7 @@ import com.example.campusgo.data.models.Mensaje
 import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityChatBinding
 import com.example.campusgo.ui.adapters.MensajeAdapter
+import com.example.campusgo.ui.chat.ChatsListActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,10 +33,10 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 1) Leer extras enviados desde la notificación (o desde ChatsListActivity)
         uidActual = FirebaseAuth.getInstance().uid ?: return
         chatId = intent.getStringExtra("chatId") ?: return
         uidReceptor = intent.getStringExtra("uidReceptor") ?: return
-
 
         configurarToolbar()
         setupRecyclerView()
@@ -45,23 +46,23 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun configurarToolbar() {
+        // 2) Obtener nombre y foto de la persona desde extras (si vienen)
         val nombreCompleto = intent.getStringExtra("nombreUsuario") ?: "Usuario"
         val fotoPerfilUrl = intent.getStringExtra("urlFotoPerfil")
 
-        // Configura el toolbar como ActionBar
         setSupportActionBar(binding.chatToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Asigna el nombre
+        // Asigna el nombre al TextView del toolbar
         binding.nombreUsuarioToolbar.text = nombreCompleto
 
-        // Manejador del botón de retroceso del toolbar
+        // Flecha de retroceso vuelve a la lista de chats
         binding.chatToolbar.setNavigationOnClickListener {
             startActivity(Intent(this, ChatsListActivity::class.java))
             finish()
         }
 
-        // Carga la imagen de perfil
+        // Cargar la foto de perfil si se proporcionó URL, sino se deja el placeholder
         ManejadorImagenesAPI.mostrarImagenDesdeUrl(
             url = fotoPerfilUrl,
             imageView = binding.imgPerfilToolbar,
@@ -70,7 +71,6 @@ class ChatActivity : AppCompatActivity() {
             errorRes = R.drawable.ic_profile
         )
     }
-
 
     private fun setupRecyclerView() {
         mensajeAdapter = MensajeAdapter(mensajes)
@@ -89,7 +89,8 @@ class ChatActivity : AppCompatActivity() {
     private fun configurarEnterParaEnviar() {
         binding.etMensaje.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEND ||
-                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+            ) {
                 enviarMensaje()
                 true
             } else {
@@ -100,46 +101,83 @@ class ChatActivity : AppCompatActivity() {
 
     private fun enviarMensaje() {
         val texto = binding.etMensaje.text.toString().trim()
-        if (texto.isNotEmpty()) {
-            val mensaje = Mensaje(
-                contenido = texto,
-                emisor = uidActual,
-                receptor = uidReceptor,
-                timestamp = System.currentTimeMillis()
-            )
+        if (texto.isEmpty()) return
 
-            val chatRef = FirebaseDatabase.getInstance().getReference("chats/$chatId")
-            val userChatsRef = FirebaseDatabase.getInstance().getReference("usuariosChats")
+        // 3) Construir el objeto Mensaje
+        val mensaje = Mensaje(
+            contenido = texto,
+            emisor    = uidActual,
+            receptor  = uidReceptor,
+            timestamp = System.currentTimeMillis()
+        )
 
-            chatRef.child("messages").push().setValue(mensaje)
-            chatRef.child("ultimoMensaje").setValue(texto)
-            userChatsRef.child(uidActual).child(chatId).setValue(true)
-            userChatsRef.child(uidReceptor).child(chatId).setValue(true)
+        // 4) Referencias a Realtime Database
+        val chatRef      = FirebaseDatabase.getInstance().getReference("chats/$chatId")
+        val userChatsRef = FirebaseDatabase.getInstance().getReference("usuariosChats")
 
-            val firestore = FirebaseFirestore.getInstance()
-            val resumen = mapOf(
-                "chatId" to chatId,
-                "ultimoMensaje" to texto,
-                "timestamp" to mensaje.timestamp
-            )
+        // 5) Guardar en "chats/{chatId}/messages"
+        chatRef.child("messages").push().setValue(mensaje)
+        chatRef.child("ultimoMensaje").setValue(texto)
+        userChatsRef.child(uidActual).child(chatId).setValue(true)
+        userChatsRef.child(uidReceptor).child(chatId).setValue(true)
 
-            firestore.collection("usuarios")
-                .document(uidActual)
-                .collection("listaChats")
-                .document(uidReceptor)
-                .set(resumen, SetOptions.merge())
+        // 6) Actualizar listaChats en Firestore
+        val firestore = FirebaseFirestore.getInstance()
+        val resumen = mapOf(
+            "chatId"        to chatId,
+            "ultimoMensaje" to texto,
+            "timestamp"     to mensaje.timestamp
+        )
+        firestore.collection("usuarios")
+            .document(uidActual)
+            .collection("listaChats")
+            .document(uidReceptor)
+            .set(resumen, SetOptions.merge())
+        firestore.collection("usuarios")
+            .document(uidReceptor)
+            .collection("listaChats")
+            .document(uidActual)
+            .set(resumen, SetOptions.merge())
 
-            firestore.collection("usuarios")
-                .document(uidReceptor)
-                .collection("listaChats")
-                .document(uidActual)
-                .set(resumen, SetOptions.merge())
+        // 7) Limpiar el campo de texto
+        binding.etMensaje.text.clear()
 
-            binding.etMensaje.text.clear()
-        }
+        // 8) (Opcional) Push a "notificacionesChat" si sigues usándolo
+        val notisRef = FirebaseDatabase.getInstance()
+            .getReference("notificacionesChat")
+            .child(uidReceptor)
+
+        FirebaseFirestore.getInstance()
+            .collection("usuarios")
+            .document(uidActual)
+            .get()
+            .addOnSuccessListener { docEmisor ->
+                val nombreEmisor = docEmisor.getString("nombre") ?: "Usuario"
+                val noti = hashMapOf<String, Any>(
+                    "tipo" to "chat",
+                    "chatId" to chatId,
+                    "emisorId" to uidActual,
+                    "title" to "$nombreEmisor te ha enviado un mensaje",
+                    "body" to texto,
+                    "timestamp" to System.currentTimeMillis()
+                )
+                notisRef.push().setValue(noti)
+            }
+            .addOnFailureListener {
+                val noti = hashMapOf<String, Any>(
+                    "tipo" to "chat",
+                    "chatId" to chatId,
+                    "emisorId" to uidActual,
+                    "title" to "Usuario te ha enviado un mensaje",
+                    "body" to texto,
+                    "timestamp" to System.currentTimeMillis()
+                )
+                notisRef.push().setValue(noti)
+            }
     }
 
     private fun escucharMensajes() {
+        // 9) Leer desde "chats/{chatId}/messages"
         dbRef = FirebaseDatabase.getInstance().getReference("chats/$chatId/messages")
 
         dbRef.addValueEventListener(object : ValueEventListener {

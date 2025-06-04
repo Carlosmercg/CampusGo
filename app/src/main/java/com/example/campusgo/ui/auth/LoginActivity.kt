@@ -1,15 +1,15 @@
 package com.example.campusgo.ui.auth
 
-import android.app.ProgressDialog
+import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.util.Patterns
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
@@ -17,8 +17,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.example.campusgo.databinding.ActivityLoginBinding
 import com.example.campusgo.ui.home.HomeActivity
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : AppCompatActivity() {
 
@@ -26,6 +30,19 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var prefs: SharedPreferences
     private val db by lazy { FirebaseFirestore.getInstance() }
+
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+            } else {
+                Toast.makeText(
+                    this,
+                    "Para recibir notificaciones de chat, habilita el permiso",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +54,27 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.isEnabled = false
 
+        // 2) Pidamos permiso si es Android 13+ y no está concedido
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    Toast.makeText(
+                        this,
+                        "La app necesita permiso de notificaciones para avisarte de nuevos mensajes",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                else -> {
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
         configurarListeners()
         configurarBotonHuella()
     }
@@ -45,6 +83,7 @@ class LoginActivity : AppCompatActivity() {
         binding.emailEditText.addTextChangedListener { validateFields() }
         binding.passwordEditText.addTextChangedListener { validateFields() }
 
+        // Login al presionar Enter
         binding.passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && binding.btnLogin.isEnabled) {
                 binding.btnLogin.performClick()
@@ -71,21 +110,44 @@ class LoginActivity : AppCompatActivity() {
                 db.collection("usuarios").document(uid).get()
                     .addOnSuccessListener { doc ->
                         if (doc.exists()) {
-                            Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                            irAHOME()
+                            // Obtener y guardar token FCM
+                            FirebaseMessaging.getInstance().token
+                                .addOnSuccessListener { token ->
+                                    val data = mapOf("fcmToken" to token)
+                                    db.collection("usuarios")
+                                        .document(uid)
+                                        .set(data, SetOptions.merge())
+                                        .addOnSuccessListener {
+                                            irAHOME()
+                                        }
+                                        .addOnFailureListener {
+                                            irAHOME()
+                                        }
+                                }
+                                .addOnFailureListener {
+                                    irAHOME()
+                                }
                         } else {
-                            Toast.makeText(this, "Usuario autenticado pero no registrado en Firestore", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this,
+                                "Usuario autenticado pero no registrado en Firestore",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Error al verificar los datos del usuario", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            "Error al verificar datos del usuario",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
             }
             .addOnFailureListener { ex ->
                 val mensaje = when (ex) {
-                    is FirebaseAuthInvalidUserException -> "Correo no registrado"
+                    is FirebaseAuthInvalidUserException      -> "Correo no registrado"
                     is FirebaseAuthInvalidCredentialsException -> "Contraseña incorrecta"
-                    else -> "Error: ${ex.localizedMessage}"
+                    else                                      -> "Error: ${ex.localizedMessage}"
                 }
                 Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
             }
@@ -94,7 +156,7 @@ class LoginActivity : AppCompatActivity() {
     private fun guardarCredenciales(email: String, password: String) {
         prefs.edit()
             .putString("email", email)
-            .putString("password", password) // Nota: Idealmente deberías cifrar esto
+            .putString("password", password) // Idealmente cifrar
             .apply()
     }
 
@@ -119,73 +181,63 @@ class LoginActivity : AppCompatActivity() {
 
     private fun mostrarLoginBiometrico(email: String, password: String) {
         val executor = ContextCompat.getMainExecutor(this)
-
         val biometricPrompt = BiometricPrompt(
             this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Toast.makeText(applicationContext, "Huella verificada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Huella verificada", Toast.LENGTH_SHORT)
+                        .show()
 
                     auth.signInWithEmailAndPassword(email, password)
                         .addOnSuccessListener {
                             irAHOME()
                         }
                         .addOnFailureListener {
-                            Toast.makeText(applicationContext, "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                applicationContext,
+                                "Error al iniciar sesión",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(applicationContext, "Error: $errString", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Error: $errString", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
-                    Toast.makeText(applicationContext, "Huella no reconocida", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Huella no reconocida", Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
 
-        val promptInfo = PromptInfo.Builder()
+        val promptInfo: PromptInfo = PromptInfo.Builder()
             .setTitle("Autenticación Biométrica")
             .setSubtitle("Coloca tu huella ahora")
             .setNegativeButtonText("Cancelar")
             .build()
 
-        // Mostrar un diálogo previo para prepararse
-        android.app.AlertDialog.Builder(this)
-            .setTitle("Preparar autenticación")
-            .setMessage("Presiona 'Continuar' y espera 2 segundos para activar el sensor.")
-            .setPositiveButton("Continuar") { dialog, _ ->
-                dialog.dismiss()
-
-                val progress = ProgressDialog(this)
-                progress.setMessage("Iniciando sensor de huella...")
-                progress.setCancelable(false)
-                progress.show()
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    progress.dismiss()
-                    Log.d("LoginActivity", "Mostrando prompt biométrico...")
-                    biometricPrompt.authenticate(promptInfo)
-                }, 2000)
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        biometricPrompt.authenticate(promptInfo)
     }
 
     private fun irAHOME() {
-        startActivity(Intent(this, HomeActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
+        startActivity(
+            Intent(this, HomeActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
+        finish()
     }
 
+    // Valida correo y contraseña
     private fun validateFields() {
-        val emailValid = binding.emailEditText.text.toString().trim()
-            .let { it.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(it).matches() }
-
+        val emailValid = binding.emailEditText.text.toString().trim().let {
+            it.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(it).matches()
+        }
         val passwordValid = binding.passwordEditText.text.toString().trim().isNotEmpty()
-
         binding.btnLogin.isEnabled = emailValid && passwordValid
     }
 }

@@ -1,11 +1,16 @@
 package com.example.campusgo.ui.home
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.campusgo.ui.main.BottomMenuActivity
@@ -20,11 +25,33 @@ class HomeActivity : BottomMenuActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private val categorias = mutableListOf<Categoria>()
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // Ahora sí podremos recibir notificaciones
+            } else {
+                // Si sigue rechazando, recordamos al usuario
+                Toast.makeText(
+                    this,
+                    "Para recibir notificaciones, habilita el permiso en ajustes",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
 
         val adapter = CategoriaAdapter()
         binding.recyclerCategorias.layoutManager = GridLayoutManager(this, 2)

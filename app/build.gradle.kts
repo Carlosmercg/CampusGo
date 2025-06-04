@@ -27,6 +27,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "IMGBB_API_KEY", "\"$imgApiKey\"")
+
     }
 
     buildTypes {
@@ -43,6 +44,7 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -67,6 +69,11 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.inappmessaging)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.messaging)
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     // Firebase BoM y servicios
@@ -74,6 +81,8 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.google.firebase:firebase-messaging-ktx")
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.inappmessaging)
 
@@ -106,6 +115,4 @@ dependencies {
     implementation("com.github.MKergall:osmbonuspack:6.8.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // ❌ Estas estaban duplicadas o incorrectas (ya eliminadas arriba):
-    // implementation(libs.firebase.storage.ktx)         // ❌ ya estaba incluida arriba
 }
