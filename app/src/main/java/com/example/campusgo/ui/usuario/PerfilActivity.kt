@@ -43,6 +43,7 @@ class PerfilActivity : BottomMenuActivity() {
         inicializarDatosUsuario()
         inicializarListeners()
 
+
     }
 
     private fun inicializarListeners(){
@@ -76,6 +77,11 @@ class PerfilActivity : BottomMenuActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+        binding.agregarProducto2.setOnClickListener {
+            val intent = Intent(this, CrearProductoActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -173,6 +179,7 @@ class PerfilActivity : BottomMenuActivity() {
         binding.subirProducto.visibility = View.GONE
         binding.textView12.visibility = View.GONE
         binding.productos.visibility = View.VISIBLE
+        binding.agregarProducto2.visibility = View.VISIBLE
     }
 
 
