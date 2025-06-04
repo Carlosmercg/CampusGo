@@ -27,8 +27,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.campusgo.R
+import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.data.repository.ManejadorImagenesAPI
 import com.example.campusgo.databinding.ActivityMapaCompradorBinding
 import com.example.campusgo.databinding.ActivityMapaVendedorBinding
+import com.example.campusgo.ui.chat.ChatActivity
 import com.example.campusgo.ui.venta.Codigo_NFC_Comprador
 
 import com.google.android.gms.common.api.ResolvableApiException
@@ -42,6 +45,8 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -93,6 +98,8 @@ class MapaVendedorActivity : AppCompatActivity() {
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var locationRequest: com.google.android.gms.location.LocationRequest
     private lateinit var locationCallback: LocationCallback
+
+    private var firstLocationUpdate = true
 
     /**
      * Callback para cuando se activa la ubicación del dispositivo (GPS).
@@ -180,6 +187,33 @@ class MapaVendedorActivity : AppCompatActivity() {
             startActivity(Intent(this, Codigo_NFC_Comprador::class.java))
         }
 
+        binding.imageButton2.setOnClickListener{
+
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Pedidos")
+                .whereEqualTo("id", pedidoId)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val compradorid = document.getString("compradorId")
+                        if (compradorid != null) {
+                            obtenerVendedorPorID(compradorid) { usuario ->
+                                if (usuario != null) {
+                                    iniciarChatCon(usuario)
+                                } else {
+                                    Toast.makeText(this, "No se encontró al vendedor", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Firestore", "Error al leer pedidos", exception)
+                }
+
+        }
+
     }
 
     /**
@@ -232,11 +266,24 @@ class MapaVendedorActivity : AppCompatActivity() {
                 val loc = result.lastLocation
                 if(loc != null){
                     val newPosition = GeoPoint(loc.latitude, loc.longitude)
-                    posicion = newPosition
-                    posicion = GeoPoint(loc.latitude, loc.longitude)
-                    addLocationMarker()
-                    map.controller.setZoom(18.0)
-                    map.controller.animateTo(posicion)
+                    if (firstLocationUpdate){
+                        posicion = newPosition
+                        addLocationMarker()
+                        map.controller.setZoom(16.0)
+                        map.controller.animateTo(posicion)
+                        firstLocationUpdate = false
+                    }
+
+                    else {
+                        if(!newPosition.equals(posicion)){
+                            posicion = newPosition
+                            addLocationMarker()
+                            map.controller.setZoom(16.0)
+                            map.controller.animateTo(posicion)
+                        }
+
+                    }
+
                     updateUI(loc)
 
                     if (lastSavedLocation == null ||
@@ -480,6 +527,14 @@ class MapaVendedorActivity : AppCompatActivity() {
                         buscarNombreComprador(compradorId) { nombre ->
                             binding.Comprador.text = nombre
                         }
+                        buscarImagenComprador(compradorId) { fotoPerfil ->
+                            ManejadorImagenesAPI.mostrarImagenDesdeUrl(
+                                fotoPerfil,
+                                binding.imageView12,
+                                this,
+                                R.drawable.ic_profile,
+                            )
+                        }
                     }
                     if (direccion != null) {
                         val latLng = findLocation(direccion)
@@ -490,8 +545,6 @@ class MapaVendedorActivity : AppCompatActivity() {
                                     addMarker(posicionEntrega, "Pedido de $nombre")
                                 }
                             }
-                            map.controller.setZoom(18.0)
-                            map.controller.animateTo(posicionEntrega)
                             map.invalidate()
                         } else {
                             Log.w("Geocoder", "No se encontró ubicación para: $direccion")
@@ -515,6 +568,21 @@ class MapaVendedorActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Error al obtener nombre del comprador", e)
+                callback("Nombre desconocido")
+            }
+    }
+
+    private fun buscarImagenComprador(compradorId: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("usuarios")
+            .document(compradorId)
+            .get()
+            .addOnSuccessListener { usuarioDoc ->
+                val imagen = usuarioDoc.getString("urlFotoPerfil") ?: "imagen desconocida"
+                callback(imagen)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al obtener imagen del comprador", e)
                 callback("Nombre desconocido")
             }
     }
@@ -544,6 +612,8 @@ class MapaVendedorActivity : AppCompatActivity() {
                                outlinePaint.strokeWidth = 10F
                            }
                            map.overlays.add(roadOverlay)
+                           var tiempo= road.mDuration/60
+                           binding.tiempo.text = String.format("Llegaras en: %.0f minutos", tiempo)
                            map.invalidate() // <- Para refrescar el mapa
                        }
                    }
@@ -552,4 +622,91 @@ class MapaVendedorActivity : AppCompatActivity() {
                }
            }
    }
+
+    private fun obtenerVendedorPorID(vendedorID: String, callback: (Usuario?) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("usuarios").document(vendedorID).get()
+            .addOnSuccessListener { documento ->
+                if (documento.exists()) {
+                    val usuario = documento.toObject(Usuario::class.java)?.copy(id = documento.id)
+                    callback(usuario)
+                } else {
+                    callback(null)
+                }
+            }
+            .addOnFailureListener {
+                callback(null)
+            }
+    }
+
+    private fun iniciarChatCon(usuario: Usuario) {
+        val uidActual = FirebaseAuth.getInstance().uid
+
+        if (uidActual == null) {
+            Toast.makeText(this, "Debes iniciar sesión para usar el chat", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (usuario.id.isEmpty()) {
+            Toast.makeText(this, "El usuario no tiene un ID válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        if (usuario.id == uidActual) {
+            Toast.makeText(this, "No puedes chatear contigo mismo", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        val chatId = if (uidActual < usuario.id) "$uidActual-${usuario.id}" else "${usuario.id}-$uidActual"
+        val db = FirebaseDatabase.getInstance()
+
+        db.getReference("chats/$chatId/participantes")
+            .setValue(mapOf(uidActual to true, usuario.id to true))
+            .addOnSuccessListener {
+                db.getReference("usuariosChats/$uidActual/$chatId").setValue(true)
+                db.getReference("usuariosChats/${usuario.id}/$chatId").setValue(true)
+
+                val dbFirestore = FirebaseFirestore.getInstance()
+
+                dbFirestore.collection("usuarios")
+                    .document(uidActual)
+                    .collection("listaChats")
+                    .document(usuario.id)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to usuario.nombre,
+                            "apellido" to usuario.apellido,
+                            "fotoPerfil" to usuario.urlFotoPerfil
+                        )
+                    )
+
+                dbFirestore.collection("usuarios")
+                    .document(usuario.id)
+                    .collection("listaChats")
+                    .document(uidActual)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to FirebaseAuth.getInstance().currentUser?.displayName,
+                            "fotoPerfil" to "" // Puedes completar si tienes la URL
+                        )
+                    )
+
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtra("chatId", chatId)
+                    putExtra("uidReceptor", usuario.id)
+                    putExtra("nombreUsuario", usuario.nombre)
+                    putExtra("fotoPerfilUrl", usuario.urlFotoPerfil)
+                }
+                startActivity(intent)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al iniciar el chat: ${it.message}", Toast.LENGTH_LONG).show()
+                it.printStackTrace()
+            }
+    }
 }

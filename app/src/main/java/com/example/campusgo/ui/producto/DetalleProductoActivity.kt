@@ -1,5 +1,6 @@
 package com.example.campusgo.ui.producto
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,9 @@ import com.example.campusgo.R
 import com.example.campusgo.databinding.ActivityDetalleProductoBinding
 import com.example.campusgo.data.models.Producto
 import com.example.campusgo.data.models.Usuario
+import com.example.campusgo.ui.chat.ChatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DetalleProductoActivity : AppCompatActivity() {
@@ -38,7 +41,13 @@ class DetalleProductoActivity : AppCompatActivity() {
         obtenerDatosVendedor(producto.vendedorId)
 
         binding.btnContactar.setOnClickListener {
-            Toast.makeText(this, "Funcionalidad de chat pendiente", Toast.LENGTH_SHORT).show()
+            obtenerVendedorPorID(producto.vendedorId) { usuario ->
+                if (usuario != null) {
+                    iniciarChatCon(usuario)
+                } else {
+                    Toast.makeText(this, "No se encontró al vendedor", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         binding.btnAgregarCarrito.setOnClickListener {
@@ -115,6 +124,93 @@ class DetalleProductoActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "${producto.nombre} Error al agregar al carrito", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun obtenerVendedorPorID(vendedorID: String, callback: (Usuario?) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("usuarios").document(vendedorID).get()
+            .addOnSuccessListener { documento ->
+                if (documento.exists()) {
+                    val usuario = documento.toObject(Usuario::class.java)?.copy(id = documento.id)
+                    callback(usuario)
+                } else {
+                    callback(null)
+                }
+            }
+            .addOnFailureListener {
+                callback(null)
+            }
+    }
+
+    private fun iniciarChatCon(usuario: Usuario) {
+        val uidActual = FirebaseAuth.getInstance().uid
+
+        if (uidActual == null) {
+            Toast.makeText(this, "Debes iniciar sesión para usar el chat", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (usuario.id.isEmpty()) {
+            Toast.makeText(this, "El usuario no tiene un ID válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        if (usuario.id == uidActual) {
+            Toast.makeText(this, "No puedes chatear contigo mismo", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        val chatId = if (uidActual < usuario.id) "$uidActual-${usuario.id}" else "${usuario.id}-$uidActual"
+        val db = FirebaseDatabase.getInstance()
+
+        db.getReference("chats/$chatId/participantes")
+            .setValue(mapOf(uidActual to true, usuario.id to true))
+            .addOnSuccessListener {
+                db.getReference("usuariosChats/$uidActual/$chatId").setValue(true)
+                db.getReference("usuariosChats/${usuario.id}/$chatId").setValue(true)
+
+                val dbFirestore = FirebaseFirestore.getInstance()
+
+                dbFirestore.collection("usuarios")
+                    .document(uidActual)
+                    .collection("listaChats")
+                    .document(usuario.id)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to usuario.nombre,
+                            "apellido" to usuario.apellido,
+                            "fotoPerfil" to usuario.urlFotoPerfil
+                        )
+                    )
+
+                dbFirestore.collection("usuarios")
+                    .document(usuario.id)
+                    .collection("listaChats")
+                    .document(uidActual)
+                    .set(
+                        mapOf(
+                            "chatId" to chatId,
+                            "nombre" to FirebaseAuth.getInstance().currentUser?.displayName,
+                            "fotoPerfil" to "" // Puedes completar si tienes la URL
+                        )
+                    )
+
+                val intent = Intent(this, ChatActivity::class.java).apply {
+                    putExtra("chatId", chatId)
+                    putExtra("uidReceptor", usuario.id)
+                    putExtra("nombreUsuario", usuario.nombre)
+                    putExtra("fotoPerfilUrl", usuario.urlFotoPerfil)
+                }
+                startActivity(intent)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al iniciar el chat: ${it.message}", Toast.LENGTH_LONG).show()
+                it.printStackTrace()
             }
     }
 
