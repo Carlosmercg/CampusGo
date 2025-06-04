@@ -40,7 +40,9 @@ class CarritoActivity : BottomMenuActivity() {
         cargarCarritoDesdeFirestore()
         cargarRecycler()
         setupBottomNavigation(binding.bottomNavigation, R.id.nav_carrito)
+
     }
+
 
     private fun cargarRecycler() {
         val items = mutableListOf<Any>()
